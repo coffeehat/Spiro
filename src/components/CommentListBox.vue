@@ -27,7 +27,10 @@
         default: 0
       }
     },
-    method: {
+    methods: {
+      addNewComment(comment : any) : void {
+        this.comment_list.unshift(comment);
+      }
     },
     mounted() {
       getCommentList(
@@ -36,14 +39,11 @@
           this.comment_list = comment_list;
         }
       );
-      let obj = this;
-      function addNewComment(comment : any) : void {
-        obj.comment_list.unshift(comment);
-      };
-      eventBus.on('addNewComment', addNewComment);
+      this.addNewComment(1);
+      eventBus.on('addNewComment', this.addNewComment);
     },
     beforeUnmount() {
-      eventBus.off('addNewComment');
+      eventBus.off('addNewComment', this.addNewComment);
     }
   });
 </script>
