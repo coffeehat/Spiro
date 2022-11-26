@@ -1,9 +1,13 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import axios from 'axios';
+
+  // libs
+  import { submitComment } from '../common/network';
+  import eventBus from '../common/eventBus'
+  import { CommentItemInfo } from '../common/types';
 
   export default defineComponent ({
-    name: "Comment Box",
+    name: "Comment Submit Box",
     data() {
       return {
         comment_content: ""
@@ -14,26 +18,19 @@
       article_id:
       {
         type: Number,
+        default: 0
       }
     },
     methods: {
       onSubmit() {
-        console.log(this.article_id);
-        axios({
-          method: 'post',
-          url: "http://localhost:5000/v1.0/comment",
-          data: {
-            "article_id": this.article_id,
-            "comment": this.comment_content
-          }
-      }).then(
-          response => console.log(response)
-        ).catch(
-          error => console.log(error)
-        )
+        submitComment(this.article_id, this.comment_content, submitSuccessCb);
       }
     }
   });
+
+  function submitSuccessCb(comment: CommentItemInfo) : void {
+    eventBus.emit("addNewComment", comment);
+  }
 </script>
 
 <template>
