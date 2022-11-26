@@ -50,7 +50,8 @@
 
 <template>
   <div>
-    <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item.comment" />
+    <h2>所有评论</h2>
+    <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" />
   </div>
 </template>
 
