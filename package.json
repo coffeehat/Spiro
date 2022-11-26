@@ -9,7 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/marked": "^4.0.7",
     "axios": "^1.2.0",
+    "marked": "^4.2.3",
+    "marked-katex-extension": "^1.0.1",
     "mitt": "^3.0.0",
     "vue": "^3.2.37"
   },

@@ -3,6 +3,7 @@
 
   // libs
   import { submitComment } from '../common/network';
+  import { marked } from '../common/markdown'
   import eventBus from '../common/eventBus'
   import { CommentItemInfo } from '../common/types';
 
@@ -11,7 +12,10 @@
     data() {
       return {
         comment_content: "",
-        user_id: 0
+        user_id: 0,
+        md_preview: "",
+        isShowPreview: false,
+        preview_button_content: "to Preview"
       }
     },
     props:
@@ -25,6 +29,17 @@
     methods: {
       onSubmit() {
         submitComment(this.article_id, this.user_id, this.comment_content, submitSuccessCb);
+      },
+      onPreview() {
+        if (this.isShowPreview) {
+          this.isShowPreview = !this.isShowPreview;
+          this.md_preview = "";
+          this.preview_button_content = "to Preview"
+        } else {
+          this.md_preview = marked.parse(this.comment_content);
+          this.isShowPreview = !this.isShowPreview;
+          this.preview_button_content = "back to Editor"
+        }
       }
     }
   });
@@ -36,16 +51,33 @@
 
 <template>
   <form>
-    <textarea v-model="comment_content"></textarea>
-    <br />
-    <input type="text" v-model="user_id" />
+    <div class="comment_submit_container">
+      <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
+      <div class="comment_preview" v-html="md_preview" v-show="isShowPreview"></div>
+    </div>
+    <input type="text" v-model="user_id"/>
     <button type="button" @click="onSubmit()">Submit</button>
+    <button type="button" @click="onPreview()">{{ preview_button_content }}</button>
   </form>
 </template>
 
 <style scoped>
-  textarea {
+  .comment_submit_container {
+    margin-bottom: 10px;
+  }
+  .comment_textarea {
     width: 100%;
-    height: 10em
+    min-height: 10rem;
+    border-radius: 15px;
+    padding: 10px;
+    display: block;
+  }
+  .comment_preview {
+    width: 100%;
+    min-height: 10rem;
+    /* background-color: white; */
+    outline: 1px solid black;
+    border-radius: 15px;
+    padding:10px;
   }
 </style>
