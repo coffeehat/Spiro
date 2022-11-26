@@ -32,6 +32,7 @@ export function getCommentList(
 
 export function submitComment (
   article_id: number,
+  user_id: number,
   comment: string,
   success_cb?: (comment: CommentItemInfo) => void,
   error_cb?: () => void
@@ -41,6 +42,7 @@ export function submitComment (
     url: "http://localhost:5000/v1.0/comment",
     data: {
       "article_id": article_id,
+      "user_id": user_id,
       "comment": comment
     }
   }).then(

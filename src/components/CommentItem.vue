@@ -17,6 +17,7 @@
 
 <template>
   <div class="comment_item_box">
+    <h2>User: {{ comment.user_id }}</h2>
     <p>Time: {{ comment.comment_time }} </p>
     <p>{{ comment.comment }}</p>
   </div>

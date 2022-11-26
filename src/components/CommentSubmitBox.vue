@@ -10,7 +10,8 @@
     name: "Comment Submit Box",
     data() {
       return {
-        comment_content: ""
+        comment_content: "",
+        user_id: 0
       }
     },
     props:
@@ -23,7 +24,7 @@
     },
     methods: {
       onSubmit() {
-        submitComment(this.article_id, this.comment_content, submitSuccessCb);
+        submitComment(this.article_id, this.user_id, this.comment_content, submitSuccessCb);
       }
     }
   });
@@ -37,6 +38,7 @@
   <form>
     <textarea v-model="comment_content"></textarea>
     <br />
+    <input type="text" v-model="user_id" />
     <button type="button" @click="onSubmit()">Submit</button>
   </form>
 </template>
