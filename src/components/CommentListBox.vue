@@ -3,7 +3,8 @@
   
   // libs
   import { getCommentList } from '../common/network'
-  import { CommentItemInfo } from '../common/types';
+  import { CommentItemInfoList } from '../common/types';
+  import { sortCommentList} from '../common/utils';
 
   // Vue components
   import CommentItem from './CommentItem.vue'
@@ -16,7 +17,7 @@
     },
     data() {
       return {
-        comment_list: [] as CommentItemInfo[],
+        comment_list: [] as CommentItemInfoList,
       }
     },
     props:
@@ -37,9 +38,9 @@
         this.article_id,
         (comment_list) => {
           this.comment_list = comment_list;
+          sortCommentList(this.comment_list);
         }
       );
-      this.addNewComment(1);
       eventBus.on('addNewComment', this.addNewComment);
     },
     beforeUnmount() {

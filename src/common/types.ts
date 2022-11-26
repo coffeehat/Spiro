@@ -6,3 +6,5 @@ export type CommentItemInfo = {
   comment: string,
   error_msg: string
 }
+
+export type CommentItemInfoList = CommentItemInfo[];

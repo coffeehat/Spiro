@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-import { CommentItemInfo } from './types';
+import { CommentItemInfo, CommentItemInfoList } from './types';
 
 export function getCommentList(
   article_id: number,
-  success_cb?: (comment_list: CommentItemInfo[])=>void,
+  success_cb?: (comment_list: CommentItemInfoList)=>void,
   error_cb?: (error:string)=>void
 ) {
   axios({
