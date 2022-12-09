@@ -9,10 +9,10 @@
     name: "Comment Item",
     computed: {
       local_time() {
-        return getLocalTimeFromTimestamp(this.comment.comment_time);
+        return getLocalTimeFromTimestamp(this.comment.comment_timestamp);
       },
       md_comment() {
-        return marked.parse(this.comment.comment);
+        return marked.parse(this.comment.comment_content);
       }
     },
     props: {
@@ -26,7 +26,7 @@
 
 <template>
   <div class="comment_item_box">
-    <h2>User: {{ comment.user_id }}</h2>
+    <h2>User: {{ comment.user_name }}</h2>
     <p>Time: {{ local_time }} </p>
     <div v-html="md_comment"></div>
   </div>

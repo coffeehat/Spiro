@@ -12,7 +12,8 @@
     data() {
       return {
         comment_content: "",
-        user_id: 0,
+        user_name: "",
+        user_email: "",
         md_preview: "",
         isShowPreview: false,
         preview_button_content: "to Preview"
@@ -28,7 +29,7 @@
     },
     methods: {
       onSubmit() {
-        submitComment(this.article_id, this.user_id, this.comment_content, submitSuccessCb);
+        submitComment(this.article_id, this.user_name, this.user_email, this.comment_content, submitSuccessCb);
       },
       onPreview() {
         if (this.isShowPreview) {
@@ -55,7 +56,10 @@
       <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
       <div class="comment_preview" v-html="md_preview" v-show="isShowPreview"></div>
     </div>
-    <input type="text" v-model="user_id"/>
+    <span>昵称：</span>
+    <input type="text" v-model="user_name"/>
+    <span>邮箱：</span>
+    <input type="text" placeholder="Optional" v-model="user_email"/>
     <button type="button" @click="onSubmit()">Submit</button>
     <button type="button" @click="onPreview()">{{ preview_button_content }}</button>
   </form>
