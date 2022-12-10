@@ -1,6 +1,7 @@
 * {
   /* Solving margin collapse */
   /* overflow: hidden; */
+  box-sizing: border-box;
 }
 
 :root {

@@ -1,9 +1,10 @@
 import { CommentItemInfoList } from "./types";
+import moment from 'moment';
 
 export function sortCommentList(comment_list : CommentItemInfoList) : void {
   comment_list.sort((lhs, rhs) => {
-    let lhs_timestamp = parseFloat(lhs.comment_time);
-    let rhs_timestamp = parseFloat(rhs.comment_time);
+    let lhs_timestamp = parseFloat(lhs.comment_timestamp);
+    let rhs_timestamp = parseFloat(rhs.comment_timestamp);
 
     if (lhs_timestamp < rhs_timestamp) {
       return 1;
@@ -15,7 +16,7 @@ export function sortCommentList(comment_list : CommentItemInfoList) : void {
   })
 }
 
-export function getLocalTimeFromTimestamp(timestamp : string) : string {
+export function convertTimestampString2Number(timestamp : string) : number {
   let parts = timestamp.split(".");
   let timestamp_final = 0;
   if (parts.length == 1) {
@@ -23,9 +24,36 @@ export function getLocalTimeFromTimestamp(timestamp : string) : string {
   } else if (parts.length == 2) {
     timestamp_final = parseInt(parts[0]) * 1000 + parseInt(parts[1].substring(0, 3));
   } else {
-    return "Time parse failed"
+    timestamp_final = 0;
   }
+  return timestamp_final;
+}
+
+export function convertTimestamp2JsDate(timestamp : string) : Date {
+  let timestamp_s = convertTimestampString2Number(timestamp);
+  let date = new Date(timestamp_s);
+  return date;
+}
+
+export function convertTimestamp2CookieExpireTime(timestamp : string) : string {
+  let date = convertTimestamp2JsDate(timestamp);
+  let formatter = moment(date);
+  formatter.locale('en');
+  let ret = formatter.format('ddd, DD MMM YYYY HH:MM:SS ') + 'GMT';
+  return ret;
+}
+
+export function getLocalTimeFromTimestamp(timestamp : string) : string {
+  let date = convertTimestamp2JsDate(timestamp);
   
-  let date = new Date(timestamp_final);
-  return date.toLocaleString();
+  if (date instanceof Date) {
+    return date.toLocaleString();
+  } else {
+    return date;
+  }
+}
+
+export function isEmail(email : string) : boolean {
+  let pattern = /([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+/;
+  return Boolean(email.match(pattern));
 }
