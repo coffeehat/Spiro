@@ -1,5 +1,6 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
+  import { ElForm } from "element-plus/lib/components/form"
 
   import eventBus from '../common/eventBus'
 
@@ -21,11 +22,7 @@
         // Login related
         isShowLoginTab: false,
 
-        // User related
-        user_name: "",
-        user_email: "",
         user_passwd: "",
-
         user_name_or_email: "",
 
         // Comment related
@@ -33,7 +30,25 @@
 
         // User/Visitor Switch
         isVisitorPanel: true,
-        logined_user_name: ""
+        logined_user_name: "",
+
+        // Form rules for Visitor
+        user_name_max_len: 20,
+        user_email_max_len: 40,
+        visitor_rules: {
+          user_name: [
+            { required: true, message: "请输入名称", trigger: "blur"},
+            { min: 1, max: this.user_name_max_len, message: `长度在1到{this.user_name_max_len}之间`, trigger: 'blur'}
+          ],
+          user_email: [
+            { validator: this.checkEmailAllowEmpty, trigger: 'blur' }
+          ]
+        },
+        comment_form: {
+          user_name: "",
+          user_email: "",
+          comment_content: ""
+        }
       }
     },
     props:
@@ -46,19 +61,25 @@
     },
     methods: {
       onVisitorSubmit() {
-        submitCommentForVisitor(
-          this.article_id, 
-          this.user_name, 
-          this.user_email, 
-          this.comment_content, 
-          submitSuccessCb
-        );
+        (this.$refs.comment_form as typeof ElForm).validate(
+          (valid : boolean) => {
+            if (valid) {
+              submitCommentForVisitor(
+                this.article_id, 
+                this.comment_form.user_name, 
+                this.comment_form.user_email, 
+                this.comment_form.comment_content, 
+                this.submitSuccessCb
+              );
+            }
+          } 
+        )
       },
       onUserSubmit() {
         submitCommentForUser(
           this.article_id,
           this.comment_content,
-          submitSuccessCb
+          this.submitSuccessCb
         );
       },
       onPreview() {
@@ -78,6 +99,7 @@
           this.user_passwd,
           // success callback
           (response: UserLoginResponse) => {
+            this.user_passwd = "";
             this.isShowLoginTab = false;
             this.switch2UserPanel(response.user_name);
           },
@@ -86,6 +108,10 @@
             // do nothing
           }
         );
+      },
+      onLogout() {
+        UserCookies.delete_cookies();
+        this.switch2VisitorPanel();
       },
       onOpenLoginPanel() {
         this.isShowLoginTab = true;
@@ -96,21 +122,21 @@
         this.updateUserInfoToVisitorFromLoginPage();
       },
       updateUserInfoToLoginPageFromVisitor() {
-        if (this.user_email) {
-          this.user_name_or_email = this.user_email;
+        if (this.comment_form.user_email) {
+          this.user_name_or_email = this.comment_form.user_email;
           return;
         }
-        if (this.user_name) {
-          this.user_name_or_email = this.user_name;
+        if (this.comment_form.user_name) {
+          this.user_name_or_email = this.comment_form.user_name;
           return;
         }
       },
       updateUserInfoToVisitorFromLoginPage() {
         if (this.user_name_or_email) {
           if (isEmail(this.user_name_or_email)) {
-            this.user_email = this.user_name_or_email;
+            this.comment_form.user_email = this.user_name_or_email;
           } else {
-            this.user_name = this.user_name_or_email;
+            this.comment_form.user_name = this.user_name_or_email;
           }
         }
       },
@@ -120,6 +146,15 @@
       },
       switch2VisitorPanel() {
         this.isVisitorPanel = true;
+      },
+      submitSuccessCb(comment: CommentItemInfo) : void {
+        this.comment_form.comment_content = "";
+        eventBus.emit("addNewComment", comment);
+      },
+      checkEmailAllowEmpty(rule : any, value : any, callback : any) : void {
+        if (value && !isEmail(value)) {
+          return callback(new Error('邮箱格式错误'));
+        }
       }
     },
     beforeMount() {
@@ -130,14 +165,10 @@
       }
     }
   });
-
-  function submitSuccessCb(comment: CommentItemInfo) : void {
-    eventBus.emit("addNewComment", comment);
-  }
 </script>
 
 <template>
-  <form>
+  <el-form :rules="visitor_rules" :model="comment_form" ref="comment_form">
     <!-- Comment Box -->
     <div class="comment_box_container">
       <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
@@ -147,16 +178,28 @@
     <!-- Visitor Submission Control -->
     <div class="visitor_submit_interactive_container" v-show="isVisitorPanel">
       <div class="visitor_info_box">
-        <div class="visitor_submission_component" id="visitor_name_input_box">
-          <span>用户名：</span>
+        <el-form-item
+          class="visitor_submission_component"
+          id="visitor_name_input_box"
+          label="用户名 :"
+          prop="user_name"
+        >
+          <!-- <span>用户名：</span> -->
           <el-input
             class="visitor_input"
-            v-model="user_name"
+            v-model="comment_form.user_name"
+            :maxlength="user_name_max_len"
+            show-word-limit
           />
-        </div>
+        </el-form-item>
 
-        <div class="visitor_submission_component" id="visitor_email_input_box">
-          <span>邮箱：</span>
+        <el-form-item
+          class="visitor_submission_component"
+          id="visitor_email_input_box"
+          label="邮箱 :"
+          prop="user_email"
+        >
+          <!-- <span>邮箱：</span> -->
           <el-tooltip
             class="box-item"
             effect="dark"
@@ -165,11 +208,13 @@
           >
             <el-input
               class="visitor_input"
-              v-model="user_email"
+              v-model="comment_form.user_email"
               placeholder="Optional"
+              :maxlength="user_email_max_len"
+              show-word-limit
               />
           </el-tooltip>
-        </div>
+        </el-form-item>
       </div>
 
       <div class="flex flex-wrap items-center submit_buttons">
@@ -194,7 +239,7 @@
           提交
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>登出</el-dropdown-item>
+              <el-dropdown-item @click="onLogout()">登出</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -203,7 +248,7 @@
     <!-- <button type="button" @click="onPreview()">{{ preview_button_content }}</button> -->
     <!-- <button type="button">want to Register?</button> -->
     <!-- <button type="button">Login or Register</button> -->
-  </form>
+  </el-form>
 
   <!-- Login Or Register Dialog -->
   <el-dialog 
@@ -279,7 +324,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    /* align-items: center; */
   }
 
   .visitor_submission_component,
@@ -289,6 +334,8 @@
     align-items: center;
     white-space: nowrap;
     line-height: 100%;
+    /* Cancel margin bottom introduced by el-form-item */
+    margin-bottom: 0px;
   }
 
   .dialog-footer {
