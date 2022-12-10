@@ -1,4 +1,8 @@
+import { useCookies } from "vue3-cookies";
+
 import { convertTimestamp2CookieExpireTime } from "./utils";
+
+const { cookies } = useCookies();
 
 export class UserCookies {
   user_name: string;
@@ -17,14 +21,14 @@ export class UserCookies {
     return this.token;
   }
 
-  static dump_to_cookies(user_cookies : UserCookies, expire_timestamp : string) {
-    saveCookies("user_name", user_cookies.get_user_name(), expire_timestamp);
-    saveCookies("token", user_cookies.get_token(), expire_timestamp);
+  static dump_to_cookies(user_cookies : UserCookies, expire_time : number) {
+    cookies.set("user_name", user_cookies.get_user_name(), expire_time.toString() + "s");
+    cookies.set("token", user_cookies.get_token(), expire_time.toString() + "s");
   }
 
   static retrieve_from_cookies() : UserCookies | null {
-    let user_name = getCookies("user_name");
-    let token = getCookies("token");
+    let user_name = cookies.get("user_name");
+    let token = cookies.get("token");
     if (user_name && token) {
       return new UserCookies(user_name, token);
     } else {
@@ -33,44 +37,7 @@ export class UserCookies {
   }
 
   static delete_cookies() {
-    document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    cookies.remove("user_name");
+    cookies.remove("token");
   }
 };
-
-function checkCookies(key : string) : boolean{
-  let ret = getCookies(key);
-  return Boolean(ret);
-}
-
-function getCookies(key : string) : string | null {
-  let cookie_string = document.cookie;
-  if (cookie_string.length == 0) {
-    return null;
-  }
-  let cookie_key_value_list = cookie_string.split(";");
-  for (let entry in cookie_key_value_list) {
-    if (entry.length == 0) {
-      continue;
-    }
-    let index = entry.indexOf("=");
-    if (index > 0) {
-      let cookie_key = entry.slice(0, index);
-      let cookie_value = entry.slice(index + 1);
-      if (cookie_key == key) {
-        return cookie_value;
-      }
-    }
-  }
-  return null;
-};
-
-function saveCookies(key : string, value: string, expire_timestamp?: string) {
-  let key_string = key + "=" + value;
-  if (expire_timestamp) {
-    let expire_string = "expires=" + convertTimestamp2CookieExpireTime(expire_timestamp);
-    document.cookie = key_string + "; " + expire_string;
-  } else {
-    document.cookie = key_string + "; ";
-  }
-}

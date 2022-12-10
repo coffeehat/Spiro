@@ -17,7 +17,8 @@
     "marked-katex-extension": "^1.0.1",
     "mitt": "^3.0.0",
     "moment": "^2.29.4",
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vue3-cookies": "^1.0.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.1.0",
