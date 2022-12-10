@@ -133,7 +133,7 @@ export function loginUser (
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         let user_cookies = new UserCookies(response.data.user_name, response.data.token);
-        UserCookies.dump_to_cookies(user_cookies, response.data.token_expire);
+        UserCookies.dump_to_cookies(user_cookies, response.data.token_expire_timestamp);
         if (success_cb) {
           success_cb(response.data);
         }

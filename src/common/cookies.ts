@@ -1,6 +1,6 @@
 import { useCookies } from "vue3-cookies";
 
-import { convertTimestamp2CookieExpireTime } from "./utils";
+import { convertTimestamp2JsDate } from "./utils";
 
 const { cookies } = useCookies();
 
@@ -21,9 +21,10 @@ export class UserCookies {
     return this.token;
   }
 
-  static dump_to_cookies(user_cookies : UserCookies, expire_time : number) {
-    cookies.set("user_name", user_cookies.get_user_name(), expire_time.toString() + "s");
-    cookies.set("token", user_cookies.get_token(), expire_time.toString() + "s");
+  static dump_to_cookies(user_cookies : UserCookies, expire_time_stamp : string) {
+    let dt = convertTimestamp2JsDate(expire_time_stamp);
+    cookies.set("user_name", user_cookies.get_user_name(), dt);
+    cookies.set("token", user_cookies.get_token(), dt);
   }
 
   static retrieve_from_cookies() : UserCookies | null {

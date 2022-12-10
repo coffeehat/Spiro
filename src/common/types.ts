@@ -17,7 +17,7 @@ export type CommentItemInfoList = CommentItemInfo[];
 
 export type UserLoginResponse = {
   token: string
-  token_expire: number,
+  token_expire_timestamp: string,
   user_name: string,
   error_code: number,
   error_hint: string,
