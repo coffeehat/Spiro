@@ -1,6 +1,5 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import { ElForm } from "element-plus/lib/components/form"
 
   import eventBus from '../common/eventBus'
 
@@ -21,9 +20,6 @@
 
         // Login related
         isShowLoginTab: false,
-
-        user_passwd: "",
-        user_name_or_email: "",
 
         // Comment related
         comment_content: "",
@@ -48,6 +44,20 @@
           user_name: "",
           user_email: "",
           comment_content: ""
+        },
+
+        // Form rules for Login
+        login_form: {
+          user_passwd: "",
+          user_name_or_email: ""
+        },
+        login_rules: {
+          user_name_or_email: [
+            { required: true, message: "请输入名称或邮箱", trigger: "blur"},
+          ],
+          user_passwd: [
+            { required: true, message: "请输入密码", trigger: "blur"}
+          ]
         }
       }
     },
@@ -61,7 +71,7 @@
     },
     methods: {
       onVisitorSubmit() {
-        (this.$refs.comment_form as typeof ElForm).validate(
+        (this.$refs.comment_form as any).validate(
           (valid : boolean) => {
             if (valid) {
               submitCommentForVisitor(
@@ -73,7 +83,7 @@
               );
             }
           } 
-        )
+        );
       },
       onUserSubmit() {
         submitCommentForUser(
@@ -94,19 +104,25 @@
         }
       },
       onLogin() {
-        loginUser(
-          this.user_name_or_email,
-          this.user_passwd,
-          // success callback
-          (response: UserLoginResponse) => {
-            this.user_passwd = "";
-            this.isShowLoginTab = false;
-            this.switch2UserPanel(response.user_name);
-          },
-          // error callback
-          (response?: ErrorInfo) => {
-            // do nothing
-          }
+        (this.$refs.login_form as any).validate(
+          (valid : boolean) => {
+            if (valid) {
+              loginUser(
+                this.login_form.user_name_or_email,
+                this.login_form.user_passwd,
+                // success callback
+                (response: UserLoginResponse) => {
+                  this.login_form.user_passwd = "";
+                  this.isShowLoginTab = false;
+                  this.switch2UserPanel(response.user_name);
+                },
+                // error callback
+                (response?: ErrorInfo) => {
+                  // do nothing
+                }
+              );
+            }
+          } 
         );
       },
       onLogout() {
@@ -123,20 +139,20 @@
       },
       updateUserInfoToLoginPageFromVisitor() {
         if (this.comment_form.user_email) {
-          this.user_name_or_email = this.comment_form.user_email;
+          this.login_form.user_name_or_email = this.comment_form.user_email;
           return;
         }
         if (this.comment_form.user_name) {
-          this.user_name_or_email = this.comment_form.user_name;
+          this.login_form.user_name_or_email = this.comment_form.user_name;
           return;
         }
       },
       updateUserInfoToVisitorFromLoginPage() {
-        if (this.user_name_or_email) {
-          if (isEmail(this.user_name_or_email)) {
-            this.comment_form.user_email = this.user_name_or_email;
+        if (this.login_form.user_name_or_email) {
+          if (isEmail(this.login_form.user_name_or_email)) {
+            this.comment_form.user_email = this.login_form.user_name_or_email;
           } else {
-            this.comment_form.user_name = this.user_name_or_email;
+            this.comment_form.user_name = this.login_form.user_name_or_email;
           }
         }
       },
@@ -154,6 +170,8 @@
       checkEmailAllowEmpty(rule : any, value : any, callback : any) : void {
         if (value && !isEmail(value)) {
           return callback(new Error('邮箱格式错误'));
+        } else {
+          callback();
         }
       }
     },
@@ -257,22 +275,36 @@
     width="400px" 
     :before-close="onCloseLoginPanel"
   >
-    <el-form label-width="120px" label-position="right">
-      <el-form-item label="用户名或邮箱">
+    <el-form
+    label-width="120px"
+    label-position="right"
+    :rules="login_rules"
+    :model="login_form"
+    ref="login_form"
+    >
+      <el-form-item
+        label="用户名或邮箱"
+        prop="user_name_or_email"
+      >
         <el-input
           class="user_input"
-          v-model="user_name_or_email"
+          v-model="login_form.user_name_or_email"
         />
       </el-form-item>
-      <el-form-item label="密码">
+
+      <el-form-item
+        label="密码"
+        prop="user_passwd"
+      >
         <el-input
           class="user_input"
-          v-model="user_passwd"
+          v-model="login_form.user_passwd"
           type="password"
           show-password
         />
       </el-form-item>
     </el-form>
+
     <template #footer>
       <span class="dialog-footer">
         <el-button type="primary">
