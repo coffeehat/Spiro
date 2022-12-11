@@ -169,7 +169,7 @@
         this.comment_form.comment_content = "";
         eventBus.emit("addNewComment", comment);
       },
-      submitErrorCb(error : ErrorInfo) : void {
+      submitErrorCb(error? : ErrorInfo) : void {
         if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {
           setTimeout(() => {
             this.onOpenLoginPanel();
