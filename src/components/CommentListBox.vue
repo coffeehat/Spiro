@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, isShallow } from 'vue';
   
   // libs
-  import { getCommentList } from '../common/network'
+  import {
+    getCommentList,
+    getCommentCount
+  } from '../common/network'
   import { CommentItemInfoList } from '../common/types';
-  import { sortCommentList} from '../common/utils';
+  import { sortCommentList } from '../common/utils';
 
   // Vue components
   import CommentItem from './CommentItem.vue'
@@ -18,6 +21,14 @@
     data() {
       return {
         comment_list: [] as CommentItemInfoList,
+        comment_count: 0,
+        current_page: 1,
+        is_show_list: false
+      }
+    },
+    computed: {
+      comment_pages() {
+        return Math.ceil(this.comment_count / this.comments_per_page);
       }
     },
     props:
@@ -26,22 +37,69 @@
       {
         type: Number,
         default: 0
+      },
+      comments_per_page:
+      {
+        type: Number,
+        default: 10
       }
     },
     methods: {
       addNewComment(comment : any) : void {
-        this.comment_list.unshift(comment);
+        if (this.current_page == 1) {
+          this.comment_list.unshift(comment);
+        }
+        this.refreshCount();
+        // if (this.current_page != 1) {
+        //   this.refreshComment();
+        // }
+      },
+      onPageChange(index: number) {
+        this.current_page = index;
+        let offset = this.comments_per_page * (index - 1);
+        let length = this.comments_per_page;
+        getCommentList(
+          this.article_id,
+          offset,
+          length,
+          (comment_list) => {
+            this.comment_list = comment_list;
+            sortCommentList(this.comment_list);
+          }
+        );
+      },
+      refreshCount() : void {
+        getCommentCount(
+          this.article_id,
+          (count : number) => {
+            this.comment_count = count;
+            if (count > 0) {
+              this.is_show_list = true;
+            }
+          }
+        );
+      },
+      refreshComment() : void {
+        this.refreshCount();
+        let offset = this.comments_per_page * (this.current_page - 1);
+        let length = this.comments_per_page;
+        getCommentList(
+          this.article_id,
+          offset,
+          length,
+          (comment_list) => {
+            this.comment_list = comment_list;
+            sortCommentList(this.comment_list);
+          }
+        );
       }
     },
     mounted() {
-      getCommentList(
-        this.article_id,
-        (comment_list) => {
-          this.comment_list = comment_list;
-          sortCommentList(this.comment_list);
-        }
-      );
+      this.refreshComment();
       eventBus.on('addNewComment', this.addNewComment);
+    },
+    beforeMount() {
+      this.refreshCount();
     },
     beforeUnmount() {
       eventBus.off('addNewComment', this.addNewComment);
@@ -50,12 +108,30 @@
 </script>
 
 <template>
-  <div>
+  <div v-show="is_show_list">
     <h2>所有评论</h2>
     <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" />
+    <div class="pagination">
+      <el-pagination
+        layout="prev, pager, next"
+        :page-size="comments_per_page"
+        :page-count="comment_pages"
+        @current-change="onPageChange"
+        @prev-click="onPageChange"
+        @next-click="onPageChange"
+        :hide-on-single-page="true">
+      </el-pagination>
+    </div>
   </div>
 </template>
 
 <style scoped>
-
+  h2 {
+    margin: 40px 0;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
 </style>

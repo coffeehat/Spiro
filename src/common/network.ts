@@ -14,6 +14,8 @@ import { showSuccessMessage } from './utils';
 
 export function getCommentList(
   article_id: number,
+  offset: number,
+  length: number,
   success_cb?: (comment_list: CommentItemInfoList)=>void,
   error_cb?: (response?: ErrorInfo)=>void
 ) {
@@ -22,8 +24,8 @@ export function getCommentList(
     url: "http://localhost:5000/v1.0/comment_list",
     params: {
       "article_id": article_id,
-      "offset": 0,
-      "length": 0
+      "offset": offset,
+      "length": length
     }
   }).then(
     (response) => {
@@ -251,6 +253,40 @@ export function checkToken (
   ).catch(
     (error) => {
       UserCookies.delete_cookies();
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}
+
+export function getCommentCount(
+  article_id: number,
+  success_cb?: (comment_list: number)=>void,
+  error_cb?: (response?: ErrorInfo)=>void
+) {
+  axios({
+    method: 'get',
+    url: "http://localhost:5000/v1.0/comment_count",
+    params: {
+      "article_id": article_id
+    }
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data.count);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
       parseAndShowErrorInfo(error.response.data);
       if (error_cb) {
         error_cb(error.response.data);

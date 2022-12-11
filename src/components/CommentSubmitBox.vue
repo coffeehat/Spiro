@@ -460,7 +460,7 @@
 
     <template #footer>
       <span class="dialog-footer-login" v-show="isLoginPanel">
-        <el-button @click="this.isLoginPanel = false" type="primary">
+        <el-button @click="isLoginPanel = false" type="primary">
           没有帐号？
         </el-button>
         <span class="dialog-footer-button-group">
