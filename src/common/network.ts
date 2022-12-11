@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { UserCookies } from './cookies';
-import { ServerErrorCode } from './errors';
+import { ServerErrorCode, showErrorHint } from './errors';
 import {
   CommentItemInfo,
   CommentItemInfoList,
@@ -24,14 +24,22 @@ export function getCommentList(
     }
   }).then(
     (response) => {
-      if (success_cb) {
-        success_cb(response.data.comment_list);
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data.comment_list);
+        }
+      } else {
+        showErrorHint(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
       }
     }
   ).catch(
     (error) => {
+      showErrorHint(error.response.data);
       if (error_cb) {
-        error_cb(error);
+        error_cb(error.response.data);
       }
     }
   )
@@ -61,14 +69,22 @@ export function submitCommentForVisitor (
     }
   }).then(
     (response) => {
-      if (success_cb) {
-        success_cb(response.data);
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data);
+        }
+      } else {
+        showErrorHint(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
       }
     }
   ).catch(
     (error) => {
+      showErrorHint(error.response.data);
       if (error_cb) {
-        error_cb();
+        error_cb(error.response.data);
       }
     }
   )
@@ -100,14 +116,22 @@ export function submitCommentForUser (
     }
   }).then(
     (response) => {
-      if (success_cb) {
-        success_cb(response.data);
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data);
+        }
+      } else {
+        showErrorHint(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
       }
     }
   ).catch(
     (error) => {
+      showErrorHint(error.response.data);
       if (error_cb) {
-        error_cb();
+        error_cb(error.response.data);
       }
     }
   )
@@ -138,6 +162,7 @@ export function loginUser (
           success_cb(response.data);
         }
       } else {
+        showErrorHint(response.data);
         if (error_cb) {
           error_cb(response.data);
         }
@@ -145,8 +170,9 @@ export function loginUser (
     }
   ).catch(
     (error) => {
+      showErrorHint(error.response.data);
       if (error_cb) {
-        error_cb();
+        error_cb(error.response.data);
       }
     }
   )

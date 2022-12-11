@@ -2,11 +2,12 @@
   import { defineComponent } from 'vue';
 
   import eventBus from '../common/eventBus'
-
+  
   import { marked } from '../common/markdown'
   import { UserCookies } from '../common/cookies'
   import { submitCommentForVisitor, submitCommentForUser, loginUser } from '../common/network';
   import { CommentItemInfo, UserLoginResponse, ErrorInfo } from '../common/types';
+  import { parseErrorCode, ServerErrorCode } from '../common/errors';
   import { isEmail } from '../common/utils'
 
   export default defineComponent ({
@@ -78,8 +79,9 @@
                 this.article_id, 
                 this.comment_form.user_name, 
                 this.comment_form.user_email, 
-                this.comment_form.comment_content, 
-                this.submitSuccessCb
+                this.comment_content, 
+                this.submitSuccessCb,
+                this.submitErrorCb
               );
             }
           } 
@@ -167,6 +169,13 @@
         this.comment_form.comment_content = "";
         eventBus.emit("addNewComment", comment);
       },
+      submitErrorCb(error : ErrorInfo) : void {
+        if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {
+          setTimeout(() => {
+            this.onOpenLoginPanel();
+          }, 500);
+        }
+      },
       checkEmailAllowEmpty(rule : any, value : any, callback : any) : void {
         if (value && !isEmail(value)) {
           return callback(new Error('邮箱格式错误'));
@@ -199,7 +208,7 @@
         <el-form-item
           class="visitor_submission_component"
           id="visitor_name_input_box"
-          label="用户名 :"
+          label="游客名 :"
           prop="user_name"
         >
           <!-- <span>用户名：</span> -->
@@ -221,7 +230,7 @@
           <el-tooltip
             class="box-item"
             effect="dark"
-            content="如果这次评论填写了邮箱，那么下次使用该用户名时必须填写此邮箱"
+            content="系统会记录你填写的邮箱，以作为你下次使用该游客名称的凭据（即，下次使用该游客名时，必须填写该邮箱）"
             placement="top"
           >
             <el-input
@@ -263,9 +272,8 @@
         </el-dropdown>
       </div>
     </div>
+
     <!-- <button type="button" @click="onPreview()">{{ preview_button_content }}</button> -->
-    <!-- <button type="button">want to Register?</button> -->
-    <!-- <button type="button">Login or Register</button> -->
   </el-form>
 
   <!-- Login Or Register Dialog -->
