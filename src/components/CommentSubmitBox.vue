@@ -5,9 +5,9 @@
   
   import { marked } from '../common/markdown'
   import { UserCookies } from '../common/cookies'
-  import { submitCommentForVisitor, submitCommentForUser, loginUser } from '../common/network';
-  import { CommentItemInfo, UserLoginResponse, ErrorInfo } from '../common/types';
-  import { parseErrorCode, ServerErrorCode } from '../common/errors';
+  import { submitCommentForVisitor, submitCommentForUser, loginUser, checkToken } from '../common/network';
+  import { CommentItemInfo, UserLoginResponse, ErrorInfo, TokenCheckResponse } from '../common/types';
+  import { ServerErrorCode } from '../common/errors';
   import { isEmail } from '../common/utils'
 
   export default defineComponent ({
@@ -187,8 +187,12 @@
     beforeMount() {
       let user_cookies = UserCookies.retrieve_from_cookies();
       if (user_cookies) {
-        this.switch2UserPanel(user_cookies.get_user_name());
-        // TODO: actively connect to server to check the token
+        checkToken(
+          user_cookies.get_token(),
+          (response: TokenCheckResponse) => {
+            this.switch2UserPanel((user_cookies as UserCookies).get_user_name());
+          }
+        );
       }
     }
   });

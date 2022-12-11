@@ -23,6 +23,7 @@ export class UserCookies {
 
   static dump_to_cookies(user_cookies : UserCookies, expire_time_stamp : string) {
     let dt = convertTimestamp2JsDate(expire_time_stamp);
+    // TODO: set cookies to a path
     cookies.set("user_name", user_cookies.get_user_name(), dt);
     cookies.set("token", user_cookies.get_token(), dt);
   }

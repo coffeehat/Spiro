@@ -6,7 +6,8 @@ import {
   CommentItemInfo,
   CommentItemInfoList,
   UserLoginResponse,
-  ErrorInfo
+  ErrorInfo,
+  TokenCheckResponse
 } from './types';
 
 export function getCommentList(
@@ -42,7 +43,7 @@ export function getCommentList(
         error_cb(error.response.data);
       }
     }
-  )
+  );
 }
 
 export function submitCommentForVisitor (
@@ -87,7 +88,7 @@ export function submitCommentForVisitor (
         error_cb(error.response.data);
       }
     }
-  )
+  );
 }
 
 export function submitCommentForUser (
@@ -134,7 +135,7 @@ export function submitCommentForUser (
         error_cb(error.response.data);
       }
     }
-  )
+  );
 }
 
 export function loginUser (
@@ -175,5 +176,42 @@ export function loginUser (
         error_cb(error.response.data);
       }
     }
-  )
+  );
+}
+
+export function checkToken (
+  token: string,
+  success_cb?: (response: TokenCheckResponse) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  let form = new FormData();
+  form.append("token", token)
+
+  axios({
+    method: 'post',
+    url: "http://localhost:5000/v1.0/token_check",
+    data: form
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data);
+        }
+      } else {
+        UserCookies.delete_cookies();
+        showErrorHint(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      UserCookies.delete_cookies();
+      showErrorHint(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
 }

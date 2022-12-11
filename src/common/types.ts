@@ -23,3 +23,5 @@ export type UserLoginResponse = {
   error_hint: string,
   error_msg: string,
 }
+
+export type TokenCheckResponse = ErrorInfo;
