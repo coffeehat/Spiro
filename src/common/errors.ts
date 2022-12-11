@@ -39,6 +39,7 @@ export enum ServerErrorCode {
   EC_USER_LOGIN_ERROR = 350,
   EC_USER_LOGIN_TOKEN_EXPIRED = 351,
   EC_USER_LOGIN_TOKEN_SIGN_ERROR = 352,
+  EC_USER_LOGIN_AS_VISITOR_ERROR = 353,
 
   EC_VISITOR_LOGIN_ERROR = 370,
   EC_VISITOR_LOGIN_NEED_EMAIL = 371,
@@ -126,6 +127,8 @@ const error_code_parser_collections = {
     (error_hint? : any) => { return "用户凭据过期"; },
   [ServerErrorCode.EC_USER_LOGIN_TOKEN_SIGN_ERROR] : 
     (error_hint? : any) => { return "用户凭据非本服务器签发"; },
+  [ServerErrorCode.EC_USER_LOGIN_AS_VISITOR_ERROR] :
+    (error_hint? : any) => { return "此账户为游客，游客只有注册成为正式用户才可登录"; },
   [ServerErrorCode.EC_VISITOR_LOGIN_ERROR] :
     (error_hint? : any) => { return "游客登录错误"; },
   [ServerErrorCode.EC_VISITOR_LOGIN_NEED_EMAIL] :
