@@ -1,6 +1,7 @@
 import { ElMessage } from 'element-plus';
 
 import { ErrorInfo } from "./types";
+import { showErrorMessage } from './utils';
 
 export enum ServerErrorCode {
   // Generics
@@ -152,14 +153,12 @@ export function parseErrorCode(error_code : number, error_hint : any) : string {
   }
 }
 
-export function showErrorHint(error? : ErrorInfo) {
+export function parseAndShowErrorInfo(error? : ErrorInfo) {
   let error_hint;
   if (error) {
     error_hint = parseErrorCode(error.error_code, error.error_hint);
   } else {
     error_hint = error_code_parser_collections[ServerErrorCode.EC_CLIENT_ERROR]();
   }
-  ElMessage.error({
-    message: error_hint
-  });
+  showErrorMessage(error_hint);
 }

@@ -1,4 +1,6 @@
 import { CommentItemInfoList } from "./types";
+import { ElMessage } from 'element-plus';
+
 import moment from 'moment';
 
 export function sortCommentList(comment_list : CommentItemInfoList) : void {
@@ -56,4 +58,22 @@ export function getLocalTimeFromTimestamp(timestamp : string) : string {
 export function isEmail(email : string) : boolean {
   let pattern = /([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+/;
   return Boolean(email.match(pattern));
+}
+
+export function showErrorMessage(error_message : string) {
+  ElMessage.error({
+    message: error_message
+  });
+}
+
+export function showSuccessMessage(message : string) {
+  ElMessage.success({
+    message: message
+  });
+}
+
+export function showInfoMessage(message : string) {
+  ElMessage.info({
+    message: message
+  });
 }

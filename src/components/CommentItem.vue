@@ -55,10 +55,6 @@
     color: black;
   }
 
-  .comment_time {
-    
-  }
-
   .comment_separater {
     margin-top: 40px;
     border-color: #FFFFFF;

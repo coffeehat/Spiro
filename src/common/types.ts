@@ -25,3 +25,4 @@ export type UserLoginResponse = {
 }
 
 export type TokenCheckResponse = ErrorInfo;
+export type UserRegisterResponse = ErrorInfo;

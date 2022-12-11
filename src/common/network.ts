@@ -1,14 +1,16 @@
 import axios from 'axios';
 
 import { UserCookies } from './cookies';
-import { ServerErrorCode, showErrorHint } from './errors';
+import { ServerErrorCode, parseAndShowErrorInfo } from './errors';
 import {
   CommentItemInfo,
   CommentItemInfoList,
   UserLoginResponse,
+  UserRegisterResponse,
   ErrorInfo,
   TokenCheckResponse
 } from './types';
+import { showSuccessMessage } from './utils';
 
 export function getCommentList(
   article_id: number,
@@ -30,7 +32,7 @@ export function getCommentList(
           success_cb(response.data.comment_list);
         }
       } else {
-        showErrorHint(response.data);
+        parseAndShowErrorInfo(response.data);
         if (error_cb) {
           error_cb(response.data);
         }
@@ -38,7 +40,7 @@ export function getCommentList(
     }
   ).catch(
     (error) => {
-      showErrorHint(error.response.data);
+      parseAndShowErrorInfo(error.response.data);
       if (error_cb) {
         error_cb(error.response.data);
       }
@@ -75,7 +77,7 @@ export function submitCommentForVisitor (
           success_cb(response.data);
         }
       } else {
-        showErrorHint(response.data);
+        parseAndShowErrorInfo(response.data);
         if (error_cb) {
           error_cb(response.data);
         }
@@ -83,7 +85,7 @@ export function submitCommentForVisitor (
     }
   ).catch(
     (error) => {
-      showErrorHint(error.response.data);
+      parseAndShowErrorInfo(error.response.data);
       if (error_cb) {
         error_cb(error.response.data);
       }
@@ -122,7 +124,7 @@ export function submitCommentForUser (
           success_cb(response.data);
         }
       } else {
-        showErrorHint(response.data);
+        parseAndShowErrorInfo(response.data);
         if (error_cb) {
           error_cb(response.data);
         }
@@ -130,7 +132,7 @@ export function submitCommentForUser (
     }
   ).catch(
     (error) => {
-      showErrorHint(error.response.data);
+      parseAndShowErrorInfo(error.response.data);
       if (error_cb) {
         error_cb(error.response.data);
       }
@@ -163,7 +165,7 @@ export function loginUser (
           success_cb(response.data);
         }
       } else {
-        showErrorHint(response.data);
+        parseAndShowErrorInfo(response.data);
         if (error_cb) {
           error_cb(response.data);
         }
@@ -171,7 +173,48 @@ export function loginUser (
     }
   ).catch(
     (error) => {
-      showErrorHint(error.response.data);
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}
+
+export function registerUser (
+  user_name: string,
+  user_email: string,
+  user_passwd: string,
+  success_cb?: (response: UserRegisterResponse) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  let form = new FormData();
+  form.append("method", "register");
+  form.append("user_name", user_name);
+  form.append("user_email", user_email);
+  form.append("user_passwd", user_passwd);
+
+  axios({
+    method: 'post',
+    url: "http://localhost:5000/v1.0/user",
+    data: form
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        showSuccessMessage("注册成功！");
+        if (success_cb) {
+          success_cb(response.data);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      parseAndShowErrorInfo(error.response.data);
       if (error_cb) {
         error_cb(error.response.data);
       }
@@ -199,7 +242,7 @@ export function checkToken (
         }
       } else {
         UserCookies.delete_cookies();
-        showErrorHint(response.data);
+        parseAndShowErrorInfo(response.data);
         if (error_cb) {
           error_cb(response.data);
         }
@@ -208,7 +251,7 @@ export function checkToken (
   ).catch(
     (error) => {
       UserCookies.delete_cookies();
-      showErrorHint(error.response.data);
+      parseAndShowErrorInfo(error.response.data);
       if (error_cb) {
         error_cb(error.response.data);
       }
