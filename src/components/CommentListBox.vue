@@ -108,9 +108,11 @@
 </script>
 
 <template>
-  <div v-show="is_show_list">
+  <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
-    <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" />
+    <div class="comment_list">
+      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" />
+    </div>
     <div class="pagination">
       <el-pagination
         layout="prev, pager, next"
@@ -126,12 +128,25 @@
 </template>
 
 <style scoped>
+  .comment_list_container {
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */
+  }
+
   h2 {
     margin: 40px 0;
+    /* flex: 0 0 auto; */
   }
+
+  /* .comment_list {
+    flex: 1 0 auto;
+  } */
+
   .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    margin: 40px 0;
+    /* flex: 0 0 auto; */
   }
 </style>
