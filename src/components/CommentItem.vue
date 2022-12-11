@@ -26,19 +26,46 @@
 
 <template>
   <div class="comment_item_box">
-    <h2>User: {{ comment.user_name }}</h2>
-    <p>Time: {{ local_time }} </p>
+    <div class="comment_item_title">
+      <span class="comment_user_name">{{ comment.user_name }}</span>
+      <span class="comment_time">{{ local_time }} </span>
+    </div>
     <div v-html="md_comment"></div>
+    <hr class="comment_separater"/>
   </div>
 </template>
 
 <style scoped>
+  * {
+    font-family: "Helvetica Neue","Helvetica","PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    color: #606266
+  }
+
   .comment_item_box {
     width: 100%;
-    background-color: wheat;
     padding: 1px 10px;
     margin: 10px 0;
-    outline: 1px solid black;
-    border-radius: 15px;
+    /* border-bottom: 1px solid gray; */
+    /* border-radius: 15px; */
+  }
+  
+  .comment_user_name {
+    font-size: 30px;
+    display: block;
+    color: black;
+  }
+
+  .comment_time {
+    
+  }
+
+  .comment_separater {
+    margin-top: 40px;
+    border-color: #FFFFFF;
+    background-color: #FFFFFF;
+    color: #FFFFFF;
+    outline-color: #FFFFFF;
+    border-width: 1px;
+    max-width: 99%;
   }
 </style>
