@@ -58,8 +58,7 @@
         },
         comment_form: {
           user_name: "",
-          user_email: "",
-          comment_content: ""
+          user_email: ""
         },
 
         // Form rules for Login
@@ -240,7 +239,7 @@
         this.isVisitorPanel = true;
       },
       submitSuccessCb(comment: CommentItemInfo) : void {
-        this.comment_form.comment_content = "";
+        this.comment_content = "";
         eventBus.emit("addNewComment", comment);
       },
       submitErrorCb(error? : ErrorInfo) : void {
