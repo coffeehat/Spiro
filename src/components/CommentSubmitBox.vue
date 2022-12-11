@@ -279,7 +279,11 @@
 </script>
 
 <template>
-  <el-form :rules="visitor_rules" :model="comment_form" ref="comment_form">
+  <el-form
+    :rules="visitor_rules"
+    :model="comment_form"
+    ref="comment_form"
+  >
     <!-- Comment Box -->
     <div class="comment_box_container">
       <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
@@ -374,6 +378,7 @@
       :model="login_form"
       ref="login_form"
       v-show="isLoginPanel"
+      class="login-register-form"
     >
       <el-form-item
         label="用户名或邮箱"
@@ -405,6 +410,7 @@
       :model="register_form"
       ref="register_form"
       v-show="!isLoginPanel"
+      class="login-register-form"
     >
       <el-form-item
         label="用户名"
@@ -534,5 +540,9 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+
+  .login-register-form {
+    margin-right: 30px;
   }
 </style>
