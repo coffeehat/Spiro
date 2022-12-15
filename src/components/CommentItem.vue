@@ -66,10 +66,6 @@
 </template>
 
 <style scoped>
-  * {
-    color: rgb(22, 22, 22)
-  }
-
   .comment_title {
     padding: 0px 12px;
     border: 1px solid rgb(167, 167, 167);

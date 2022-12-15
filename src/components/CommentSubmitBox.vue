@@ -505,14 +505,17 @@
     width: 100%;
     min-height: 10rem;
     border-radius: 5px;
+    border: 1px solid rgb(167, 167, 167);
     padding: 10px;
     display: block;
+    resize: none;
+    outline: none;
   }
   .comment_preview {
     width: 100%;
     min-height: 10rem;
     /* background-color: white; */
-    outline: 1px solid black;
+    border: 1px solid rgb(167, 167, 167);
     border-radius: 5px;
     padding:10px;
   }
@@ -534,7 +537,7 @@
     margin-right: 30px;
   }
 
-  @media screen and (min-width: 1143px) {
+  @media screen and (min-width: 874px) {
     .visitor_form {
       display: flex;
     }
@@ -554,7 +557,7 @@
     }
   }
 
-  @media screen and (max-width: 1143px) {
+  @media screen and (max-width: 874px) {
     /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
     ::v-deep .el-form-item__label {
       width: 80px;
