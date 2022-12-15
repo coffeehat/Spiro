@@ -134,11 +134,6 @@
     /* min-height: 100vh; */
   }
 
-  h2 {
-    margin: 40px 0;
-    /* flex: 0 0 auto; */
-  }
-
   /* .comment_list {
     flex: 1 0 auto;
   } */

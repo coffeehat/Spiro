@@ -67,7 +67,6 @@
 
 <style scoped>
   * {
-    font-family: "-apple-system","BlinkMacSystemFont","Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif;
     color: rgb(22, 22, 22)
   }
 
