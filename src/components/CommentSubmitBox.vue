@@ -279,40 +279,43 @@
 </script>
 
 <template>
+  <!-- Comment Box -->
+  <div class="comment_box_container">
+    <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
+    <div class="comment_preview" v-html="md_preview" v-show="isShowPreview"></div>
+  </div>
+
   <el-form
     :rules="visitor_rules"
     :model="comment_form"
     ref="comment_form"
+    v-show="isVisitorPanel"
   >
-    <!-- Comment Box -->
-    <div class="comment_box_container">
-      <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
-      <div class="comment_preview" v-html="md_preview" v-show="isShowPreview"></div>
-    </div>
-    
-    <!-- Visitor Submission Control -->
-    <div class="visitor_submit_interactive_container" v-show="isVisitorPanel">
-      <div class="visitor_info_box">
+    <div class="visitor_form">
+      <!-- Visitor Submission Control -->
+      <div class="visitor_name_box">
         <el-form-item
-          class="visitor_submission_component"
-          id="visitor_name_input_box"
-          label="游客名 :"
-          prop="user_name"
+        class="visitor_submission_component"
+        id="visitor_name_input_box"
+        label="游客名 :"
+        prop="user_name"
         >
           <!-- <span>用户名：</span> -->
           <el-input
-            class="visitor_input"
             v-model="comment_form.user_name"
             :maxlength="user_name_max_len"
             show-word-limit
           />
         </el-form-item>
 
+      </div>
+
+      <div class="visitor_email_box">
         <el-form-item
-          class="visitor_submission_component"
-          id="visitor_email_input_box"
-          label="邮箱 :"
-          prop="user_email"
+        class="visitor_submission_component"
+        id="visitor_email_input_box"
+        label="邮箱 :"
+        prop="user_email"
         >
           <!-- <span>邮箱：</span> -->
           <el-tooltip
@@ -322,7 +325,6 @@
             placement="top"
           >
             <el-input
-              class="visitor_input"
               v-model="comment_form.user_email"
               placeholder="Optional"
               :maxlength="user_email_max_len"
@@ -332,7 +334,7 @@
         </el-form-item>
       </div>
 
-      <div class="flex flex-wrap items-center submit_buttons">
+      <div class="visitor_submit_box">
         <el-dropdown split-button type="primary" @click="onVisitorSubmit()">
           提交（免注册）
           <template #dropdown>
@@ -344,12 +346,18 @@
       </div>
     </div>
 
-    <div class="user_submit_interactive_container" v-show="!isVisitorPanel">
-      <div class="user_submission_component">
+    <!-- <button type="button" @click="onPreview()">{{ preview_button_content }}</button> -->
+  </el-form>
+
+  <el-form
+    v-show="!isVisitorPanel"
+  >
+    <div class="user_form">
+      <div class="user_info_box">
         <span>用户{{ logined_user_name }}已登录</span>
       </div>
 
-      <div class="flex flex-wrap items-center submit_buttons">
+      <div class="user_submit_box">
         <el-dropdown split-button type="primary" @click="onUserSubmit()">
           提交
           <template #dropdown>
@@ -360,8 +368,6 @@
         </el-dropdown>
       </div>
     </div>
-
-    <!-- <button type="button" @click="onPreview()">{{ preview_button_content }}</button> -->
   </el-form>
 
   <!-- Login Or Register Dialog -->
@@ -509,33 +515,6 @@
     padding:10px;
   }
 
-  .submit_buttons,
-  .visitor_info_box,
-  .visitor_input,
-  .visitor_submission_component,
-  .user_submission_component {
-    display: inline
-  }
-
-  .visitor_submit_interactive_container,
-  .user_submit_interactive_container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    /* align-items: center; */
-  }
-
-  .visitor_submission_component,
-  .user_submission_component {
-    margin-right: 20px;
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    line-height: 100%;
-    /* Cancel margin bottom introduced by el-form-item */
-    margin-bottom: 0px;
-  }
-
   .dialog-footer-login {
     display: flex;
     flex-direction: row;
@@ -544,5 +523,51 @@
 
   .login-register-form {
     margin-right: 30px;
+  }
+
+  @media screen and (min-width: 1143px) {
+    .visitor_form {
+      display: flex;
+    }
+
+    .visitor_submit_box {
+      margin-left: auto;
+    }
+
+    .visitor_name_box {
+      flex: 0 1 320px;
+      margin-right: 30px;
+    }
+
+    .visitor_email_box {
+      flex: 0 1 320px;
+      margin-right: 30px;
+    }
+  }
+
+  @media screen and (max-width: 1143px) {
+    /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
+    ::v-deep .el-form-item__label {
+      width: 80px;
+    }
+
+    .visitor_submit_box {
+      display: flex;
+      justify-content: right;
+    }
+  }
+
+  /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
+  ::v-deep .el-button-group {
+    display: inline-flex;
+  }
+
+  .user_form {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user_submit_box {
+    margin-left: auto;
   }
 </style>
