@@ -283,6 +283,7 @@
   <div class="comment_box_container">
     <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
     <div class="comment_preview" v-html="md_preview" v-show="isShowPreview"></div>
+    <el-button class="preview_button" type="primary" @click="onPreview()" size="small" round>{{ preview_button_content }}</el-button>
   </div>
 
   <el-form
@@ -322,7 +323,7 @@
             class="box-item"
             effect="dark"
             content="系统会记录你填写的邮箱，以作为你下次使用该游客名称的凭据（即，下次使用该游客名时，必须填写该邮箱）"
-            placement="top"
+            placement="bottom"
           >
             <el-input
               v-model="comment_form.user_email"
@@ -497,6 +498,7 @@
 <style scoped>
   .comment_box_container {
     margin-bottom: 10px;
+    position: relative;
   }
 
   .comment_textarea {
@@ -511,8 +513,15 @@
     min-height: 10rem;
     /* background-color: white; */
     outline: 1px solid black;
-    border-radius: 15px;
+    border-radius: 5px;
     padding:10px;
+  }
+
+  .preview_button {
+    position: absolute;
+    z-index: 2;
+    bottom: 5px;
+    right: 5px;
   }
 
   .dialog-footer-login {
