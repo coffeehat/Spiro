@@ -22,266 +22,234 @@
   import { ServerErrorCode } from '../common/errors';
   import { isEmail } from '../common/utils'
 
+  import MarkdownView from './MarkdownView.vue';
+
   export default defineComponent ({
     name: "Comment Submit Box",
     data() {
-      return {
-        // Preview related
-        md_preview: "",
-        isShowPreview: false,
-        preview_button_content: "to Preview",
-
-        // Login related
-        isShowLoginTab: false,
-
-        // Comment related
-        comment_content: "",
-
-        // Input Length
-        user_name_max_len: 20,
-        user_email_max_len: 40,
-        user_passwd_max_len: 60,
-
-        // User/Visitor Switch
-        isVisitorPanel: true,
-        logined_user_name: "",
-
-        // Form rules for Visitor
-        visitor_rules: {
-          user_name: [
-            { required: true, message: "请输入名称", trigger: "blur"},
-            { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: 'blur'}
-          ],
-          user_email: [
-            { validator: this.checkEmailAllowEmpty, trigger: 'blur' }
-          ]
-        },
-        comment_form: {
-          user_name: "",
-          user_email: ""
-        },
-
-        // Form rules for Login
-        login_form: {
-          user_passwd: "",
-          user_name_or_email: ""
-        },
-        login_rules: {
-          user_name_or_email: [
-            { required: true, message: "请输入名称或邮箱", trigger: "blur"},
-            // TODO: Give a validator here to validate the length of name or email
-          ],
-          user_passwd: [
-            { required: true, message: "请输入密码", trigger: "blur"},
-            { min: 1, max: this.user_email_passwd_len, message: `密码长度不能超过${this.user_passwd_max_len}`, trigger: 'blur'}
-          ]
-        },
-
-        // Login/Register Switch
-        isLoginPanel: true,
-
-        // Form rules for register
-        register_form: {
-          user_name: "",
-          user_email: "",
-          user_passwd: "",
-          user_passwd_confirm: ""
-        },
-
-        register_rules: {
-          user_name: [
-            { required: true, message: "请输入名称", trigger: "blur"},
-            { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: 'blur'}
-          ],
-          user_email: [
-            { required: true, message: "请输入邮箱", trigger: "blur"},
-            { min: 1, max: this.user_email_max_len, message: `邮箱长度不能超过${this.user_email_max_len}`, trigger: 'blur'},
-            { validator: this.checkEmailAllowEmpty, trigger: 'blur' }
-          ],
-          user_passwd: [
-            { required: true, message: "请输入密码", trigger: "blur"},
-            { min: 1, max: this.user_email_passwd_len, message: `密码长度不能超过${this.user_passwd_max_len}`, trigger: 'blur'}
-          ],
-          user_passwd_confirm: [
-            { required: true, message: "请输入确认密码", trigger: "blur"},
-            { validator: this.checkConfirmPasswd, trigger: 'blur' }
-          ]
-        },
-
-        // Other css
-        preview_height: {
-          "min-height": "10rem"
-        }
-      }
+        return {
+            // Preview related
+            md_preview: "",
+            isShowPreview: false,
+            preview_button_content: "to Preview",
+            // Login related
+            isShowLoginTab: false,
+            // Comment related
+            comment_content: "",
+            // Input Length
+            user_name_max_len: 20,
+            user_email_max_len: 40,
+            user_passwd_max_len: 60,
+            // User/Visitor Switch
+            isVisitorPanel: true,
+            logined_user_name: "",
+            // Form rules for Visitor
+            visitor_rules: {
+                user_name: [
+                    { required: true, message: "请输入名称", trigger: "blur" },
+                    { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: "blur" }
+                ],
+                user_email: [
+                    { validator: this.checkEmailAllowEmpty, trigger: "blur" }
+                ]
+            },
+            comment_form: {
+                user_name: "",
+                user_email: ""
+            },
+            // Form rules for Login
+            login_form: {
+                user_passwd: "",
+                user_name_or_email: ""
+            },
+            login_rules: {
+                user_name_or_email: [
+                    { required: true, message: "请输入名称或邮箱", trigger: "blur" },
+                    // TODO: Give a validator here to validate the length of name or email
+                ],
+                user_passwd: [
+                    { required: true, message: "请输入密码", trigger: "blur" },
+                    { min: 1, max: this.user_email_passwd_len, message: `密码长度不能超过${this.user_passwd_max_len}`, trigger: "blur" }
+                ]
+            },
+            // Login/Register Switch
+            isLoginPanel: true,
+            // Form rules for register
+            register_form: {
+                user_name: "",
+                user_email: "",
+                user_passwd: "",
+                user_passwd_confirm: ""
+            },
+            register_rules: {
+                user_name: [
+                    { required: true, message: "请输入名称", trigger: "blur" },
+                    { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: "blur" }
+                ],
+                user_email: [
+                    { required: true, message: "请输入邮箱", trigger: "blur" },
+                    { min: 1, max: this.user_email_max_len, message: `邮箱长度不能超过${this.user_email_max_len}`, trigger: "blur" },
+                    { validator: this.checkEmailAllowEmpty, trigger: "blur" }
+                ],
+                user_passwd: [
+                    { required: true, message: "请输入密码", trigger: "blur" },
+                    { min: 1, max: this.user_email_passwd_len, message: `密码长度不能超过${this.user_passwd_max_len}`, trigger: "blur" }
+                ],
+                user_passwd_confirm: [
+                    { required: true, message: "请输入确认密码", trigger: "blur" },
+                    { validator: this.checkConfirmPasswd, trigger: "blur" }
+                ]
+            },
+            // Other css
+            preview_height: {
+                "min-height": "10rem"
+            }
+        };
     },
     computed: {
-      login_register_title() {
-        if (this.isLoginPanel) {
-          return "登录";
-        } else {
-          return "注册"
+        login_register_title() {
+            if (this.isLoginPanel) {
+                return "登录";
+            }
+            else {
+                return "注册";
+            }
         }
-      }
     },
-    props:
-    {
-      article_id:
-      {
-        type: Number,
-        default: 0
-      }
+    props: {
+        article_id: {
+            type: Number,
+            default: 0
+        }
     },
     methods: {
-      onVisitorSubmit() {
-        (this.$refs.comment_form as any).validate(
-          (valid : boolean) => {
-            if (valid) {
-              submitCommentForVisitor(
-                this.article_id, 
-                this.comment_form.user_name, 
-                this.comment_form.user_email, 
-                this.comment_content, 
-                this.submitSuccessCb,
-                this.submitErrorCb
-              );
-            }
-          } 
-        );
-      },
-      onUserSubmit() {
-        submitCommentForUser(
-          this.article_id,
-          this.comment_content,
-          this.submitSuccessCb
-        );
-      },
-      onPreview() {
-        this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
-        if (this.isShowPreview) {
-          this.isShowPreview = !this.isShowPreview;
-          this.md_preview = "";
-          this.preview_button_content = "to Preview"
-        } else {
-          this.md_preview = marked.parse(this.comment_content);
-          this.isShowPreview = !this.isShowPreview;
-          this.preview_button_content = "back to Editor"
-        }
-      },
-      onLogin() {
-        (this.$refs.login_form as any).validate(
-          (valid : boolean) => {
-            if (valid) {
-              loginUser(
-                this.login_form.user_name_or_email,
-                this.login_form.user_passwd,
-                // success callback
-                (response: UserLoginResponse) => {
-                  this.login_form.user_passwd = "";
-                  this.isShowLoginTab = false;
-                  this.switch2UserPanel(response.user_name);
-                },
-                // error callback
-                (response?: ErrorInfo) => {
-                  // do nothing
+        onVisitorSubmit() {
+            (this.$refs.comment_form as any).validate((valid: boolean) => {
+                if (valid) {
+                    submitCommentForVisitor(this.article_id, this.comment_form.user_name, this.comment_form.user_email, this.comment_content, this.submitSuccessCb, this.submitErrorCb);
                 }
-              );
+            });
+        },
+        onUserSubmit() {
+            submitCommentForUser(this.article_id, this.comment_content, this.submitSuccessCb);
+        },
+        onPreview() {
+            this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
+            if (this.isShowPreview) {
+                this.isShowPreview = !this.isShowPreview;
+                this.md_preview = "";
+                this.preview_button_content = "to Preview";
             }
-          } 
-        );
-      },
-      onRegister() {
-        (this.$refs.register_form as any).validate(
-          (valid : boolean) => {
-            if (valid) {
-              registerUser(
-                this.register_form.user_name,
-                this.register_form.user_email,
-                this.register_form.user_passwd,
-                (response: UserRegisterResponse) => {
-                  this.onCloseLoginPanel();
+            else {
+                this.md_preview = marked.parse(this.comment_content);
+                this.isShowPreview = !this.isShowPreview;
+                this.preview_button_content = "back to Editor";
+            }
+        },
+        onLogin() {
+            (this.$refs.login_form as any).validate((valid: boolean) => {
+                if (valid) {
+                    loginUser(this.login_form.user_name_or_email, this.login_form.user_passwd, 
+                    // success callback
+                    (response: UserLoginResponse) => {
+                        this.login_form.user_passwd = "";
+                        this.isShowLoginTab = false;
+                        this.switch2UserPanel(response.user_name);
+                    }, 
+                    // error callback
+                    (response?: ErrorInfo) => {
+                        // do nothing
+                    });
                 }
-              );
+            });
+        },
+        onRegister() {
+            (this.$refs.register_form as any).validate((valid: boolean) => {
+                if (valid) {
+                    registerUser(this.register_form.user_name, this.register_form.user_email, this.register_form.user_passwd, (response: UserRegisterResponse) => {
+                        this.onCloseLoginPanel();
+                    });
+                }
+            });
+        },
+        onLogout() {
+            UserCookies.delete_cookies();
+            this.switch2VisitorPanel();
+        },
+        onOpenLoginPanel() {
+            this.isLoginPanel = true;
+            this.isShowLoginTab = true;
+            this.updateUserInfoToLoginPageFromVisitor();
+        },
+        onCloseLoginPanel() {
+            this.isShowLoginTab = false;
+            // this.updateUserInfoToVisitorFromLoginPage();
+        },
+        updateUserInfoToLoginPageFromVisitor() {
+            if (this.comment_form.user_email) {
+                this.login_form.user_name_or_email = this.comment_form.user_email;
+                return;
             }
-          } 
-        );
-      },
-      onLogout() {
-        UserCookies.delete_cookies();
-        this.switch2VisitorPanel();
-      },
-      onOpenLoginPanel() {
-        this.isLoginPanel = true;
-        this.isShowLoginTab = true;
-        this.updateUserInfoToLoginPageFromVisitor();
-      },
-      onCloseLoginPanel() {
-        this.isShowLoginTab = false;
-        // this.updateUserInfoToVisitorFromLoginPage();
-      },
-      updateUserInfoToLoginPageFromVisitor() {
-        if (this.comment_form.user_email) {
-          this.login_form.user_name_or_email = this.comment_form.user_email;
-          return;
+            if (this.comment_form.user_name) {
+                this.login_form.user_name_or_email = this.comment_form.user_name;
+                return;
+            }
+        },
+        updateUserInfoToVisitorFromLoginPage() {
+            if (this.login_form.user_name_or_email) {
+                if (isEmail(this.login_form.user_name_or_email)) {
+                    this.comment_form.user_email = this.login_form.user_name_or_email;
+                }
+                else {
+                    this.comment_form.user_name = this.login_form.user_name_or_email;
+                }
+            }
+        },
+        switch2UserPanel(user_name: string) {
+            this.isVisitorPanel = false;
+            this.logined_user_name = user_name;
+        },
+        switch2VisitorPanel() {
+            this.isVisitorPanel = true;
+        },
+        submitSuccessCb(comment: CommentItemInfo): void {
+            this.comment_content = "";
+            eventBus.emit("addNewComment", comment);
+        },
+        submitErrorCb(error?: ErrorInfo): void {
+            if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {
+                setTimeout(() => {
+                    this.onOpenLoginPanel();
+                }, 500);
+            }
+        },
+        checkEmailAllowEmpty(rule: any, value: any, callback: any): void {
+            if (value && !isEmail(value)) {
+                return callback(new Error("邮箱格式错误"));
+            }
+            else {
+                callback();
+            }
+        },
+        checkConfirmPasswd(rule: any, value: any, callback: any): void {
+            if (value != this.register_form.user_passwd) {
+                return callback(new Error("两次输入的密码不一致"));
+            }
+            else {
+                callback();
+            }
         }
-        if (this.comment_form.user_name) {
-          this.login_form.user_name_or_email = this.comment_form.user_name;
-          return;
-        }
-      },
-      updateUserInfoToVisitorFromLoginPage() {
-        if (this.login_form.user_name_or_email) {
-          if (isEmail(this.login_form.user_name_or_email)) {
-            this.comment_form.user_email = this.login_form.user_name_or_email;
-          } else {
-            this.comment_form.user_name = this.login_form.user_name_or_email;
-          }
-        }
-      },
-      switch2UserPanel(user_name : string) {
-        this.isVisitorPanel = false;
-        this.logined_user_name = user_name;
-      },
-      switch2VisitorPanel() {
-        this.isVisitorPanel = true;
-      },
-      submitSuccessCb(comment: CommentItemInfo) : void {
-        this.comment_content = "";
-        eventBus.emit("addNewComment", comment);
-      },
-      submitErrorCb(error? : ErrorInfo) : void {
-        if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {
-          setTimeout(() => {
-            this.onOpenLoginPanel();
-          }, 500);
-        }
-      },
-      checkEmailAllowEmpty(rule : any, value : any, callback : any) : void {
-        if (value && !isEmail(value)) {
-          return callback(new Error('邮箱格式错误'));
-        } else {
-          callback();
-        }
-      },
-      checkConfirmPasswd(rule : any, value : any, callback : any) : void {
-        if (value != this.register_form.user_passwd) {
-          return callback(new Error('两次输入的密码不一致'));
-        } else {
-          callback();
-        }
-      }
     },
     beforeMount() {
-      let user_cookies = UserCookies.retrieve_from_cookies();
-      if (user_cookies) {
-        checkToken(
-          user_cookies.get_token(),
-          (response: TokenCheckResponse) => {
-            this.switch2UserPanel((user_cookies as UserCookies).get_user_name());
-          }
-        );
-      }
-    }
-  });
+        let user_cookies = UserCookies.retrieve_from_cookies();
+        if (user_cookies) {
+            checkToken(user_cookies.get_token(), (response: TokenCheckResponse) => {
+                this.switch2UserPanel((user_cookies as UserCookies).get_user_name());
+            });
+        }
+    },
+    components: { MarkdownView }
+});
 </script>
 
 <template>
@@ -296,7 +264,9 @@
       ref="comment_input"
       v-show="!isShowPreview"
     />
-    <div class="comment_preview" :style="preview_height" v-html="md_preview" v-show="isShowPreview"></div>
+    <div class="comment_preview" :style="preview_height" v-show="isShowPreview">
+      <MarkdownView :rendered_markdown="md_preview" />
+    </div>
     <el-button class="preview_button" type="primary" @click="onPreview()" size="small" round>{{ preview_button_content }}</el-button>
   </div>
 

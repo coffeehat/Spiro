@@ -1,50 +1,50 @@
 <script lang="ts">
-  import { PropType, defineComponent, computed } from 'vue';
+  import { PropType, defineComponent } from 'vue';
 
   import { marked } from '../common/markdown';
   import { CommentItemInfo } from '../common/types';
-  import { getLocalTimeFromTimestamp } from '../common/utils'
+  import { getLocalTimeFromTimestamp } from '../common/utils';
+
+  import MarkdownView from './MarkdownView.vue';
 
   export default defineComponent ({
     name: "Comment Item",
     computed: {
-      local_time() : string {
-        return getLocalTimeFromTimestamp(this.comment.comment_timestamp);
-      },
-      md_comment() : string {
-        return marked.parse(this.comment.comment_content);
-      },
-
-      // For css
-      quote_angle_top() : number {
-        return (this.comment_title_height - 2 * this.comment_quote_triangle_size) / 2;
-      },
-
-      avatar_margin_top() : number {
-        let temp = (this.comment_title_height - this.avatar_size) / 2;
-        return temp > 0 ? temp : 0;
-      },
-
-      comment_title_margin_top() : number {
-        let temp = (this.avatar_size - this.comment_title_height) / 2;
-        return temp > 0 ? temp : 0;
-      }
+        local_time(): string {
+            return getLocalTimeFromTimestamp(this.comment.comment_timestamp);
+        },
+        md_comment(): string {
+            return marked.parse(this.comment.comment_content);
+        },
+        // For css
+        quote_angle_top(): number {
+            return (this.comment_title_height - 2 * this.comment_quote_triangle_size) / 2;
+        },
+        avatar_margin_top(): number {
+            let temp = (this.comment_title_height - this.avatar_size) / 2;
+            return temp > 0 ? temp : 0;
+        },
+        comment_title_margin_top(): number {
+            let temp = (this.avatar_size - this.comment_title_height) / 2;
+            return temp > 0 ? temp : 0;
+        }
     },
     props: {
-      comment: {
-        type: Object as PropType<CommentItemInfo>,
-        required: true
-      }
+        comment: {
+            type: Object as PropType<CommentItemInfo>,
+            required: true
+        }
     },
     data() {
-      return {
-        /* Some css need calculation */
-        comment_title_height: 50,
-        comment_quote_triangle_size: 8,
-        avatar_size: 50
-      }
-    }
-  });
+        return {
+            /* Some css need calculation */
+            comment_title_height: 50,
+            comment_quote_triangle_size: 8,
+            avatar_size: 50
+        };
+    },
+    components: { MarkdownView }
+});
 </script>
 
 <template>
@@ -59,7 +59,7 @@
         <span class="comment_time">{{ local_time }} </span>
       </div>
       <div class="comment_content">
-        <div v-html="md_comment"></div>
+        <MarkdownView :rendered_markdown="md_comment" />
       </div>
     </div>
   </div>
@@ -104,6 +104,14 @@
     border: 1px solid rgb(167,167,167);
     border-radius: 0px 0px 5px 5px;
     margin-top: -1px;
+  }
+
+  .comment_content :first-child {
+    margin-top: 0 !important
+  }
+
+  .comment_content :last-child {
+    margin-bottom: 0 !important;
   }
 
   .comment_user_name {
