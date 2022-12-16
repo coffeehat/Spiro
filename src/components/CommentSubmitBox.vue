@@ -106,6 +106,11 @@
             { required: true, message: "请输入确认密码", trigger: "blur"},
             { validator: this.checkConfirmPasswd, trigger: 'blur' }
           ]
+        },
+
+        // Other css
+        preview_height: {
+          "min-height": "10rem"
         }
       }
     },
@@ -151,6 +156,7 @@
         );
       },
       onPreview() {
+        this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
         if (this.isShowPreview) {
           this.isShowPreview = !this.isShowPreview;
           this.md_preview = "";
@@ -281,8 +287,16 @@
 <template>
   <!-- Comment Box -->
   <div class="comment_box_container">
-    <textarea class="comment_textarea" v-model="comment_content" v-show="!isShowPreview"></textarea>
-    <div class="comment_preview" v-html="md_preview" v-show="isShowPreview"></div>
+    <el-input
+      v-model="comment_content"
+      :autosize="{ minRows: 5 }"
+      type="textarea"
+      placeholder="Please input"
+      resize="none"
+      ref="comment_input"
+      v-show="!isShowPreview"
+    />
+    <div class="comment_preview" :style="preview_height" v-html="md_preview" v-show="isShowPreview"></div>
     <el-button class="preview_button" type="primary" @click="onPreview()" size="small" round>{{ preview_button_content }}</el-button>
   </div>
 
@@ -501,19 +515,9 @@
     position: relative;
   }
 
-  .comment_textarea {
-    width: 100%;
-    min-height: 10rem;
-    border-radius: 5px;
-    border: 1px solid rgb(167, 167, 167);
-    padding: 10px;
-    display: block;
-    resize: none;
-    outline: none;
-  }
   .comment_preview {
     width: 100%;
-    min-height: 10rem;
+    /* min-height: 10rem; */
     /* background-color: white; */
     border: 1px solid rgb(167, 167, 167);
     border-radius: 5px;
