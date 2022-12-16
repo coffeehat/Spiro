@@ -3,7 +3,7 @@
 
   import { marked } from '../common/markdown';
   import { CommentItemInfo } from '../common/types';
-  import { getLocalTimeFromTimestamp } from '../common/utils';
+  import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
 
   import MarkdownView from './MarkdownView.vue';
 
@@ -11,7 +11,7 @@
     name: "Comment Item",
     computed: {
         local_time(): string {
-            return getLocalTimeFromTimestamp(this.comment.comment_timestamp);
+            return getLocalFormattedTimeFromTimestamp(this.comment.comment_timestamp);
         },
         md_comment(): string {
             return marked.parse(this.comment.comment_content);
@@ -56,7 +56,7 @@
     <div class="comment_box">
       <div class="comment_title">
         <span class="comment_user_name">{{ comment.user_name }}</span>
-        <span class="comment_time">{{ local_time }} </span>
+        <span class="comment_time">评论于 {{ local_time }} </span>
       </div>
       <div class="comment_content">
         <MarkdownView :rendered_markdown="md_comment" />
