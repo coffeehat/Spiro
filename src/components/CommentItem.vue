@@ -44,7 +44,7 @@
         return {
             userStore: useUserStore(),
             /* Some css need calculation */
-            comment_title_height: 50,
+            comment_title_height: 42,
             comment_quote_triangle_size: 8,
             avatar_size: 50
         };
@@ -111,8 +111,20 @@
     border-right: 9px solid #ececec;
   }
 
+  @media screen and (max-width: 874px) {
+  /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
+  .comment_title::before,
+  .comment_title::after {
+    display: none;
+  }
+
+  .avatar_box {
+    display: none;
+  }
+  }
+
   .comment_metainfo_box > * {
-    margin-right: 10px;
+    margin-right: 6px;
   }
 
   .comment_control_box {
@@ -120,7 +132,7 @@
   }
 
   .comment_control_box > * {
-    margin-left: 10px;
+    margin-left: 6px;
   }
 
   .comment_content {
@@ -164,5 +176,4 @@
     flex-direction: row;
     margin-bottom: 20px;
   }
-
 </style>  

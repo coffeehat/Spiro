@@ -58,7 +58,7 @@ export function getLocalTimeFromTimestamp(timestamp : string) : string {
 export function getLocalFormattedTimeFromTimestamp(timestamp : string) : string {
   let date = convertTimestamp2JsDate(timestamp);
   // return moment(date).format("MMM-DD-YYYY, HH:mm");
-  return moment(date).format("lll");
+  return moment(date).format("MMM DD, YYYY HH:mm");
 }
 
 export function isEmail(email : string) : boolean {

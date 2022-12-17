@@ -20,6 +20,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   color: rgb(22, 22, 22);
+  font-size: 14px;
 }
 
 @media screen and (min-width: 718px) {
