@@ -2,8 +2,7 @@
 import { PropType, defineComponent } from 'vue';
 
 import { ElMessageBox } from 'element-plus';
-import { generateFromString } from 'generate-avatar';
-// import multiavatar from '@multiavatar/multiavatar';
+import multiavatar from '@multiavatar/multiavatar';
 
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
@@ -38,9 +37,7 @@ export default defineComponent({
         && this.userStore.user_id == this.comment.user_id;
     },
     avatar_string(): string {
-      // let svg = multiavatar(this.comment.user_id.toString());
-      // return svg;
-      return `data:image/svg+xml;utf8,${generateFromString(this.comment.user_id.toString())}`;
+      return multiavatar(this.comment.user_id.toString());
     }
   },
   props: {
@@ -83,8 +80,7 @@ export default defineComponent({
 <template>
   <div class="comment_item">
     <div class="avatar_box">
-      <img class="avatar" :src="avatar_string" />
-      <!-- <div class="avatar" v-html="avatar_string" /> -->
+      <div class="avatar" v-html="avatar_string" />
     </div>
     <div class="comment_box">
       <div class="comment_title">
