@@ -61,9 +61,14 @@
     </div>
     <div class="comment_box">
       <div class="comment_title">
-        <span class="comment_user_name">{{ comment.user_name }}</span>
-        <span class="comment_time">评论于 {{ local_time }} </span>
-        <span class="button_delete" v-show="is_show_delete_button">删除</span>
+        <div class="comment_metainfo_box">
+          <span class="comment_user_name">{{ comment.user_name }}</span>
+          <span class="comment_time">评论于 {{ local_time }} </span>
+        </div>
+        <div class="comment_control_box">
+          <el-button type="danger"  size="small" plain round v-show="is_show_delete_button">删除</el-button>
+          <el-button type="primary" size="small" plain round>回复</el-button>
+        </div>
       </div>
       <div class="comment_content">
         <MarkdownView :rendered_markdown="md_comment" />
@@ -106,8 +111,16 @@
     border-right: 9px solid #ececec;
   }
 
-  .comment_title > * {
+  .comment_metainfo_box > * {
     margin-right: 10px;
+  }
+
+  .comment_control_box {
+    margin-left: auto;
+  }
+
+  .comment_control_box > * {
+    margin-left: 10px;
   }
 
   .comment_content {
