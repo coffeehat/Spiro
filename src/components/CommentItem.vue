@@ -158,10 +158,15 @@ export default defineComponent({
 
 .comment_control_box {
   margin-left: auto;
+  display: none;
 }
 
 .comment_control_box>* {
   margin-left: 6px;
+}
+
+.comment_item:hover .comment_control_box{
+  display: block;
 }
 
 .comment_content {
@@ -203,4 +208,5 @@ export default defineComponent({
   flex-direction: row;
   margin-bottom: 20px;
 }
+
 </style>  
