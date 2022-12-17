@@ -4,6 +4,7 @@
   import { marked } from '../common/markdown';
   import { CommentItemInfo } from '../common/types';
   import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
+  import { useUserStore } from '../stores';
 
   import MarkdownView from './MarkdownView.vue';
 
@@ -27,6 +28,10 @@
         comment_title_margin_top(): number {
             let temp = (this.avatar_size - this.comment_title_height) / 2;
             return temp > 0 ? temp : 0;
+        },
+        is_show_delete_button(): boolean {
+          return this.userStore.is_valid
+            && this.userStore.user_id == this.comment.user_id;
         }
     },
     props: {
@@ -37,6 +42,7 @@
     },
     data() {
         return {
+            userStore: useUserStore(),
             /* Some css need calculation */
             comment_title_height: 50,
             comment_quote_triangle_size: 8,
@@ -57,6 +63,7 @@
       <div class="comment_title">
         <span class="comment_user_name">{{ comment.user_name }}</span>
         <span class="comment_time">评论于 {{ local_time }} </span>
+        <span class="button_delete" v-show="is_show_delete_button">删除</span>
       </div>
       <div class="comment_content">
         <MarkdownView :rendered_markdown="md_comment" />
@@ -99,6 +106,10 @@
     border-right: 9px solid #ececec;
   }
 
+  .comment_title > * {
+    margin-right: 10px;
+  }
+
   .comment_content {
     padding: 12px 15px;
     border: 1px solid rgb(167,167,167);
@@ -116,7 +127,6 @@
 
   .comment_user_name {
     font-weight: 700;
-    margin-right: 5px
   }
 
   .comment_box {
