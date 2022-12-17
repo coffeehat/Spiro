@@ -21,7 +21,7 @@ export function getCommentList(
 ) {
   axios({
     method: 'get',
-    url: "http://localhost:5000/v1.0/comment_list",
+    url: "http://192.168.1.12:5000/v1.0/comment_list",
     params: {
       "article_id": article_id,
       "offset": offset,
@@ -66,7 +66,7 @@ export function submitCommentForVisitor (
 
   axios({
     method: 'post',
-    url: "http://localhost:5000/v1.0/comment",
+    url: "http://192.168.1.12:5000/v1.0/comment",
     data: form,
     auth: {
       username: "",
@@ -114,7 +114,7 @@ export function submitCommentForUser (
 
   axios({
     method: 'post',
-    url: "http://localhost:5000/v1.0/comment",
+    url: "http://192.168.1.12:5000/v1.0/comment",
     data: form,
     headers: {
       Authorization: `Bearer ${user_cookies?.get_token()}`
@@ -160,7 +160,7 @@ export function loginUser (
 
   axios({
     method: 'post',
-    url: "http://localhost:5000/v1.0/user",
+    url: "http://192.168.1.12:5000/v1.0/user",
     data: form
   }).then(
     (response) => {
@@ -202,7 +202,7 @@ export function registerUser (
 
   axios({
     method: 'post',
-    url: "http://localhost:5000/v1.0/user",
+    url: "http://192.168.1.12:5000/v1.0/user",
     data: form
   }).then(
     (response) => {
@@ -238,7 +238,7 @@ export function checkToken (
 
   axios({
     method: 'post',
-    url: "http://localhost:5000/v1.0/token_check",
+    url: "http://192.168.1.12:5000/v1.0/token_check",
     data: form
   }).then(
     (response) => {
@@ -272,7 +272,7 @@ export function getCommentCount(
 ) {
   axios({
     method: 'get',
-    url: "http://localhost:5000/v1.0/comment_count",
+    url: "http://192.168.1.12:5000/v1.0/comment_count",
     params: {
       "article_id": article_id
     }
