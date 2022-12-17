@@ -2,7 +2,7 @@
 import { PropType, defineComponent } from 'vue';
 
 import { ElMessageBox } from 'element-plus';
-import multiavatar from '@multiavatar/multiavatar';
+import { Avatar } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
@@ -37,7 +37,7 @@ export default defineComponent({
         && this.userStore.user_id == this.comment.user_id;
     },
     avatar_string(): string {
-      return multiavatar(this.comment.user_id.toString());
+      return "";
     }
   },
   props: {
@@ -73,14 +73,17 @@ export default defineComponent({
       avatar_size: 50
     };
   },
-  components: { MarkdownView }
+  components: {
+    MarkdownView: MarkdownView, 
+    HldAvatar: Avatar
+  }
 });
 </script>
 
 <template>
   <div class="comment_item">
     <div class="avatar_box">
-      <div class="avatar" v-html="avatar_string" />
+      <HldAvatar class="avatar"/>
     </div>
     <div class="comment_box">
       <div class="comment_title">
@@ -192,8 +195,6 @@ export default defineComponent({
 .avatar {
   width: v-bind(avatar_size + "px");
   height: v-bind(avatar_size + "px");
-  background-color: rgb(102, 245, 197);
-  border-radius: v-bind(avatar_size / 2 + "px");
   margin-top: v-bind(avatar_margin_top + "px");
 }
 
