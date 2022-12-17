@@ -1,16 +1,12 @@
 <script lang="ts">
   import { defineComponent, registerRuntimeCompiler } from 'vue';
 
-  import eventBus from '../common/eventBus'
-  import { useUserStore } from '../stores';
+  import { useUserStore, useNewCommentStore } from '../stores';
   
   import { marked } from '../common/markdown'
-  import { UserCookies } from '../common/cookies'
   import { 
   submitCommentForVisitor, 
   submitCommentForUser, 
-  loginUser, 
-  logoutUser,
   registerUser
   } from '../common/network';
   import { 
@@ -29,6 +25,7 @@
   data() {
     return {
       userStore: useUserStore(),
+      newCommentStore: useNewCommentStore(),
       // Preview related
       md_preview: "",
       isShowPreview: false,
@@ -201,7 +198,7 @@
     },
     submitSuccessCb(comment: CommentItemInfo): void {
       this.comment_content = "";
-      eventBus.emit("addNewComment", comment);
+      this.newCommentStore.comment = comment;
     },
     submitErrorCb(error?: ErrorInfo): void {
       if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {

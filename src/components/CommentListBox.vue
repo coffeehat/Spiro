@@ -8,10 +8,10 @@
   } from '../common/network'
   import { CommentItemInfoList } from '../common/types';
   import { sortCommentList } from '../common/utils';
+  import { useNewCommentStore } from '../stores';
 
   // Vue components
   import CommentItem from './CommentItem.vue'
-  import eventBus from '../common/eventBus'
 
   export default defineComponent ({
     name: "Comment List Box",
@@ -20,6 +20,7 @@
     },
     data() {
       return {
+        newCommentStore: useNewCommentStore(),
         comment_list: [] as CommentItemInfoList,
         comment_count: 0,
         current_page: 1,
@@ -45,15 +46,6 @@
       }
     },
     methods: {
-      addNewComment(comment : any) : void {
-        if (this.current_page == 1) {
-          this.comment_list.unshift(comment);
-        }
-        this.refreshCount();
-        // if (this.current_page != 1) {
-        //   this.refreshComment();
-        // }
-      },
       onPageChange(index: number) {
         this.current_page = index;
         let offset = this.comments_per_page * (index - 1);
@@ -96,13 +88,20 @@
     },
     mounted() {
       this.refreshComment();
-      eventBus.on('addNewComment', this.addNewComment);
+      this.newCommentStore.$subscribe(
+        (mutation, state) => {
+          if (this.current_page == 1) {
+            this.comment_list.unshift(state.comment);
+          }
+          this.refreshCount();
+          // if (this.current_page != 1) {
+          //   this.refreshComment();
+          // }
+        }
+      )
     },
     beforeMount() {
       this.refreshCount();
-    },
-    beforeUnmount() {
-      eventBus.off('addNewComment', this.addNewComment);
     }
   });
 </script>
