@@ -1,6 +1,18 @@
 import { defineStore } from "pinia";
+import { ServerErrorCode } from "../common/errors";
 import { deleteComment, submitCommentForUser, submitCommentForVisitor } from "../common/network";
 import { CommentItemInfo, ErrorInfo } from "../common/types";
+import { useUserStore } from "./user";
+
+function check_and_handle_token_invalid_error(error?: ErrorInfo) {
+  const userStore = useUserStore();
+  if (error
+    && (error.error_code == ServerErrorCode.EC_USER_LOGIN_TOKEN_EXPIRED
+    || error.error_code == ServerErrorCode.EC_USER_LOGIN_TOKEN_SIGN_ERROR)
+  ) {
+    userStore.is_valid = false;
+  }
+}
 
 export enum CommentCUDType {
   Comment_Undef = 0,
@@ -25,7 +37,8 @@ export const useCommentCUDStore = defineStore(
           (comment_id) => {
             this.comment.comment_id = comment_id;
             this.type = CommentCUDType.Comment_Delete;
-          }
+          },
+          check_and_handle_token_invalid_error
         );
       },
       submitCommentForUser(
@@ -42,7 +55,8 @@ export const useCommentCUDStore = defineStore(
               this.type = CommentCUDType.Comment_Create;
               success_cb(comment);
             }
-          }
+          },
+          check_and_handle_token_invalid_error
         );
       },
       submitCommentForVisitor(

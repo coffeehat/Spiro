@@ -132,10 +132,11 @@ const error_code_parser_collections = {
     (error_hint?: any) => { return "游客提供的游客名被正式用户占用"; },
   [ServerErrorCode.EC_USER_LOGIN_ERROR]:
     (error_hint?: any) => { return "用户名或密码错误"; },
+  // TODO: Seems that server won't return TOKEN_EXPIRED error if token expired
   [ServerErrorCode.EC_USER_LOGIN_TOKEN_EXPIRED]:
-    (error_hint?: any) => { return "用户凭据过期，请重新登录"; },
+    (error_hint?: any) => { return "用户凭据无效或超时，请重新登录"; },
   [ServerErrorCode.EC_USER_LOGIN_TOKEN_SIGN_ERROR]:
-    (error_hint?: any) => { return "用户凭据无效，请重新登录"; },
+    (error_hint?: any) => { return "用户凭据无效或超时，请重新登录"; },
   [ServerErrorCode.EC_USER_LOGIN_AS_VISITOR_ERROR]:
     (error_hint?: any) => { return "此账户为游客，游客只有注册成为正式用户才可登录"; },
   [ServerErrorCode.EC_VISITOR_LOGIN_ERROR]:

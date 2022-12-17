@@ -123,12 +123,23 @@ export default defineComponent({
     onVisitorSubmit() {
       (this.$refs.comment_form as any).validate((valid: boolean) => {
         if (valid) {
-          this.commentCudStore.submitCommentForVisitor(this.article_id, this.comment_form.user_name, this.comment_form.user_email, this.comment_content, this.submitSuccessCb, this.submitErrorCb);
+          this.commentCudStore.submitCommentForVisitor(
+            this.article_id, 
+            this.comment_form.user_name, 
+            this.comment_form.user_email, 
+            this.comment_content, 
+            this.submitSuccessCb, 
+            this.submitErrorCb
+          );
         }
       });
     },
     onUserSubmit() {
-      this.commentCudStore.submitCommentForUser(this.article_id, this.comment_content, this.submitSuccessCb);
+      this.commentCudStore.submitCommentForUser(
+        this.article_id,
+        this.comment_content,
+        this.submitSuccessCb
+      );
     },
     onPreview() {
       this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
