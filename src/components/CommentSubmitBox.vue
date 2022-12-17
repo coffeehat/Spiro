@@ -244,7 +244,7 @@
   <div class="comment_preview" :style="preview_height" v-show="isShowPreview">
     <MarkdownView :rendered_markdown="md_preview" />
   </div>
-  <el-button class="preview_button" type="primary" @click="onPreview()" size="small" round>{{ preview_button_content }}</el-button>
+  <el-button class="preview_button" type="primary" @click="onPreview()" size="small" round plain>{{ preview_button_content }}</el-button>
   </div>
 
   <el-form
