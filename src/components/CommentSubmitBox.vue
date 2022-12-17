@@ -26,6 +26,8 @@
     return {
       userStore: useUserStore(),
       newCommentStore: useCommentCUDStore(),
+      // UserInteractiveRelated
+      isShowUserInteractive: false,
       // Preview related
       md_preview: "",
       isShowPreview: false,
@@ -240,13 +242,23 @@
     resize="none"
     ref="comment_input"
     v-show="!isShowPreview"
+    @focus="isShowUserInteractive = true"
   />
   <div class="comment_preview" :style="preview_height" v-show="isShowPreview">
     <MarkdownView :rendered_markdown="md_preview" />
   </div>
-  <el-button class="preview_button" type="primary" @click="onPreview()" size="small" round plain>{{ preview_button_content }}</el-button>
+  <el-button
+    class="preview_button" 
+    type="primary" 
+    @click="onPreview()"
+    v-show="isShowUserInteractive"
+    size="small" 
+    round 
+    plain
+  >{{ preview_button_content }}</el-button>
   </div>
 
+  <div class="user_submit_control_container" v-show="isShowUserInteractive">
   <el-form
   :rules="visitor_rules"
   :model="comment_form"
@@ -331,6 +343,7 @@
     </div>
   </div>
   </el-form>
+  </div>
 
   <!-- Login Or Register Dialog -->
   <el-dialog 
