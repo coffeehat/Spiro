@@ -1,6 +1,8 @@
 <script lang="ts">
 import { PropType, defineComponent } from 'vue';
 
+import { ElMessageBox } from 'element-plus';
+
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
@@ -42,7 +44,19 @@ export default defineComponent({
   },
   methods: {
     onDeleteComment() {
-      this.commentCudStore.delete(this.comment.comment_id);
+      ElMessageBox.confirm(
+        "确定要删除这条评论吗？",
+        "警告",
+        {
+          confirmButtonText: "确认",
+          cancelButtonText: "取消",
+          type: 'warning',
+        }
+      ).then(() => {
+        this.commentCudStore.delete(this.comment.comment_id);
+      }).catch(() => {
+        // do nothing
+      });
     }
   },
   data() {
