@@ -1,26 +1,26 @@
 <script lang="ts">
-  import { defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 
-  import { useUserStore, useCommentCUDStore, CommentCUDType } from '../stores';
-  
-  import { marked } from '../common/markdown'
-  import { 
-  submitCommentForVisitor, 
-  submitCommentForUser, 
+import { useUserStore, useCommentCUDStore, CommentCUDType } from '../stores';
+
+import { marked } from '../common/markdown'
+import {
+  submitCommentForVisitor,
+  submitCommentForUser,
   registerUser
-  } from '../common/network';
-  import { 
-  CommentItemInfo, 
-  UserLoginResponse, 
+} from '../common/network';
+import {
+  CommentItemInfo,
+  UserLoginResponse,
   ErrorInfo,
   UserRegisterResponse
-  } from '../common/types';
-  import { ServerErrorCode } from '../common/errors';
-  import { isEmail } from '../common/utils'
+} from '../common/types';
+import { ServerErrorCode } from '../common/errors';
+import { isEmail } from '../common/utils'
 
-  import MarkdownView from './MarkdownView.vue';
+import MarkdownView from './MarkdownView.vue';
 
-  export default defineComponent ({
+export default defineComponent({
   name: "Comment Submit Box",
   data() {
     return {
@@ -234,274 +234,167 @@
 <template>
   <!-- Comment Box -->
   <div class="comment_box_container">
-  <el-input
-    v-model="comment_content"
-    :autosize="{ minRows: 5 }"
-    type="textarea"
-    placeholder="Please input"
-    resize="none"
-    ref="comment_input"
-    v-show="!isShowPreview"
-    @focus="isShowUserInteractive = true"
-  />
-  <div class="comment_preview" :style="preview_height" v-show="isShowPreview">
-    <MarkdownView :rendered_markdown="md_preview" />
-  </div>
-  <el-button
-    class="preview_button" 
-    type="primary" 
-    @click="onPreview()"
-    v-show="isShowUserInteractive"
-    size="small" 
-    round 
-    plain
-  >{{ preview_button_content }}</el-button>
+    <el-input v-model="comment_content" :autosize="{ minRows: 5 }" type="textarea" placeholder="Please input"
+      resize="none" ref="comment_input" v-show="!isShowPreview" @focus="isShowUserInteractive = true" />
+    <div class="comment_preview" :style="preview_height" v-show="isShowPreview">
+      <MarkdownView :rendered_markdown="md_preview" />
+    </div>
+    <el-button class="preview_button" type="primary" @click="onPreview()" v-show="isShowUserInteractive" size="small"
+      round plain>{{ preview_button_content }}</el-button>
   </div>
 
   <div class="user_submit_control_container" v-show="isShowUserInteractive">
-  <el-form
-  :rules="visitor_rules"
-  :model="comment_form"
-  ref="comment_form"
-  v-show="!userStore.is_valid"
-  >
-  <div class="visitor_form">
-    <!-- Visitor Submission Control -->
-    <div class="visitor_name_box">
-    <el-form-item
-    class="visitor_submission_component"
-    id="visitor_name_input_box"
-    label="游客名 :"
-    prop="user_name"
-    >
-      <!-- <span>用户名：</span> -->
-      <el-input
-      v-model="comment_form.user_name"
-      :maxlength="user_name_max_len"
-      show-word-limit
-      />
-    </el-form-item>
+    <el-form :rules="visitor_rules" :model="comment_form" ref="comment_form" v-show="!userStore.is_valid">
+      <div class="visitor_form">
+        <!-- Visitor Submission Control -->
+        <div class="visitor_name_box">
+          <el-form-item class="visitor_submission_component" id="visitor_name_input_box" label="游客名 :" prop="user_name">
+            <!-- <span>用户名：</span> -->
+            <el-input v-model="comment_form.user_name" :maxlength="user_name_max_len" show-word-limit />
+          </el-form-item>
 
-    </div>
+        </div>
 
-    <div class="visitor_email_box">
-    <el-form-item
-    class="visitor_submission_component"
-    id="visitor_email_input_box"
-    label="邮箱 :"
-    prop="user_email"
-    >
-      <!-- <span>邮箱：</span> -->
-      <el-tooltip
-      class="box-item"
-      effect="dark"
-      content="系统会记录你填写的邮箱，以作为你下次使用该游客名称的凭据（即，下次使用该游客名时，必须填写该邮箱）"
-      placement="bottom"
-      >
-      <el-input
-        v-model="comment_form.user_email"
-        placeholder="Optional"
-        :maxlength="user_email_max_len"
-        show-word-limit
-        />
-      </el-tooltip>
-    </el-form-item>
-    </div>
+        <div class="visitor_email_box">
+          <el-form-item class="visitor_submission_component" id="visitor_email_input_box" label="邮箱 :"
+            prop="user_email">
+            <!-- <span>邮箱：</span> -->
+            <el-tooltip class="box-item" effect="dark" content="系统会记录你填写的邮箱，以作为你下次使用该游客名称的凭据（即，下次使用该游客名时，必须填写该邮箱）"
+              placement="bottom">
+              <el-input v-model="comment_form.user_email" placeholder="Optional" :maxlength="user_email_max_len"
+                show-word-limit />
+            </el-tooltip>
+          </el-form-item>
+        </div>
 
-    <div class="visitor_submit_box">
-    <el-dropdown split-button type="primary" @click="onVisitorSubmit()">
-      提交（免注册）
-      <template #dropdown>
-      <el-dropdown-menu>
-        <el-dropdown-item @click=onOpenLoginPanel>登录</el-dropdown-item>
-      </el-dropdown-menu>
-      </template>
-    </el-dropdown>
-    </div>
-  </div>
+        <div class="visitor_submit_box">
+          <el-dropdown split-button type="primary" @click="onVisitorSubmit()">
+            提交（免注册）
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click=onOpenLoginPanel>登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </div>
 
-  <!-- <button type="button" @click="onPreview()">{{ preview_button_content }}</button> -->
-  </el-form>
+      <!-- <button type="button" @click="onPreview()">{{ preview_button_content }}</button> -->
+    </el-form>
 
-  <el-form
-  v-show="userStore.is_valid"
-  >
-  <div class="user_form">
-    <div class="user_info_box">
-    <span>用户{{ userStore.user_name }}已登录</span>
-    </div>
+    <el-form v-show="userStore.is_valid">
+      <div class="user_form">
+        <div class="user_info_box">
+          <span>用户{{ userStore.user_name }}已登录</span>
+        </div>
 
-    <div class="user_submit_box">
-    <el-dropdown split-button type="primary" @click="onUserSubmit()">
-      提交
-      <template #dropdown>
-      <el-dropdown-menu>
-        <el-dropdown-item @click="onLogout()">登出</el-dropdown-item>
-      </el-dropdown-menu>
-      </template>
-    </el-dropdown>
-    </div>
-  </div>
-  </el-form>
+        <div class="user_submit_box">
+          <el-dropdown split-button type="primary" @click="onUserSubmit()">
+            提交
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item @click="onLogout()">登出</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+      </div>
+    </el-form>
   </div>
 
   <!-- Login Or Register Dialog -->
-  <el-dialog 
-  v-model="isShowLoginTab" 
-  :title="login_register_title"
-  width="400px" 
-  :before-close="onCloseLoginPanel"
-  >
-  <el-form
-    label-width="120px"
-    label-position="right"
-    :rules="login_rules"
-    :model="login_form"
-    ref="login_form"
-    v-show="isLoginPanel"
-    class="login-register-form"
-  >
-    <el-form-item
-    label="用户名或邮箱"
-    prop="user_name_or_email"
-    >
-    <el-input
-      class="user_input"
-      v-model="login_form.user_name_or_email"
-    />
-    </el-form-item>
+  <el-dialog v-model="isShowLoginTab" :title="login_register_title" width="400px" :before-close="onCloseLoginPanel">
+    <el-form label-width="120px" label-position="right" :rules="login_rules" :model="login_form" ref="login_form"
+      v-show="isLoginPanel" class="login-register-form">
+      <el-form-item label="用户名或邮箱" prop="user_name_or_email">
+        <el-input class="user_input" v-model="login_form.user_name_or_email" />
+      </el-form-item>
 
-    <el-form-item
-    label="密码"
-    prop="user_passwd"
-    >
-    <el-input
-      class="user_input"
-      v-model="login_form.user_passwd"
-      type="password"
-      show-password
-    />
-    </el-form-item>
-  </el-form>
+      <el-form-item label="密码" prop="user_passwd">
+        <el-input class="user_input" v-model="login_form.user_passwd" type="password" show-password />
+      </el-form-item>
+    </el-form>
 
-  <el-form
-    label-width="120px"
-    label-position="right"
-    :rules="register_rules"
-    :model="register_form"
-    ref="register_form"
-    v-show="!isLoginPanel"
-    class="login-register-form"
-  >
-    <el-form-item
-    label="用户名"
-    prop="user_name"
-    >
-    <el-input
-      class="user_input"
-      v-model="register_form.user_name"
-      :maxlength="user_name_max_len"
-      show-word-limit
-    />
-    </el-form-item>
+    <el-form label-width="120px" label-position="right" :rules="register_rules" :model="register_form"
+      ref="register_form" v-show="!isLoginPanel" class="login-register-form">
+      <el-form-item label="用户名" prop="user_name">
+        <el-input class="user_input" v-model="register_form.user_name" :maxlength="user_name_max_len" show-word-limit />
+      </el-form-item>
 
-    <el-form-item
-    label="邮箱"
-    prop="user_email"
-    >
-    <el-input
-      class="user_input"
-      v-model="register_form.user_email"
-      :maxlength="user_email_max_len"
-      show-word-limit
-    />
-    </el-form-item>
+      <el-form-item label="邮箱" prop="user_email">
+        <el-input class="user_input" v-model="register_form.user_email" :maxlength="user_email_max_len"
+          show-word-limit />
+      </el-form-item>
 
-    <el-form-item
-    label="密码"
-    prop="user_passwd"
-    >
-    <el-input
-      class="user_input"
-      v-model="register_form.user_passwd"
-      :maxlength="user_passwd_max_len"
-      type="password"
-      show-password
-    />
-    </el-form-item>
+      <el-form-item label="密码" prop="user_passwd">
+        <el-input class="user_input" v-model="register_form.user_passwd" :maxlength="user_passwd_max_len"
+          type="password" show-password />
+      </el-form-item>
 
-    <el-form-item
-    label="确认密码"
-    prop="user_passwd_confirm"
-    >
-    <el-input
-      class="user_input"
-      v-model="register_form.user_passwd_confirm"
-      :maxlength="user_passwd_max_len"
-      type="password"
-      show-password
-    />
-    </el-form-item>
-  </el-form>
+      <el-form-item label="确认密码" prop="user_passwd_confirm">
+        <el-input class="user_input" v-model="register_form.user_passwd_confirm" :maxlength="user_passwd_max_len"
+          type="password" show-password />
+      </el-form-item>
+    </el-form>
 
-  <template #footer>
-    <span class="dialog-footer-login" v-show="isLoginPanel">
-    <el-button @click="isLoginPanel = false" type="primary">
-      没有帐号？
-    </el-button>
-    <span class="dialog-footer-button-group">
-      <el-button @click=onCloseLoginPanel>取消</el-button>
-      <el-button @click=onLogin type="primary" >
-      登录
-      </el-button>
-    </span>
-    </span>
-    <span class="dialog-footer-register" v-show="!isLoginPanel">
-    <span class="dialog-footer-button-group">
-      <el-button @click=onCloseLoginPanel>取消</el-button>
-      <el-button @click=onRegister type="primary">
-      注册
-      </el-button>
-    </span>
-    </span>
-  </template>
+    <template #footer>
+      <span class="dialog-footer-login" v-show="isLoginPanel">
+        <el-button @click="isLoginPanel = false" type="primary">
+          没有帐号？
+        </el-button>
+        <span class="dialog-footer-button-group">
+          <el-button @click=onCloseLoginPanel>取消</el-button>
+          <el-button @click=onLogin type="primary">
+            登录
+          </el-button>
+        </span>
+      </span>
+      <span class="dialog-footer-register" v-show="!isLoginPanel">
+        <span class="dialog-footer-button-group">
+          <el-button @click=onCloseLoginPanel>取消</el-button>
+          <el-button @click=onRegister type="primary">
+            注册
+          </el-button>
+        </span>
+      </span>
+    </template>
   </el-dialog>
 
 </template>
 
 <style scoped>
-  .comment_box_container {
+.comment_box_container {
   margin-bottom: 10px;
   position: relative;
-  }
+}
 
-  .comment_preview {
+.comment_preview {
   width: 100%;
   /* min-height: 10rem; */
   /* background-color: white; */
   border: 1px solid rgb(167, 167, 167);
   border-radius: 5px;
-  padding:10px;
-  }
+  padding: 10px;
+}
 
-  .preview_button {
+.preview_button {
   position: absolute;
   z-index: 2;
   bottom: 5px;
   right: 5px;
-  }
+}
 
-  .dialog-footer-login {
+.dialog-footer-login {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  }
+}
 
-  .login-register-form {
+.login-register-form {
   margin-right: 30px;
-  }
+}
 
-  @media screen and (min-width: 874px) {
+@media screen and (min-width: 874px) {
   .visitor_form {
     display: flex;
   }
@@ -519,9 +412,10 @@
     flex: 0 1 320px;
     margin-right: 30px;
   }
-  }
+}
 
-  @media screen and (max-width: 874px) {
+@media screen and (max-width: 874px) {
+
   /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
   ::v-deep .el-form-item__label {
     width: 80px;
@@ -531,19 +425,19 @@
     display: flex;
     justify-content: right;
   }
-  }
+}
 
-  /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
-  ::v-deep .el-button-group {
+/* TODO: need to evaluate whether its good to manipulate the element-ui internal */
+::v-deep .el-button-group {
   display: inline-flex;
-  }
+}
 
-  .user_form {
+.user_form {
   display: flex;
   align-items: center;
-  }
-  
-  .user_submit_box {
+}
+
+.user_submit_box {
   margin-left: auto;
-  }
+}
 </style>

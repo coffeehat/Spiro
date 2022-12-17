@@ -16,8 +16,8 @@ export function getCommentList(
   article_id: number,
   offset: number,
   length: number,
-  success_cb?: (comment_list: CommentItemInfoList)=>void,
-  error_cb?: (response?: ErrorInfo)=>void
+  success_cb?: (comment_list: CommentItemInfoList) => void,
+  error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
     method: 'get',
@@ -50,7 +50,7 @@ export function getCommentList(
   );
 }
 
-export function submitCommentForVisitor (
+export function submitCommentForVisitor(
   article_id: number,
   user_name: string,
   user_email: string,
@@ -95,7 +95,7 @@ export function submitCommentForVisitor (
   );
 }
 
-export function submitCommentForUser (
+export function submitCommentForUser(
   article_id: number,
   comment: string,
   success_cb?: (comment: CommentItemInfo) => void,
@@ -142,11 +142,11 @@ export function submitCommentForUser (
   );
 }
 
-export function logoutUser () {
+export function logoutUser() {
   UserCookies.delete_cookies();
 }
 
-export function loginUser (
+export function loginUser(
   user_name_or_email: string,
   user_passwd: string,
   success_cb?: (response: UserLoginResponse) => void,
@@ -187,7 +187,7 @@ export function loginUser (
   );
 }
 
-export function registerUser (
+export function registerUser(
   user_name: string,
   user_email: string,
   user_passwd: string,
@@ -228,7 +228,7 @@ export function registerUser (
   );
 }
 
-export function checkToken (
+export function checkToken(
   token: string,
   success_cb?: (response: TokenCheckResponse) => void,
   error_cb?: (response?: ErrorInfo) => void
@@ -267,8 +267,8 @@ export function checkToken (
 
 export function getCommentCount(
   article_id: number,
-  success_cb?: (comment_list: number)=>void,
-  error_cb?: (response?: ErrorInfo)=>void
+  success_cb?: (comment_list: number) => void,
+  error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
     method: 'get',

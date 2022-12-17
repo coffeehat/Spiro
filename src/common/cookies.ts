@@ -15,19 +15,19 @@ export class UserCookies {
     this.token = token;
   }
 
-  get_user_name() : string {
+  get_user_name(): string {
     return this.user_name;
   }
 
-  get_token() : string {
+  get_token(): string {
     return this.token;
   }
 
-  get_user_id() : number {
+  get_user_id(): number {
     return this.user_id;
   }
 
-  static dump_to_cookies(user_cookies : UserCookies, expire_time_stamp : string) {
+  static dump_to_cookies(user_cookies: UserCookies, expire_time_stamp: string) {
     let dt = convertTimestamp2JsDate(expire_time_stamp);
     // TODO: set cookies to a path
     cookies.set("user_name", user_cookies.get_user_name(), dt);
@@ -35,7 +35,7 @@ export class UserCookies {
     cookies.set("token", user_cookies.get_token(), dt);
   }
 
-  static retrieve_from_cookies() : UserCookies | null {
+  static retrieve_from_cookies(): UserCookies | null {
     let user_name = cookies.get("user_name");
     let user_id = parseInt(cookies.get("user_id"));
     let token = cookies.get("token");

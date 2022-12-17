@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 
-  export default defineComponent ({
-    name: "Markdown View Box",
-    props:
+export default defineComponent({
+  name: "Markdown View Box",
+  props:
+  {
+    rendered_markdown:
     {
-      rendered_markdown:
-      {
-        type: String,
-        default: ""
-      }
-    },
-  });
+      type: String,
+      default: ""
+    }
+  },
+});
 </script>
 
 <template>
@@ -20,12 +20,11 @@
 </template>
 
 <style scoped>
-  .markdown_box > :first-child {
-    margin-top: 0 !important
-  }
+.markdown_box> :first-child {
+  margin-top: 0 !important
+}
 
-  .markdown_box > :last-child {
-    margin-bottom: 0 !important;
-  }
-
+.markdown_box> :last-child {
+  margin-bottom: 0 !important;
+}
 </style>  
