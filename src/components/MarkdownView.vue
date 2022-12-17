@@ -20,11 +20,11 @@
 </template>
 
 <style scoped>
-  .markdown_box :first-child {
+  .markdown_box > :first-child {
     margin-top: 0 !important
   }
 
-  .markdown_box :last-child {
+  .markdown_box > :last-child {
     margin-bottom: 0 !important;
   }
 
