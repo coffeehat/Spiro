@@ -17,6 +17,7 @@
     "marked-katex-extension": "^1.0.1",
     "mitt": "^3.0.0",
     "moment": "^2.29.4",
+    "pinia": "^2.0.28",
     "vue": "^3.2.37",
     "vue3-cookies": "^1.0.6"
   },

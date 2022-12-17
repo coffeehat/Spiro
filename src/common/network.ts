@@ -142,6 +142,10 @@ export function submitCommentForUser (
   );
 }
 
+export function logoutUser () {
+  UserCookies.delete_cookies();
+}
+
 export function loginUser (
   user_name_or_email: string,
   user_passwd: string,

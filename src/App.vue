@@ -2,9 +2,18 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 
-import CommentSubmitBox from './components/CommentSubmitBox.vue';
-import CommentListBox from './components/CommentListBox.vue'
+  import CommentSubmitBox from './components/CommentSubmitBox.vue';
+  import CommentListBox from './components/CommentListBox.vue';
 
+  import { onBeforeMount } from 'vue';
+
+  import { useUserStore } from './stores';
+
+  const userStore = useUserStore();
+
+  onBeforeMount(()=>{
+    userStore.restoreFromCookies();
+  });
 </script>
 
 <template>

@@ -19,6 +19,7 @@ export type UserLoginResponse = {
   token: string
   token_expire_timestamp: string,
   user_name: string,
+  user_id: number,
   error_code: number,
   error_hint: string,
   error_msg: string,
