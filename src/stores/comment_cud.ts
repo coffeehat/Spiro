@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { deleteComment } from "../common/network";
-import { CommentItemInfo } from "../common/types";
+import { deleteComment, submitCommentForUser, submitCommentForVisitor } from "../common/network";
+import { CommentItemInfo, ErrorInfo } from "../common/types";
 
 export enum CommentCUDType {
   Comment_Undef = 0,
@@ -10,7 +10,7 @@ export enum CommentCUDType {
 };
 
 export const useCommentCUDStore = defineStore(
-  'comment_temp',
+  'comment_cud',
   {
     state: () => {
       return {
@@ -27,6 +27,45 @@ export const useCommentCUDStore = defineStore(
             this.type = CommentCUDType.Comment_Delete;
           }
         );
+      },
+      submitCommentForUser(
+        article_id: number, 
+        comment_content: string,
+        success_cb?: (comment: CommentItemInfo) => void
+      ) {
+        submitCommentForUser(
+          article_id,
+          comment_content,
+          (comment) => {
+            if (success_cb) {
+              this.comment = comment;
+              this.type = CommentCUDType.Comment_Create;
+              success_cb(comment);
+            }
+          }
+        );
+      },
+      submitCommentForVisitor(
+        article_id: number,
+        user_name: string,
+        user_email: string,
+        comment_content: string,
+        success_cb?: (comment: CommentItemInfo) => void,
+        error_cb?: (response?: ErrorInfo) => void
+      ) {
+        submitCommentForVisitor(
+          article_id, 
+          user_name, 
+          user_email,
+          comment_content,
+          (comment) => {
+            if (success_cb) {
+              this.comment = comment;
+              this.type = CommentCUDType.Comment_Create;
+              success_cb(comment);
+            }
+          },
+          error_cb);
       }
     }
   }

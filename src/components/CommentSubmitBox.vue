@@ -25,7 +25,7 @@ export default defineComponent({
   data() {
     return {
       userStore: useUserStore(),
-      newCommentStore: useCommentCUDStore(),
+      commentCudStore: useCommentCUDStore(),
       // UserInteractiveRelated
       isShowUserInteractive: false,
       // Preview related
@@ -123,12 +123,12 @@ export default defineComponent({
     onVisitorSubmit() {
       (this.$refs.comment_form as any).validate((valid: boolean) => {
         if (valid) {
-          submitCommentForVisitor(this.article_id, this.comment_form.user_name, this.comment_form.user_email, this.comment_content, this.submitSuccessCb, this.submitErrorCb);
+          this.commentCudStore.submitCommentForVisitor(this.article_id, this.comment_form.user_name, this.comment_form.user_email, this.comment_content, this.submitSuccessCb, this.submitErrorCb);
         }
       });
     },
     onUserSubmit() {
-      submitCommentForUser(this.article_id, this.comment_content, this.submitSuccessCb);
+      this.commentCudStore.submitCommentForUser(this.article_id, this.comment_content, this.submitSuccessCb);
     },
     onPreview() {
       this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
@@ -200,8 +200,6 @@ export default defineComponent({
     },
     submitSuccessCb(comment: CommentItemInfo): void {
       this.comment_content = "";
-      this.newCommentStore.comment = comment;
-      this.newCommentStore.type = CommentCUDType.Comment_Create;
     },
     submitErrorCb(error?: ErrorInfo): void {
       if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {
