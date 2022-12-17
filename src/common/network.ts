@@ -161,7 +161,7 @@ export function loginUser (
   }).then(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
-        let user_cookies = new UserCookies(response.data.user_name, response.data.token);
+        let user_cookies = new UserCookies(response.data.user_name, response.data.user_id, response.data.token);
         UserCookies.dump_to_cookies(user_cookies, response.data.token_expire_timestamp);
         if (success_cb) {
           success_cb(response.data);
