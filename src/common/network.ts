@@ -298,3 +298,42 @@ export function getCommentCount(
     }
   );
 }
+
+export function deleteComment(
+  comment_id: number,
+  success_cb?: (comment_id: number) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  let form = new FormData();
+  form.append("comment_id", comment_id.toString())
+
+  let user_cookies = UserCookies.retrieve_from_cookies();
+  axios({
+    method: 'delete',
+    url: "http://192.168.1.12:5000/v1.0/comment",
+    data: form,
+    headers: {
+      Authorization: `Bearer ${user_cookies?.get_token()}`
+    }
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(comment_id);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}

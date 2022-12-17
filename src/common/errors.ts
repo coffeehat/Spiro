@@ -49,6 +49,9 @@ export enum ServerErrorCode {
   EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION = 374,
 
   EC_USER_UNAUTHORIZED_ERROR = 399,
+
+  EC_COMMENT_ERROR = 400,
+  EC_COMMENT_DELETE_USER_DONT_MATCH = 401
 }
 
 enum UserRole {
@@ -146,7 +149,11 @@ const error_code_parser_collections = {
   [ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION]:
     (error_hint?: any) => { return "该游客为正式用户，需要密码认证，请登录"; },
   [ServerErrorCode.EC_USER_UNAUTHORIZED_ERROR]:
-    (error_hint?: any) => { return "未授权"; }
+    (error_hint?: any) => { return "未授权"; },
+  [ServerErrorCode.EC_COMMENT_ERROR]:
+    (error_hint?: any) => { return "评论处理出错"; },
+  [ServerErrorCode.EC_COMMENT_DELETE_USER_DONT_MATCH]:
+    (error_hint?: any) => { return "评论删除失败：未找到与该用户和该评论相匹配的记录"; }
 }
 
 export function parseErrorCode(error_code: number, error_hint: any): string {

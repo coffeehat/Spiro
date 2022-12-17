@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { deleteComment } from "../common/network";
 import { CommentItemInfo } from "../common/types";
 
 export enum CommentCUDType {
@@ -15,6 +16,17 @@ export const useCommentCUDStore = defineStore(
       return {
         comment: {} as CommentItemInfo,
         type: CommentCUDType.Comment_Undef
+      }
+    },
+    actions: {
+      delete(comment_id: number) {
+        deleteComment(
+          comment_id,
+          (comment_id) => {
+            this.comment.comment_id = comment_id;
+            this.type = CommentCUDType.Comment_Delete;
+          }
+        );
       }
     }
   }

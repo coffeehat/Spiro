@@ -102,11 +102,19 @@ export default defineComponent({
             break;
           }
           case CommentCUDType.Comment_Delete: {
+            for (let i = 0; i != this.comment_list.length; ++i) {
+              if (this.comment_list[i]
+                && this.comment_list[i].comment_id == state.comment.comment_id) {
+                this.comment_list.splice(i,1);
+                break;
+              }
+            }
+            this.refreshCount();
             break;
           }
         }
       }
-    )
+    );
   },
   beforeMount() {
     this.refreshCount();

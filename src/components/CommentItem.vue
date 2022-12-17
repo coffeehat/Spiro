@@ -4,7 +4,7 @@ import { PropType, defineComponent } from 'vue';
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
-import { useUserStore } from '../stores';
+import { useCommentCUDStore, useUserStore } from '../stores';
 
 import MarkdownView from './MarkdownView.vue';
 
@@ -40,9 +40,15 @@ export default defineComponent({
       required: true
     }
   },
+  methods: {
+    onDeleteComment() {
+      this.commentCudStore.delete(this.comment.comment_id);
+    }
+  },
   data() {
     return {
       userStore: useUserStore(),
+      commentCudStore: useCommentCUDStore(),
       /* Some css need calculation */
       comment_title_height: 42,
       comment_quote_triangle_size: 8,
@@ -66,7 +72,8 @@ export default defineComponent({
           <span class="comment_time">评论于 {{ local_time }} </span>
         </div>
         <div class="comment_control_box">
-          <el-button type="danger" size="small" plain round v-show="is_show_delete_button">删除</el-button>
+          <el-button type="danger" size="small" @click="onDeleteComment" plain round
+            v-show="is_show_delete_button">删除</el-button>
           <el-button type="primary" size="small" plain round>回复</el-button>
         </div>
       </div>
