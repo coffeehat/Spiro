@@ -1,2 +1,2 @@
 export * from './user'
-export * from './new_comment'
+export * from './comment_cud'

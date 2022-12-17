@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { defineComponent, registerRuntimeCompiler } from 'vue';
+  import { defineComponent } from 'vue';
 
-  import { useUserStore, useNewCommentStore } from '../stores';
+  import { useUserStore, useCommentCUDStore, CommentCUDType } from '../stores';
   
   import { marked } from '../common/markdown'
   import { 
@@ -25,7 +25,7 @@
   data() {
     return {
       userStore: useUserStore(),
-      newCommentStore: useNewCommentStore(),
+      newCommentStore: useCommentCUDStore(),
       // Preview related
       md_preview: "",
       isShowPreview: false,
@@ -199,6 +199,7 @@
     submitSuccessCb(comment: CommentItemInfo): void {
       this.comment_content = "";
       this.newCommentStore.comment = comment;
+      this.newCommentStore.type = CommentCUDType.Comment_Create;
     },
     submitErrorCb(error?: ErrorInfo): void {
       if (error && error.error_code == ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION) {

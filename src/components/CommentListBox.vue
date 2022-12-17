@@ -8,7 +8,7 @@
   } from '../common/network'
   import { CommentItemInfoList } from '../common/types';
   import { sortCommentList } from '../common/utils';
-  import { useNewCommentStore } from '../stores';
+  import { useCommentCUDStore, CommentCUDType } from '../stores';
 
   // Vue components
   import CommentItem from './CommentItem.vue'
@@ -20,7 +20,7 @@
     },
     data() {
       return {
-        newCommentStore: useNewCommentStore(),
+        newCommentStore: useCommentCUDStore(),
         comment_list: [] as CommentItemInfoList,
         comment_count: 0,
         current_page: 1,
@@ -90,13 +90,21 @@
       this.refreshComment();
       this.newCommentStore.$subscribe(
         (mutation, state) => {
-          if (this.current_page == 1) {
-            this.comment_list.unshift(state.comment);
+          switch (state.type) {
+            case CommentCUDType.Comment_Create: {
+              if (this.current_page == 1) {
+                this.comment_list.unshift(state.comment);
+              }
+              this.refreshCount();
+              break;
+            }
+            case CommentCUDType.Comment_Update: {
+              break;
+            }
+            case CommentCUDType.Comment_Delete: {
+              break;
+            }
           }
-          this.refreshCount();
-          // if (this.current_page != 1) {
-          //   this.refreshComment();
-          // }
         }
       )
     },
