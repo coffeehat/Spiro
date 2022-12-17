@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@multiavatar/multiavatar": "^1.0.7",
     "@types/marked": "^4.0.7",
     "axios": "^1.2.0",
     "cookie": "^0.5.0",
     "element-plus": "^2.2.26",
+    "generate-avatar": "^1.4.10",
     "marked": "^4.2.3",
     "marked-katex-extension": "^1.0.1",
     "moment": "^2.29.4",
