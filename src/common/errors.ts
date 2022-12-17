@@ -153,7 +153,7 @@ const error_code_parser_collections = {
   [ServerErrorCode.EC_COMMENT_ERROR]:
     (error_hint?: any) => { return "评论处理出错"; },
   [ServerErrorCode.EC_COMMENT_DELETE_USER_DONT_MATCH]:
-    (error_hint?: any) => { return "评论删除失败：未找到与该用户和该评论相匹配的记录"; }
+    (error_hint?: any) => { return "评论删除失败：未找到与该评论与当前登录用户相匹配的记录"; }
 }
 
 export function parseErrorCode(error_code: number, error_hint: any): string {
