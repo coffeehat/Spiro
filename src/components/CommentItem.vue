@@ -7,9 +7,11 @@ import { Avatar } from "holiday-avatar";
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
-import { useCommentCUDStore, useUserStore } from '../stores';
+import { useCommentCUDStore, useUserStore, useReplyMutexStore } from '../stores';
 
 import MarkdownView from './MarkdownView.vue';
+import CommentSubmitBox from './CommentSubmitBox.vue';
+import { ReplyMutexScope } from '../stores/reply_mutex';
 
 export default defineComponent({
   name: "Comment Item",
@@ -44,6 +46,10 @@ export default defineComponent({
     comment: {
       type: Object as PropType<CommentItemInfo>,
       required: true
+    },
+    reply_scope: {
+      type: Object as PropType<ReplyMutexScope>,
+      default: ReplyMutexScope.Scope_All
     }
   },
   methods: {
@@ -61,21 +67,49 @@ export default defineComponent({
       }).catch(() => {
         // do nothing
       });
+    },
+    onReply() {
+      if (!this.is_show_comment_submit_box) {
+        this.reply_mutex_ctrl_mask = true;
+        this.replyMutex.acquire(this.reply_scope);
+      }
+      this.is_show_comment_submit_box = !this.is_show_comment_submit_box;
     }
   },
   data() {
     return {
+      /* Stores */
       userStore: useUserStore(),
       commentCudStore: useCommentCUDStore(),
+      replyMutex: useReplyMutexStore(),
+
+      is_show_comment_submit_box: false,
+      reply_mutex_ctrl_mask: false,
+
       /* Some css need calculation */
       comment_title_height: 42,
       comment_quote_triangle_size: 8,
       avatar_size: 50
     };
   },
+  mounted() {
+    this.replyMutex.$subscribe(
+      (mutation, state) => {
+        if (!this.reply_mutex_ctrl_mask
+          && state.scope == this.reply_scope) {
+          this.is_show_comment_submit_box = false;
+        }
+        this.reply_mutex_ctrl_mask = false;
+      }
+    )
+  },
+  beforeDestroy() {
+    window.removeEventListener('click', () => {}, true);
+  },
   components: {
     MarkdownView: MarkdownView, 
-    HldAvatar: Avatar
+    HldAvatar: Avatar,
+    CommentSubmitBox: CommentSubmitBox
   }
 });
 </script>
@@ -94,11 +128,17 @@ export default defineComponent({
         <div class="comment_control_box">
           <el-button type="danger" size="small" @click="onDeleteComment" plain round
             v-show="is_show_delete_button">删除</el-button>
-          <el-button type="primary" size="small" plain round>回复</el-button>
+          <el-button type="primary" size="small" @click="onReply" plain round>回复</el-button>
         </div>
       </div>
       <div class="comment_content">
         <MarkdownView :rendered_markdown="md_comment" />
+      </div>
+      <div class="reply_submit_box" ref="reply_submit_box">
+        <CommentSubmitBox
+          :article_id="0"
+          v-if="is_show_comment_submit_box"
+        />
       </div>
     </div>
   </div>
@@ -207,6 +247,10 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   margin-bottom: 20px;
+}
+
+.reply_submit_box {
+  margin-top: 10px;
 }
 
 </style>  

@@ -1,12 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { useUserStore, useCommentCUDStore, CommentCUDType } from '../stores';
+import { useUserStore, useCommentCUDStore } from '../stores';
 
 import { marked } from '../common/markdown'
 import {
-  submitCommentForVisitor,
-  submitCommentForUser,
   registerUser
 } from '../common/network';
 import {
@@ -27,7 +25,7 @@ export default defineComponent({
       userStore: useUserStore(),
       commentCudStore: useCommentCUDStore(),
       // UserInteractiveRelated
-      isShowUserInteractive: false,
+      isShowUserInteractive: !this.is_hide_user_ctrl_box_at_first,
       // Preview related
       md_preview: "",
       isShowPreview: false,
@@ -117,6 +115,14 @@ export default defineComponent({
     article_id: {
       type: Number,
       default: 0
+    },
+    is_hide_user_ctrl_box_at_first: {
+      type: Boolean,
+      default: false
+    },
+    is_show_logined_user: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
@@ -293,7 +299,7 @@ export default defineComponent({
 
     <el-form v-show="userStore.is_valid">
       <div class="user_form">
-        <div class="user_info_box">
+        <div class="user_info_box" v-show="is_show_logined_user">
           <span>用户{{ userStore.user_name }}已登录</span>
         </div>
 
