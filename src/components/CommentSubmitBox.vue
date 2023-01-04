@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
 import { useUserStore, useCommentCUDStore, useReplyMutexStore, ReplyMutexScope } from '../stores';
 
@@ -25,6 +25,7 @@ export default defineComponent({
       userStore: useUserStore(),
       commentCudStore: useCommentCUDStore(),
       replyMutex: useReplyMutexStore(),
+      reply_mutex_ctrl_mask: false,
       // UserInteractiveRelated
       isShowUserInteractive: !this.is_hide_user_ctrl_box_at_first,
       // Preview related
@@ -136,6 +137,14 @@ export default defineComponent({
     is_show_logined_user: {
       type: Boolean,
       default: true
+    },
+    is_primary_submit_box: {
+      type: Boolean,
+      default: true
+    },
+    reply_scope: {
+      type: Object as PropType<ReplyMutexScope>,
+      default: ReplyMutexScope.Scope_All
     }
   },
   methods: {
@@ -155,7 +164,8 @@ export default defineComponent({
           );
         }
       });
-      this.replyMutex.acquire(ReplyMutexScope.Scope_All);
+      this.reply_mutex_ctrl_mask = true;
+      this.replyMutex.acquire(this.reply_scope);
     },
     onUserSubmit() {
       this.commentCudStore.submitCommentForUser(
@@ -166,7 +176,8 @@ export default defineComponent({
         this.to_user_name,
         this.submitSuccessCb
       );
-      this.replyMutex.acquire(ReplyMutexScope.Scope_All);
+      this.reply_mutex_ctrl_mask = true;
+      this.replyMutex.acquire(this.reply_scope);
     },
     onPreview() {
       this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
@@ -261,6 +272,26 @@ export default defineComponent({
       else {
         callback();
       }
+    },
+    onFocusInputBox() {
+      if (this.is_primary_submit_box) {
+        this.reply_mutex_ctrl_mask = true;
+        this.replyMutex.acquire(this.reply_scope);
+      }
+      this.isShowUserInteractive = true;
+    }
+  },
+  mounted() {
+    if (this.is_primary_submit_box) {
+      this.replyMutex.$subscribe(
+        (mutation, state) => {
+          if (!this.reply_mutex_ctrl_mask
+            && state.scope == this.reply_scope) {
+            this.isShowUserInteractive = false;
+          }
+          this.reply_mutex_ctrl_mask = false;
+        }
+      )
     }
   },
   components: { MarkdownView }
@@ -271,8 +302,8 @@ export default defineComponent({
   <!-- Comment Box -->
   <div class="comment_box_container">
     <el-input v-model="comment_content" :autosize="{ minRows: 5 }" type="textarea" placeholder="Please input"
-      resize="none" ref="comment_input" v-show="!isShowPreview" @focus="isShowUserInteractive = true" />
-    <div class="comment_preview" :style="preview_height" v-show="isShowPreview">
+      resize="none" ref="comment_input" v-show="!isShowPreview" @focus="onFocusInputBox" />
+    <div class="comment_preview" :style="preview_height" v-show="isShowPreview" @click="onFocusInputBox">
       <MarkdownView :rendered_markdown="md_preview" />
     </div>
     <el-button class="preview_button" type="primary" @click="onPreview()" v-show="isShowUserInteractive" size="small"

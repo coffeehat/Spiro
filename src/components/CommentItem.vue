@@ -136,7 +136,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
-        <CommentSubmitBox :article_id="0" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name"/>
+        <CommentSubmitBox :article_id="0" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name" :is_primary_submit_box="false"/>
       </div>
       <div class="sub_comment_box" v-if="is_primary">
         <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false" :parent_comment_id="comment.comment_id"/>
