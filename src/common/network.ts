@@ -14,8 +14,8 @@ import { showSuccessMessage } from './utils';
 
 export function getCommentList(
   article_id: number,
-  offset: number,
-  length: number,
+  primary_comment_offset: number,
+  primary_comment_count: number,
   success_cb?: (comment_list: CommentItemInfoList) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
@@ -24,8 +24,8 @@ export function getCommentList(
     url: "http://192.168.1.12:5000/v1.0/comment_list",
     params: {
       "article_id": article_id,
-      "primary_comment_offset": offset,
-      "primary_comment_count": length,
+      "primary_comment_offset": primary_comment_offset,
+      "primary_comment_count": primary_comment_count,
     }
   }).then(
     (response) => {
@@ -55,6 +55,9 @@ export function submitCommentForVisitor(
   user_name: string,
   user_email: string,
   comment: string,
+  parent_comment_id : number,
+  to_user_id: number,
+  to_user_name: string,
   success_cb?: (comment: CommentItemInfo) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
@@ -63,6 +66,9 @@ export function submitCommentForVisitor(
   form.append("user_name", user_name);
   form.append("user_email", user_email);
   form.append("comment_content", comment);
+  form.append("parent_comment_id", parent_comment_id.toString());
+  form.append("to_user_id", to_user_id.toString());
+  form.append("to_user_name", to_user_name.toString());
 
   axios({
     method: 'post',
@@ -98,12 +104,18 @@ export function submitCommentForVisitor(
 export function submitCommentForUser(
   article_id: number,
   comment: string,
+  parent_comment_id : number,
+  to_user_id: number,
+  to_user_name: string,
   success_cb?: (comment: CommentItemInfo) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   let form = new FormData();
   form.append("article_id", article_id.toString());
   form.append("comment_content", comment);
+  form.append("parent_comment_id", parent_comment_id.toString());
+  form.append("to_user_id", to_user_id.toString());
+  form.append("to_user_name", to_user_name.toString());
 
   let user_cookies = UserCookies.retrieve_from_cookies();
   if (!user_cookies) {

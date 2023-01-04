@@ -44,11 +44,17 @@ export const useCommentCUDStore = defineStore(
       submitCommentForUser(
         article_id: number, 
         comment_content: string,
+        parent_comment_id : number,
+        to_user_id: number,
+        to_user_name: string,
         success_cb?: (comment: CommentItemInfo) => void
       ) {
         submitCommentForUser(
           article_id,
           comment_content,
+          parent_comment_id,
+          to_user_id,
+          to_user_name,
           (comment) => {
             if (success_cb) {
               this.comment = comment;
@@ -64,6 +70,9 @@ export const useCommentCUDStore = defineStore(
         user_name: string,
         user_email: string,
         comment_content: string,
+        parent_comment_id : number,
+        to_user_id: number,
+        to_user_name: string,
         success_cb?: (comment: CommentItemInfo) => void,
         error_cb?: (response?: ErrorInfo) => void
       ) {
@@ -72,6 +81,9 @@ export const useCommentCUDStore = defineStore(
           user_name, 
           user_email,
           comment_content,
+          parent_comment_id,
+          to_user_id,
+          to_user_name,
           (comment) => {
             if (success_cb) {
               this.comment = comment;

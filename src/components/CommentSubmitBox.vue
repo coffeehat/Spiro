@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import { useUserStore, useCommentCUDStore } from '../stores';
+import { useUserStore, useCommentCUDStore, useReplyMutexStore, ReplyMutexScope } from '../stores';
 
 import { marked } from '../common/markdown'
 import {
@@ -24,6 +24,7 @@ export default defineComponent({
     return {
       userStore: useUserStore(),
       commentCudStore: useCommentCUDStore(),
+      replyMutex: useReplyMutexStore(),
       // UserInteractiveRelated
       isShowUserInteractive: !this.is_hide_user_ctrl_box_at_first,
       // Preview related
@@ -116,6 +117,18 @@ export default defineComponent({
       type: Number,
       default: 0
     },
+    parent_comment_id: {
+      type: Number,
+      default: 0
+    },
+    to_user_id: {
+      type: Number,
+      default: 0
+    },
+    to_user_name: {
+      type: String,
+      default: ""
+    },
     is_hide_user_ctrl_box_at_first: {
       type: Boolean,
       default: false
@@ -133,19 +146,27 @@ export default defineComponent({
             this.article_id, 
             this.comment_form.user_name, 
             this.comment_form.user_email, 
-            this.comment_content, 
+            this.comment_content,
+            this.parent_comment_id,
+            this.to_user_id,
+            this.to_user_name,
             this.submitSuccessCb, 
             this.submitErrorCb
           );
         }
       });
+      this.replyMutex.acquire(ReplyMutexScope.Scope_All);
     },
     onUserSubmit() {
       this.commentCudStore.submitCommentForUser(
         this.article_id,
         this.comment_content,
+        this.parent_comment_id,
+        this.to_user_id,
+        this.to_user_name,
         this.submitSuccessCb
       );
+      this.replyMutex.acquire(ReplyMutexScope.Scope_All);
     },
     onPreview() {
       this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;

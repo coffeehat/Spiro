@@ -5,7 +5,7 @@ import { ElMessageBox } from 'element-plus';
 import { Avatar } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
-import { CommentItemInfo, SubCommentItemInfo } from '../common/types';
+import { CommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
 import { useCommentCUDStore, useUserStore, useReplyMutexStore } from '../stores';
 
@@ -36,12 +36,16 @@ export default defineComponent({
   },
   props: {
     comment: {
-      type: Object as PropType<CommentItemInfo> || Object as PropType<SubCommentItemInfo>,
+      type: Object as PropType<CommentItemInfo>,
       required: true
     },
     is_primary: {
       type: Boolean,
       default: true
+    },
+    parent_comment_id: {
+      type: Number,
+      default: 0
     },
     reply_scope: {
       type: Object as PropType<ReplyMutexScope>,
@@ -121,7 +125,9 @@ export default defineComponent({
       <div class="comment_title">
         <div class="comment_metainfo_box">
           <span class="comment_user_name">{{ comment.user_name }}</span>
-          <span class="comment_time">评论于 {{ local_time }} </span>
+          <span v-if="comment.to_user_name" class="comment_time">回复 {{ comment.to_user_name }} 于 {{ local_time }} </span>
+          <span v-else-if="is_primary" class="comment_time">评论于 {{ local_time }} </span>
+          <span v-else class="comment_time">回复于 {{ local_time }} </span>
         </div>
         <div class="comment_control_box">
           <el-button type="danger" size="small" @click="onDeleteComment" plain round
@@ -130,10 +136,10 @@ export default defineComponent({
         </div>
       </div>
       <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
-        <CommentSubmitBox :article_id="0" />
+        <CommentSubmitBox :article_id="0" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name"/>
       </div>
       <div class="sub_comment_box" v-if="is_primary">
-        <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false"/>
+        <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false" :parent_comment_id="comment.comment_id"/>
       </div>
     </div>
   </div>
@@ -255,6 +261,7 @@ export default defineComponent({
 
 .reply_submit_box {
   margin-top: 10px;
+  margin-bottom: 30px;
 }
 
 </style>  

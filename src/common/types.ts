@@ -4,18 +4,6 @@ export type ErrorInfo = {
   error_msg: string
 }
 
-export type SubCommentItemInfo = {
-  article_id: number,
-  user_id: number,
-  user_name: string,
-  comment_id: number,
-  comment_timestamp: string,
-  comment_content: string,
-  parent_comment_id: number,
-  to_user_id: number,
-  to_user_name: string
-}
-
 export type CommentItemInfo = {
   article_id: number,
   user_id: number,
@@ -23,7 +11,10 @@ export type CommentItemInfo = {
   comment_id: number,
   comment_timestamp: string,
   comment_content: string,
-  sub_comment_list: SubCommentItemInfo[]
+  sub_comment_list: CommentItemInfo[]
+  parent_comment_id: number,
+  to_user_id: number,
+  to_user_name: string
 }
 
 export type CommentItemInfoList = CommentItemInfo[];
