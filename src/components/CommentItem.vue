@@ -118,6 +118,12 @@ export default defineComponent({
     <div class="avatar_box">
       <HldAvatar class="avatar"/>
     </div>
+    <div class="sub_comment_guide_line" v-show="!is_primary">
+      <div class="guide_block_upper_left"></div>
+      <div class="guide_block_upper_right"></div>
+      <div class="guide_block_lower_left"></div>
+      <div class="guide_block_lower_right"></div>
+    </div>
     <div class="comment_box">
       <div class="comment_content">
         <MarkdownView :rendered_markdown="md_comment" />
@@ -192,6 +198,14 @@ export default defineComponent({
   border-right: 9px solid #ffffff;
 }
 
+.sub_comment_box {
+  margin-left: -30px;
+}
+
+.sub_comment_guide_line {
+  display: none;
+}
+
 @media screen and (max-width: 874px) {
 
   /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
@@ -202,6 +216,43 @@ export default defineComponent({
 
   .avatar_box {
     display: none;
+  }
+
+  .sub_comment_box {
+    margin-left: 0px;
+  }
+
+  .sub_comment_guide_line {
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
+
+  .sub_comment_guide_line .guide_block_upper_right {
+    border-left: 1px #a0cfff dashed;
+    border-bottom: 1px #a0cfff dashed;
+  }
+
+  .sub_comment_guide_line .guide_block_lower_right {
+    border-left: 1px #a0cfff dashed;
+  }
+
+
+  .sub_comment_box > .comment_item > .sub_comment_guide_line {
+    display: grid;
+    grid-template-columns: 8px 16px;
+    grid-template-rows: 50% 50%;
+  }
+
+  .sub_comment_box > .comment_item:first-child > .sub_comment_guide_line {
+    margin-top: -20px;
+  }
+
+  .sub_comment_box > .comment_item:last-child > .sub_comment_guide_line .guide_block_lower_right {
+    border-left: 0px;
+  }
+
+  .sub_comment_box > .comment_item:last-child > .sub_comment_guide_line .guide_block_upper_right {
+    border-radius: 0px 5px;
   }
 }
 
