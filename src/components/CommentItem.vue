@@ -154,7 +154,7 @@ export default defineComponent({
   /* background-color: #ececec; */
   position: relative;
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   align-items: center;
   height: 40px;
   /* Without this the line will not vertical aligned to center */
@@ -205,24 +205,21 @@ export default defineComponent({
   }
 }
 
-.comment_metainfo_box {
-  margin-left: auto;
-}
-
 .comment_metainfo_box>* {
   margin-left: 6px;
 }
 
-.comment_control_box {
+.comment_content:hover + .comment_title > .comment_control_box,
+.comment_title:hover > .comment_control_box {
   display: block;
+}
+
+.comment_control_box {
+  display: none;
 }
 
 .comment_control_box>* {
   margin-left: 6px;
-}
-
-.comment_item:hover .comment_control_box{
-  display: block;
 }
 
 .comment_content {
