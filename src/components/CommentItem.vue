@@ -24,15 +24,7 @@ export default defineComponent({
     },
     // For css
     quote_angle_top(): number {
-      return (this.comment_title_height - 2 * this.comment_quote_triangle_size) / 2;
-    },
-    avatar_margin_top(): number {
-      let temp = (this.comment_title_height - this.avatar_size) / 2;
-      return temp > 0 ? temp : 0;
-    },
-    comment_title_margin_top(): number {
-      let temp = (this.avatar_size - this.comment_title_height) / 2;
-      return temp > 0 ? temp : 0;
+      return (this.avatar_size - 2 * this.comment_quote_triangle_size) / 2 - 3;
     },
     is_show_delete_button(): boolean {
       return this.userStore.is_valid
@@ -91,7 +83,6 @@ export default defineComponent({
       reply_mutex_ctrl_mask: false,
 
       /* Some css need calculation */
-      comment_title_height: 42,
       comment_quote_triangle_size: 8,
       avatar_size: 50
     };
@@ -124,6 +115,9 @@ export default defineComponent({
       <HldAvatar class="avatar"/>
     </div>
     <div class="comment_box">
+      <div class="comment_content">
+        <MarkdownView :rendered_markdown="md_comment" />
+      </div>
       <div class="comment_title">
         <div class="comment_metainfo_box">
           <span class="comment_user_name">{{ comment.user_name }}</span>
@@ -134,9 +128,6 @@ export default defineComponent({
             v-show="is_show_delete_button">删除</el-button>
           <el-button type="primary" size="small" @click="onReply" plain round>回复</el-button>
         </div>
-      </div>
-      <div class="comment_content">
-        <MarkdownView :rendered_markdown="md_comment" />
       </div>
       <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
         <CommentSubmitBox :article_id="0" />
@@ -150,25 +141,37 @@ export default defineComponent({
 
 <style scoped>
 .comment_title {
-  padding: 0px 12px;
+  padding: 0px 8px;
   border: 1px solid rgb(167, 167, 167);
-  border-radius: 5px 5px 0px 0px;
-  background-color: #ececec;
+  border-top: 0px;
+  border-radius: 0px 0px 5px 5px;
+  /* background-color: #ececec; */
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: v-bind(comment_title_height + "px");
+  height: 40px;
   /* Without this the line will not vertical aligned to center */
   line-height: 1rem;
-  margin-top: v-bind(comment_title_margin_top + "px");
+  margin-top: -1px;
+  margin-bottom: 20px;
+  color: rgb(114, 114, 114);
 }
 
-.comment_title::before,
-.comment_title::after {
+.comment_title>* {
+  margin-left: 5px;
+}
+
+.comment_box {
+  width: 100%;
+  position: relative;
+}
+
+.comment_box::before,
+.comment_box::after {
   position: absolute;
   top: v-bind(quote_angle_top + "px");
-  left: -17px;
+  left: -16px;
   content: '';
   width: 0;
   height: 0;
@@ -178,16 +181,16 @@ export default defineComponent({
   border-top: v-bind(comment_quote_triangle_size + "px") solid transparent;
 }
 
-.comment_title::after {
-  left: -16px;
-  border-right: 9px solid #ececec;
+.comment_box::after {
+  left: -15px;
+  border-right: 9px solid #ffffff;
 }
 
 @media screen and (max-width: 874px) {
 
   /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
-  .comment_title::before,
-  .comment_title::after {
+  .comment_box::before,
+  .comment_box::after {
     display: none;
   }
 
@@ -196,13 +199,16 @@ export default defineComponent({
   }
 }
 
+.comment_metainfo_box {
+  margin-left: auto;
+}
+
 .comment_metainfo_box>* {
-  margin-right: 6px;
+  margin-left: 6px;
 }
 
 .comment_control_box {
-  margin-left: auto;
-  display: none;
+  display: block;
 }
 
 .comment_control_box>* {
@@ -214,11 +220,10 @@ export default defineComponent({
 }
 
 .comment_content {
-  padding: 12px 15px;
+  padding: 18px 20px;
   border: 1px solid rgb(167, 167, 167);
-  border-radius: 0px 0px 5px 5px;
-  margin-top: -1px;
-  margin-bottom: 20px;
+  border-bottom: 0px;
+  border-radius: 5px 5px 0px 0px;
 }
 
 .comment_content :first-child {
@@ -233,10 +238,6 @@ export default defineComponent({
   font-weight: 700;
 }
 
-.comment_box {
-  width: 100%;
-}
-
 .avatar_box {
   width: 50px;
   margin-right: 17px;
@@ -245,7 +246,6 @@ export default defineComponent({
 .avatar {
   width: v-bind(avatar_size + "px");
   height: v-bind(avatar_size + "px");
-  margin-top: v-bind(avatar_margin_top + "px");
 }
 
 .comment_item {
