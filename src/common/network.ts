@@ -24,8 +24,8 @@ export function getCommentList(
     url: "http://192.168.1.12:5000/v1.0/comment_list",
     params: {
       "article_id": article_id,
-      "offset": offset,
-      "length": length
+      "primary_comment_offset": offset,
+      "primary_comment_count": length,
     }
   }).then(
     (response) => {

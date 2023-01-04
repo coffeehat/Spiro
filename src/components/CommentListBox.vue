@@ -126,7 +126,7 @@ export default defineComponent({
   <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
     <div class="comment_list">
-      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" />
+      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true"/>
     </div>
     <div class="pagination">
       <el-pagination layout="prev, pager, next" :page-size="comments_per_page" :page-count="comment_pages"

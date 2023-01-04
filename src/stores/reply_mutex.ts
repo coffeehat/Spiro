@@ -13,6 +13,7 @@ export const useReplyMutexStore = defineStore(
     state: () => {
       return {
         scope: ReplyMutexScope.Scope_Undef,
+        // TODO: Maybe we can collect all the element of each scope and shut them down?
         acquire_counter: 0 // TODO: this is ugly
       }
     },

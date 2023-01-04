@@ -5,7 +5,7 @@ import { ElMessageBox } from 'element-plus';
 import { Avatar } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
-import { CommentItemInfo } from '../common/types';
+import { CommentItemInfo, SubCommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
 import { useCommentCUDStore, useUserStore, useReplyMutexStore } from '../stores';
 
@@ -44,8 +44,12 @@ export default defineComponent({
   },
   props: {
     comment: {
-      type: Object as PropType<CommentItemInfo>,
+      type: Object as PropType<CommentItemInfo> || Object as PropType<SubCommentItemInfo>,
       required: true
+    },
+    is_primary: {
+      type: Boolean,
+      default: true
     },
     reply_scope: {
       type: Object as PropType<ReplyMutexScope>,
@@ -134,11 +138,11 @@ export default defineComponent({
       <div class="comment_content">
         <MarkdownView :rendered_markdown="md_comment" />
       </div>
-      <div class="reply_submit_box" ref="reply_submit_box">
-        <CommentSubmitBox
-          :article_id="0"
-          v-if="is_show_comment_submit_box"
-        />
+      <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
+        <CommentSubmitBox :article_id="0" />
+      </div>
+      <div class="sub_comment_box" v-if="is_primary">
+        <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false"/>
       </div>
     </div>
   </div>
@@ -214,6 +218,7 @@ export default defineComponent({
   border: 1px solid rgb(167, 167, 167);
   border-radius: 0px 0px 5px 5px;
   margin-top: -1px;
+  margin-bottom: 20px;
 }
 
 .comment_content :first-child {
@@ -246,7 +251,6 @@ export default defineComponent({
 .comment_item {
   display: flex;
   flex-direction: row;
-  margin-bottom: 20px;
 }
 
 .reply_submit_box {
