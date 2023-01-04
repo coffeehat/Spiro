@@ -161,8 +161,9 @@ export default defineComponent({
   position: relative;
   display: flex;
   flex-direction: row-reverse;
+  flex-wrap: wrap;
   align-items: center;
-  height: 40px;
+  min-height: 40px;
   /* Without this the line will not vertical aligned to center */
   line-height: 1rem;
   margin-top: -1px;
@@ -271,6 +272,8 @@ export default defineComponent({
 
 .comment_control_box>* {
   margin-left: 6px;
+  margin-top: 7px;
+  margin-bottom: 7px;
 }
 
 .comment_content {
