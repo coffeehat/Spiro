@@ -257,6 +257,10 @@ export default defineComponent({
   }
 }
 
+.comment_metainfo_box {
+  margin-bottom: 7px;
+}
+
 .comment_metainfo_box>* {
   margin-left: 6px;
 }
@@ -268,12 +272,11 @@ export default defineComponent({
 
 .comment_control_box {
   display: none;
+  margin-bottom: 7px;
 }
 
 .comment_control_box>* {
   margin-left: 6px;
-  margin-top: 7px;
-  margin-bottom: 7px;
 }
 
 .comment_content {
