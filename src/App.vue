@@ -17,8 +17,8 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CommentSubmitBox :article_id="0" :is_hide_user_ctrl_box_at_first="true"/>
-  <CommentListBox :article_id="0" />
+  <CommentSubmitBox :article_id="0" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
+  <CommentListBox :article_id="0"/>
 </template>
 
 <style scoped>

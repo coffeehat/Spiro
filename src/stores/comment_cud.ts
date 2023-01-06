@@ -27,16 +27,21 @@ export const useCommentCUDStore = defineStore(
     state: () => {
       return {
         comment: {} as CommentItemInfo,
-        type: CommentCUDType.Comment_Undef
+        type: CommentCUDType.Comment_Undef,
+        list_obj: {} as any
       }
     },
     actions: {
-      delete(comment_id: number) {
+      delete(
+        comment_id: number,
+        list_obj?: any
+      ) {
         deleteComment(
           comment_id,
           (comment_id) => {
             this.comment.comment_id = comment_id;
             this.type = CommentCUDType.Comment_Delete;
+            this.list_obj = list_obj;
           },
           check_and_handle_token_invalid_error
         );
@@ -47,7 +52,8 @@ export const useCommentCUDStore = defineStore(
         parent_comment_id : number,
         to_user_id: number,
         to_user_name: string,
-        success_cb?: (comment: CommentItemInfo) => void
+        success_cb?: (comment: CommentItemInfo) => void,
+        list_obj?: any
       ) {
         submitCommentForUser(
           article_id,
@@ -59,6 +65,7 @@ export const useCommentCUDStore = defineStore(
             if (success_cb) {
               this.comment = comment;
               this.type = CommentCUDType.Comment_Create;
+              this.list_obj = list_obj;
               success_cb(comment);
             }
           },
@@ -74,7 +81,8 @@ export const useCommentCUDStore = defineStore(
         to_user_id: number,
         to_user_name: string,
         success_cb?: (comment: CommentItemInfo) => void,
-        error_cb?: (response?: ErrorInfo) => void
+        error_cb?: (response?: ErrorInfo) => void,
+        list_obj?: any
       ) {
         submitCommentForVisitor(
           article_id, 
@@ -88,6 +96,7 @@ export const useCommentCUDStore = defineStore(
             if (success_cb) {
               this.comment = comment;
               this.type = CommentCUDType.Comment_Create;
+              this.list_obj = list_obj;
               success_cb(comment);
             }
           },

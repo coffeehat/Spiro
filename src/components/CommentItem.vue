@@ -7,7 +7,7 @@ import { Avatar } from "holiday-avatar";
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
-import { useCommentCUDStore, useUserStore, useReplyMutexStore } from '../stores';
+import { useCommentCUDStore, useUserStore, useReplyMutexStore, CommentCUDType } from '../stores';
 
 import MarkdownView from './MarkdownView.vue';
 import CommentSubmitBox from './CommentSubmitBox.vue';
@@ -32,6 +32,16 @@ export default defineComponent({
     },
     avatar_string(): string {
       return "";
+    },
+    submit_box_responible_list(): any {
+      if (this.is_primary) {
+        return this;
+      } else {
+        return this.belonging;
+      }
+    },
+    delete_button_responsible_list(): any {
+      return this.belonging;
     }
   },
   props: {
@@ -50,7 +60,9 @@ export default defineComponent({
     reply_scope: {
       type: Object as PropType<ReplyMutexScope>,
       default: ReplyMutexScope.Scope_All
-    }
+    },
+    /* Belonging list*/
+    belonging: null
   },
   methods: {
     onDeleteComment() {
@@ -63,7 +75,10 @@ export default defineComponent({
           type: 'warning',
         }
       ).then(() => {
-        this.commentCudStore.delete(this.comment.comment_id);
+        this.commentCudStore.delete(
+          this.comment.comment_id,
+          this.belonging
+        );
       }).catch(() => {
         // do nothing
       });
@@ -88,7 +103,10 @@ export default defineComponent({
 
       /* Some css need calculation */
       comment_quote_triangle_size: 8,
-      avatar_size: 50
+      avatar_size: 50,
+
+      /* My self */
+      self: this
     };
   },
   mounted() {
@@ -100,7 +118,32 @@ export default defineComponent({
         }
         this.reply_mutex_ctrl_mask = false;
       }
-    )
+    );
+    this.commentCudStore.$subscribe(
+      (mutation, state) => {
+        if (state.list_obj === this) {
+          switch (state.type) {
+            case CommentCUDType.Comment_Create: {
+              this.comment.sub_comment_list.push(state.comment);
+              break;
+            }
+            case CommentCUDType.Comment_Update: {
+              break;
+            }
+            case CommentCUDType.Comment_Delete: {
+              for (let i = 0; i != this.comment.sub_comment_list.length; ++i) {
+                if (this.comment.sub_comment_list[i]
+                  && this.comment.sub_comment_list[i].comment_id == state.comment.comment_id) {
+                    this.comment.sub_comment_list.splice(i,1);
+                  break;
+                }
+              }
+              break;
+            }
+          }
+        }
+      }
+    );
   },
   beforeDestroy() {
     window.removeEventListener('click', () => {}, true);
@@ -142,10 +185,10 @@ export default defineComponent({
         </div>
       </div>
       <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
-        <CommentSubmitBox :article_id="0" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name" :is_primary_submit_box="false"/>
+        <CommentSubmitBox :article_id="0" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name" :is_primary_submit_box="false" :comment_list_to_affect="submit_box_responible_list"/>
       </div>
       <div class="sub_comment_box" v-if="is_primary">
-        <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false" :parent_comment_id="comment.comment_id"/>
+        <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false" :parent_comment_id="comment.comment_id" :belonging="self"/>
       </div>
     </div>
   </div>
@@ -240,7 +283,7 @@ export default defineComponent({
 
   .sub_comment_box > .comment_item > .sub_comment_guide_line {
     display: grid;
-    grid-template-columns: 8px 16px;
+    grid-template-columns: 4px 12px;
     grid-template-rows: 50% 50%;
   }
 

@@ -145,7 +145,8 @@ export default defineComponent({
     reply_scope: {
       type: Object as PropType<ReplyMutexScope>,
       default: ReplyMutexScope.Scope_All
-    }
+    },
+    comment_list_to_affect: null
   },
   methods: {
     onVisitorSubmit() {
@@ -160,7 +161,8 @@ export default defineComponent({
             this.to_user_id,
             this.to_user_name,
             this.submitSuccessCb, 
-            this.submitErrorCb
+            this.submitErrorCb,
+            this.comment_list_to_affect
           );
         }
       });
@@ -174,7 +176,8 @@ export default defineComponent({
         this.parent_comment_id,
         this.to_user_id,
         this.to_user_name,
-        this.submitSuccessCb
+        this.submitSuccessCb,
+        this.comment_list_to_affect
       );
       this.reply_mutex_ctrl_mask = true;
       this.replyMutex.acquire(this.reply_scope);

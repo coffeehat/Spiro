@@ -24,7 +24,8 @@ export default defineComponent({
       comment_list: [] as CommentItemInfoList,
       comment_count: 0,
       current_page: 1,
-      is_show_list: false
+      is_show_list: false,
+      self: this
     }
   },
   computed: {
@@ -90,27 +91,30 @@ export default defineComponent({
     this.refreshComment();
     this.newCommentStore.$subscribe(
       (mutation, state) => {
-        switch (state.type) {
-          case CommentCUDType.Comment_Create: {
-            if (this.current_page == 1) {
-              this.comment_list.unshift(state.comment);
-            }
-            this.refreshCount();
-            break;
-          }
-          case CommentCUDType.Comment_Update: {
-            break;
-          }
-          case CommentCUDType.Comment_Delete: {
-            for (let i = 0; i != this.comment_list.length; ++i) {
-              if (this.comment_list[i]
-                && this.comment_list[i].comment_id == state.comment.comment_id) {
-                this.comment_list.splice(i,1);
-                break;
+        // TODO: Ugly implementation..... Need refinement
+        if (state.list_obj === 0) {
+          switch (state.type) {
+            case CommentCUDType.Comment_Create: {
+              if (this.current_page == 1) {
+                this.comment_list.unshift(state.comment);
               }
+              this.refreshCount();
+              break;
             }
-            this.refreshCount();
-            break;
+            case CommentCUDType.Comment_Update: {
+              break;
+            }
+            case CommentCUDType.Comment_Delete: {
+              for (let i = 0; i != this.comment_list.length; ++i) {
+                if (this.comment_list[i]
+                  && this.comment_list[i].comment_id == state.comment.comment_id) {
+                  this.comment_list.splice(i,1);
+                  break;
+                }
+              }
+              this.refreshCount();
+              break;
+            }
           }
         }
       }
@@ -126,7 +130,7 @@ export default defineComponent({
   <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
     <div class="comment_list">
-      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id"/>
+      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0"/>
     </div>
     <div class="pagination">
       <el-pagination layout="prev, pager, next" :page-size="comments_per_page" :page-count="comment_pages"
