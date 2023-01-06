@@ -2,11 +2,11 @@
 import { PropType, defineComponent } from 'vue';
 
 import { ElMessageBox } from 'element-plus';
-import { Avatar } from "holiday-avatar";
+import { Avatar, genConfig } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
 import { CommentItemInfo } from '../common/types';
-import { getLocalFormattedTimeFromTimestamp } from '../common/utils';
+import { getLocalFormattedTimeFromTimestamp, genAvatarConfigByUserId } from '../common/utils';
 import { useCommentCUDStore, useUserStore, useReplyMutexStore, CommentCUDType } from '../stores';
 
 import MarkdownView from './MarkdownView.vue';
@@ -42,6 +42,9 @@ export default defineComponent({
     },
     delete_button_responsible_list(): any {
       return this.belonging;
+    },
+    avatar_config(): any {
+      return genConfig(genAvatarConfigByUserId(this.comment.user_id) as any);
     }
   },
   props: {
@@ -159,7 +162,8 @@ export default defineComponent({
 <template>
   <div class="comment_item">
     <div class="avatar_box">
-      <HldAvatar class="avatar"/>
+      <!-- The Key attribute here is to force fresh the Avatar when user click page next in comment list -->
+      <HldAvatar class="avatar" v-bind="{ ...avatar_config }" :key="comment.user_id"/>
     </div>
     <div class="sub_comment_guide_line" v-show="!is_primary">
       <div class="guide_block_upper_left"></div>
