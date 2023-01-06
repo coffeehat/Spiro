@@ -242,10 +242,6 @@ export default defineComponent({
   border-right: 9px solid #ffffff;
 }
 
-.sub_comment_box {
-  margin-left: -30px;
-}
-
 .sub_comment_guide_line {
   display: none;
 }
