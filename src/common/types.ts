@@ -11,13 +11,17 @@ export type CommentItemInfo = {
   comment_id: number,
   comment_timestamp: string,
   comment_content: string,
-  sub_comment_list: CommentItemInfo[]
+  sub_comment_list: SubCommentItemInfo[]
   parent_comment_id: number,
   to_user_id: number,
-  to_user_name: string
+  to_user_name: string,
+  is_more: boolean
 }
 
 export type CommentItemInfoList = CommentItemInfo[];
+
+export type SubCommentItemInfo = CommentItemInfo;
+export type SubCommentItemInfoList = SubCommentItemInfo[];
 
 export type UserLoginResponse = {
   token: string

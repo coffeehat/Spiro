@@ -5,6 +5,7 @@ import { ServerErrorCode, parseAndShowErrorInfo } from './errors';
 import {
   CommentItemInfo,
   CommentItemInfoList,
+  SubCommentItemInfoList,
   UserLoginResponse,
   UserRegisterResponse,
   ErrorInfo,
@@ -16,6 +17,7 @@ export function getCommentList(
   article_id: number,
   primary_comment_offset: number,
   primary_comment_count: number,
+  sub_comment_count: number,
   success_cb?: (comment_list: CommentItemInfoList) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
@@ -26,12 +28,53 @@ export function getCommentList(
       "article_id": article_id,
       "primary_comment_offset": primary_comment_offset,
       "primary_comment_count": primary_comment_count,
+      "sub_comment_count": sub_comment_count
     }
   }).then(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
           success_cb(response.data.comment_list);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}
+
+export function getSubCommentList(
+  article_id: number,
+  parent_comment_id: number,
+  sub_comment_offset: number,
+  sub_comment_count: number,
+  success_cb?: (comment_list: SubCommentItemInfoList, is_more: boolean) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  axios({
+    method: 'get',
+    url: "http://192.168.1.12:5000/v1.0/sub_comment_list",
+    params: {
+      "article_id": article_id,
+      "parent_comment_id": parent_comment_id,
+      "sub_comment_offset": sub_comment_offset,
+      "sub_comment_count": sub_comment_count
+    }
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data.sub_comment_list, response.data.is_more);
         }
       } else {
         parseAndShowErrorInfo(response.data);

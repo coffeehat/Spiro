@@ -5,10 +5,13 @@ import { ElMessageBox } from 'element-plus';
 import { Avatar, genConfig } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
-import { CommentItemInfo } from '../common/types';
+import { CommentItemInfo, SubCommentItemInfo } from '../common/types';
 import { getLocalFormattedTimeFromTimestamp, genAvatarConfigByUserId } from '../common/utils';
 import { useCommentCUDStore, useUserStore, useReplyMutexStore, CommentCUDType } from '../stores';
 
+import {
+  getSubCommentList
+} from '../common/network'
 import MarkdownView from './MarkdownView.vue';
 import CommentSubmitBox from './CommentSubmitBox.vue';
 import { ReplyMutexScope } from '../stores/reply_mutex';
@@ -45,6 +48,9 @@ export default defineComponent({
     },
     avatar_config(): any {
       return genConfig(genAvatarConfigByUserId(this.comment.user_id) as any);
+    },
+    is_show_load_more_button(): Boolean {
+      return this.is_primary && this.comment.is_more;
     }
   },
   props: {
@@ -63,6 +69,14 @@ export default defineComponent({
     reply_scope: {
       type: Object as PropType<ReplyMutexScope>,
       default: ReplyMutexScope.Scope_All
+    },
+    article_id: {
+      type: Number,
+      required: true
+    },
+    number_of_new_load_sub_comments: {
+      type: Number,
+      default: 5
     },
     /* Belonging list*/
     belonging: null
@@ -92,6 +106,21 @@ export default defineComponent({
         this.replyMutex.acquire(this.reply_scope);
       }
       this.is_show_comment_submit_box = !this.is_show_comment_submit_box;
+    },
+    onClickLoadMoreSubComment() {
+      if (this.parent_comment_id) {
+        getSubCommentList(
+          this.article_id,
+          this.parent_comment_id,
+          this.comment.sub_comment_list.length,
+          this.number_of_new_load_sub_comments,
+          (comment_list, is_more) => {
+            this.comment.is_more = is_more;
+            this.comment.sub_comment_list.push.apply(this.comment.sub_comment_list, comment_list);
+          }
+        )
+      }
+      return false;
     }
   },
   data() {
@@ -196,9 +225,33 @@ export default defineComponent({
       </div>
     </div>
   </div>
+  <div class="load_more_interactive" v-if="is_show_load_more_button">
+    <a href="" @click.prevent="onClickLoadMoreSubComment">加载更多回复</a>
+  </div>
 </template>
 
 <style scoped>
+.load_more_interactive {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.load_more_interactive a:visited,
+.load_more_interactive a:link {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.load_more_interactive a:hover {
+  color: #79bbff;
+  text-decoration: none;
+}
+
+.load_more_interactive a:active {
+  color: #337ecc;
+  text-decoration: none;
+}
+
 .comment_title {
   padding: 0px 8px;
   border: 1px solid rgb(167, 167, 167);

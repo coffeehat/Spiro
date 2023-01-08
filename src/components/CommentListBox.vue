@@ -44,6 +44,16 @@ export default defineComponent({
     {
       type: Number,
       default: 10
+    },
+    sub_comments_per_primary_comments:
+    {
+      type: Number,
+      default: 3
+    },
+    number_of_new_load_sub_comments:
+    {
+      type: Number,
+      default: 5
     }
   },
   methods: {
@@ -55,6 +65,7 @@ export default defineComponent({
         this.article_id,
         offset,
         length,
+        this.sub_comments_per_primary_comments,
         (comment_list) => {
           this.comment_list = comment_list;
           sortCommentList(this.comment_list);
@@ -80,6 +91,7 @@ export default defineComponent({
         this.article_id,
         offset,
         length,
+        this.sub_comments_per_primary_comments,
         (comment_list) => {
           this.comment_list = comment_list;
           sortCommentList(this.comment_list);
@@ -130,7 +142,7 @@ export default defineComponent({
   <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
     <div class="comment_list">
-      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0"/>
+      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_id="article_id" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
     </div>
     <div class="pagination">
       <el-pagination layout="prev, pager, next" :page-size="comments_per_page" :page-count="comment_pages"
