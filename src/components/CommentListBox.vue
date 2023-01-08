@@ -22,6 +22,7 @@ export default defineComponent({
     return {
       newCommentStore: useCommentCUDStore(),
       comment_list: [] as CommentItemInfoList,
+      is_more: false,
       comment_count: 0,
       current_page: 1,
       is_show_list: false,
@@ -54,7 +55,12 @@ export default defineComponent({
     {
       type: Number,
       default: 5
-    }
+    },
+    use_pagination:
+    {
+      type: Boolean,
+      default: false
+    },
   },
   methods: {
     onPageChange(index: number) {
@@ -66,7 +72,8 @@ export default defineComponent({
         offset,
         length,
         this.sub_comments_per_primary_comments,
-        (comment_list) => {
+        (comment_list, is_more) => {
+          this.is_more = is_more;
           this.comment_list = comment_list;
           sortCommentList(this.comment_list);
         }
@@ -92,11 +99,26 @@ export default defineComponent({
         offset,
         length,
         this.sub_comments_per_primary_comments,
-        (comment_list) => {
+        (comment_list, is_more) => {
           this.comment_list = comment_list;
+          this.is_more = is_more;
           sortCommentList(this.comment_list);
         }
       );
+    },
+    onClickLoadMoreSubComment() {
+      getCommentList(
+        this.article_id,
+        this.comment_list.length,
+        this.comments_per_page,
+        this.sub_comments_per_primary_comments,
+        (comment_list, is_more) => {
+          this.is_more = is_more;
+          this.comment_list.push.apply(this.comment_list, comment_list);
+          sortCommentList(this.comment_list);
+        }
+      );
+      return false;
     }
   },
   mounted() {
@@ -144,11 +166,14 @@ export default defineComponent({
     <div class="comment_list">
       <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_id="article_id" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
     </div>
-    <div class="pagination">
+    <div class="pagination" v-if="use_pagination">
       <el-pagination layout="prev, pager, next" :page-size="comments_per_page" :page-count="comment_pages"
         @current-change="onPageChange" @prev-click="onPageChange" @next-click="onPageChange"
         :hide-on-single-page="true">
       </el-pagination>
+    </div>
+    <div class="load_more_interactive" v-if="!use_pagination && is_more">
+      <a href="" @click.prevent="onClickLoadMoreSubComment">加载更多评论</a>
     </div>
   </div>
 </template>
@@ -169,5 +194,26 @@ export default defineComponent({
   justify-content: center;
   margin: 40px 0;
   /* flex: 0 0 auto; */
+}
+
+.load_more_interactive {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.load_more_interactive a:visited,
+.load_more_interactive a:link {
+  color: #409eff;
+  text-decoration: none;
+}
+
+.load_more_interactive a:hover {
+  color: #79bbff;
+  text-decoration: none;
+}
+
+.load_more_interactive a:active {
+  color: #337ecc;
+  text-decoration: none;
 }
 </style>

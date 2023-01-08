@@ -18,7 +18,7 @@ export function getCommentList(
   primary_comment_offset: number,
   primary_comment_count: number,
   sub_comment_count: number,
-  success_cb?: (comment_list: CommentItemInfoList) => void,
+  success_cb?: (comment_list: CommentItemInfoList, is_more: boolean) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
@@ -34,7 +34,7 @@ export function getCommentList(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
-          success_cb(response.data.comment_list);
+          success_cb(response.data.comment_list, response.data.is_more);
         }
       } else {
         parseAndShowErrorInfo(response.data);
