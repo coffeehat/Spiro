@@ -17,10 +17,18 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <CommentSubmitBox :article_id="0" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
-  <CommentListBox :article_id="0"/>
+  <div class="container">
+    <CommentSubmitBox :article_id="0" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
+    <CommentListBox :article_id="0"/>
+  </div>
 </template>
 
 <style scoped>
-
+  @media screen and (min-width: 718px) {
+    .container {
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
 </style>
