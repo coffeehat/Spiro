@@ -11,7 +11,7 @@ import Spiro from './Spiro.vue';
 // Others
 import { updateServerAddress } from './common/network';
 
-export function mountApp(el_id: string, article_id: number, server_addr: string) {
+export function mountSpiro(el_id: string, article_id: number, server_addr: string) {
   updateServerAddress(server_addr);
   createApp(Spiro, {"article_id": article_id})
     .use(ElementPlus)
