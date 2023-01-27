@@ -9,7 +9,9 @@ import 'element-plus/dist/index.css';
 import Spiro from './Spiro.vue';
 import './style.css';
 
-createApp(Spiro)
-  .use(ElementPlus)
-  .use(createPinia())
-  .mount('#app');
+export function mountApp(id: string) {
+  createApp(Spiro)
+    .use(ElementPlus)
+    .use(createPinia())
+    .mount(id);
+}

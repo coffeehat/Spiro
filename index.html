@@ -9,6 +9,9 @@
   </head>
   <body>
     <div class="container" id="app"></div>
-    <script type="module" src="/src/spiro.ts"></script>
+    <script type="module">
+      import { mountApp } from "./src/spiro.ts";
+      mountApp('#app');
+    </script>
   </body>
 </html>
