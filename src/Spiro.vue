@@ -18,8 +18,8 @@ onBeforeMount(() => {
 
 <template>
   <div class="container">
-    <CommentSubmitBox :article_id="0" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
-    <CommentListBox :article_id="0"/>
+    <CommentSubmitBox class="submitbox" :article_id="0" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
+    <CommentListBox class="listbox" :article_id="0"/>
   </div>
 </template>
 
@@ -30,5 +30,18 @@ onBeforeMount(() => {
       margin-left: auto;
       margin-right: auto;
     }
+  }
+
+  .container >>> .submitbox,
+  .container >>> .listbox {
+    font-family: "-apple-system", "Microsoft Yahei", sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    color: rgb(22, 22, 22);
+    font-size: 14px;
+
+    box-sizing: border-box;
   }
 </style>

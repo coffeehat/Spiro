@@ -7,7 +7,6 @@ import 'element-plus/dist/index.css';
 
 // Current App
 import Spiro from './Spiro.vue';
-import './style.css';
 
 export function mountApp(id: string) {
   createApp(Spiro)
