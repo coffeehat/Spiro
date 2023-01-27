@@ -11,7 +11,11 @@
     <div id="app"></div>
     <script type="module">
       import { mountApp } from "./src/spiro.ts";
-      mountApp('#app');
+      mountApp(
+        '#app',
+        0,
+        "http://127.0.0.1:5000"
+      );
     </script>
   </body>
 </html>

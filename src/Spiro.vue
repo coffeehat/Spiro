@@ -8,18 +8,24 @@ import CommentListBox from './components/CommentListBox.vue';
 import { onBeforeMount } from 'vue';
 
 import { useUserStore } from './stores';
+import { stringifyExpression } from '@vue/compiler-core';
 
 const userStore = useUserStore();
 
 onBeforeMount(() => {
   userStore.restoreFromCookies();
 });
+
+defineProps<{
+  article_id: number
+}>();
+
 </script>
 
 <template>
   <div class="container">
-    <CommentSubmitBox class="submitbox" :article_id="0" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
-    <CommentListBox class="listbox" :article_id="0"/>
+    <CommentSubmitBox class="submitbox" :article_id="article_id" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
+    <CommentListBox class="listbox" :article_id="article_id"/>
   </div>
 </template>
 

@@ -8,9 +8,13 @@ import 'element-plus/dist/index.css';
 // Current App
 import Spiro from './Spiro.vue';
 
-export function mountApp(id: string) {
-  createApp(Spiro)
+// Others
+import { updateServerAddress } from './common/network';
+
+export function mountApp(el_id: string, article_id: number, server_addr: string) {
+  updateServerAddress(server_addr);
+  createApp(Spiro, {"article_id": article_id})
     .use(ElementPlus)
     .use(createPinia())
-    .mount(id);
+    .mount(el_id);
 }
