@@ -13,6 +13,12 @@ import {
 } from './types';
 import { showSuccessMessage } from './utils';
 
+var server_addr = "http://127.0.0.1:5000";
+
+export function updateServerAddress(addr: string) {
+  server_addr = addr;
+}
+
 export function getCommentList(
   article_id: number,
   primary_comment_offset: number,
@@ -23,7 +29,7 @@ export function getCommentList(
 ) {
   axios({
     method: 'get',
-    url: "http://127.0.0.1:5000/v1.0/comment_list",
+    url: server_addr + "/v1.0/comment_list",
     params: {
       "article_id": article_id,
       "primary_comment_offset": primary_comment_offset,
@@ -63,7 +69,7 @@ export function getSubCommentList(
 ) {
   axios({
     method: 'get',
-    url: "http://127.0.0.1:5000/v1.0/sub_comment_list",
+    url: server_addr + "/v1.0/sub_comment_list",
     params: {
       "article_id": article_id,
       "parent_comment_id": parent_comment_id,
@@ -115,7 +121,7 @@ export function submitCommentForVisitor(
 
   axios({
     method: 'post',
-    url: "http://127.0.0.1:5000/v1.0/comment",
+    url: server_addr + "/v1.0/comment",
     data: form,
     auth: {
       username: "",
@@ -169,7 +175,7 @@ export function submitCommentForUser(
 
   axios({
     method: 'post',
-    url: "http://127.0.0.1:5000/v1.0/comment",
+    url: server_addr + "/v1.0/comment",
     data: form,
     headers: {
       Authorization: `Bearer ${user_cookies?.get_token()}`
@@ -215,7 +221,7 @@ export function loginUser(
 
   axios({
     method: 'post',
-    url: "http://127.0.0.1:5000/v1.0/user",
+    url: server_addr + "/v1.0/user",
     data: form
   }).then(
     (response) => {
@@ -257,7 +263,7 @@ export function registerUser(
 
   axios({
     method: 'post',
-    url: "http://127.0.0.1:5000/v1.0/user",
+    url: server_addr + "/v1.0/user",
     data: form
   }).then(
     (response) => {
@@ -293,7 +299,7 @@ export function checkToken(
 
   axios({
     method: 'post',
-    url: "http://127.0.0.1:5000/v1.0/token_check",
+    url: server_addr + "/v1.0/token_check",
     data: form
   }).then(
     (response) => {
@@ -327,7 +333,7 @@ export function getCommentCount(
 ) {
   axios({
     method: 'get',
-    url: "http://127.0.0.1:5000/v1.0/comment_count",
+    url: server_addr + "/v1.0/comment_count",
     params: {
       "article_id": article_id
     }
@@ -365,7 +371,7 @@ export function deleteComment(
   let user_cookies = UserCookies.retrieve_from_cookies();
   axios({
     method: 'delete',
-    url: "http://127.0.0.1:5000/v1.0/comment",
+    url: server_addr + "/v1.0/comment",
     data: form,
     headers: {
       Authorization: `Bearer ${user_cookies?.get_token()}`

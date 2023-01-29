@@ -1,8 +1,7 @@
 import { CommentItemInfoList } from "./types";
 import { ElMessage } from 'element-plus';
-import {Md5} from 'ts-md5';
-
-import moment from 'moment';
+import { Md5 } from 'ts-md5';
+import { DateTime } from 'ts-luxon';
 
 export function sortCommentList(comment_list: CommentItemInfoList): void {
   comment_list.sort((lhs, rhs) => {
@@ -38,14 +37,6 @@ export function convertTimestamp2JsDate(timestamp: string): Date {
   return date;
 }
 
-export function convertTimestamp2CookieExpireTime(timestamp: string): string {
-  let date = convertTimestamp2JsDate(timestamp);
-  let formatter = moment(date);
-  formatter.locale('en');
-  let ret = formatter.format('ddd, DD MMM YYYY HH:MM:SS ') + 'GMT';
-  return ret;
-}
-
 export function getLocalTimeFromTimestamp(timestamp: string): string {
   let date = convertTimestamp2JsDate(timestamp);
 
@@ -58,8 +49,13 @@ export function getLocalTimeFromTimestamp(timestamp: string): string {
 
 export function getLocalFormattedTimeFromTimestamp(timestamp: string): string {
   let date = convertTimestamp2JsDate(timestamp);
-  // return moment(date).format("MMM-DD-YYYY, HH:mm");
-  return moment(date).format("MMM DD, YYYY HH:mm");
+  let temp = DateTime.fromJSDate(date);
+  let year = temp.year;
+  let month = temp.monthShort;
+  let day = temp.day.toString().padStart(2, "0");
+  let hour = temp.hour.toString().padStart(2, "0");
+  let minute = temp.minute.toString().padStart(2, "0");
+  return `${month} ${day}, ${year} ${hour}:${minute}`
 }
 
 export function isEmail(email: string): boolean {
