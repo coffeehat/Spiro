@@ -37,8 +37,12 @@ Below script is used for test.
   <body>
     <div class="container" id="app"></div>
     <script type="module">
-      import { mountApp } from "./spiro.js";
-      mountApp('#app');
+      import { mountSpiro } from "./spiro.js";
+      mountSpiro(
+        '#app',
+        0,
+        "http://127.0.0.1:5000"
+      );
     </script>
   </body>
 </html>
