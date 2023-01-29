@@ -2,6 +2,7 @@ import { CommentItemInfoList } from "./types";
 import { ElMessage } from 'element-plus';
 import { Md5 } from 'ts-md5';
 import { DateTime } from 'ts-luxon';
+import { filterXSS } from 'xss';
 
 export function sortCommentList(comment_list: CommentItemInfoList): void {
   comment_list.sort((lhs, rhs) => {
@@ -147,4 +148,13 @@ export function genAvatarConfigByUserId(id: number) {
     shirtType: shirtTypes[Math.floor(hash[3] / 1) % shirtTypes.length],
     glassesType: glassesTypes[Math.floor(hash[3] / 10) % glassesTypes.length]
   };
+}
+
+export function checkXSSAttack(html: string) {
+  let temp = filterXSS(html);
+  return temp != html;
+}
+
+export function filterXSSAttack(html: string) {
+  return filterXSS(html);
 }

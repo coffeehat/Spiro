@@ -14,7 +14,7 @@ import {
   UserRegisterResponse
 } from '../common/types';
 import { ServerErrorCode } from '../common/errors';
-import { isEmail } from '../common/utils'
+import { isEmail, checkXSSAttack, showErrorMessage } from '../common/utils'
 
 import MarkdownView from './MarkdownView.vue';
 
@@ -44,7 +44,8 @@ export default defineComponent({
       visitor_rules: {
         user_name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: "blur" }
+          { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: "blur" },
+          { validator: this.checkUserNameXSS, trigger: "blur"}
         ],
         user_email: [
           { validator: this.checkEmailAllowEmpty, trigger: "blur" }
@@ -81,7 +82,8 @@ export default defineComponent({
       register_rules: {
         user_name: [
           { required: true, message: "请输入名称", trigger: "blur" },
-          { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: "blur" }
+          { min: 1, max: this.user_name_max_len, message: `名字长度不能超过${this.user_name_max_len}`, trigger: "blur" },
+          { validator: this.checkUserNameXSS, trigger: "blur"}
         ],
         user_email: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
@@ -150,37 +152,45 @@ export default defineComponent({
   },
   methods: {
     onVisitorSubmit() {
-      (this.$refs.comment_form as any).validate((valid: boolean) => {
-        if (valid) {
-          this.commentCudStore.submitCommentForVisitor(
-            this.article_id, 
-            this.comment_form.user_name, 
-            this.comment_form.user_email, 
-            this.comment_content,
-            this.parent_comment_id,
-            this.to_user_id,
-            this.to_user_name,
-            this.submitSuccessCb, 
-            this.submitErrorCb,
-            this.comment_list_to_affect
-          );
-        }
-      });
-      this.reply_mutex_ctrl_mask = true;
-      this.replyMutex.acquire(this.reply_scope);
+      if (checkXSSAttack(this.comment_content)) {
+        showErrorMessage("在用户输入中检测到XSS攻击");
+      } else {
+          (this.$refs.comment_form as any).validate((valid: boolean) => {
+          if (valid) {
+            this.commentCudStore.submitCommentForVisitor(
+              this.article_id, 
+              this.comment_form.user_name, 
+              this.comment_form.user_email, 
+              this.comment_content,
+              this.parent_comment_id,
+              this.to_user_id,
+              this.to_user_name,
+              this.submitSuccessCb, 
+              this.submitErrorCb,
+              this.comment_list_to_affect
+            );
+          }
+        });
+        this.reply_mutex_ctrl_mask = true;
+        this.replyMutex.acquire(this.reply_scope);
+      }
     },
     onUserSubmit() {
-      this.commentCudStore.submitCommentForUser(
-        this.article_id,
-        this.comment_content,
-        this.parent_comment_id,
-        this.to_user_id,
-        this.to_user_name,
-        this.submitSuccessCb,
-        this.comment_list_to_affect
-      );
-      this.reply_mutex_ctrl_mask = true;
-      this.replyMutex.acquire(this.reply_scope);
+      if (checkXSSAttack(this.comment_content)) {
+        showErrorMessage("在用户输入中检测到XSS攻击");
+      } else {
+        this.commentCudStore.submitCommentForUser(
+          this.article_id,
+          this.comment_content,
+          this.parent_comment_id,
+          this.to_user_id,
+          this.to_user_name,
+          this.submitSuccessCb,
+          this.comment_list_to_affect
+        );
+        this.reply_mutex_ctrl_mask = true;
+        this.replyMutex.acquire(this.reply_scope);
+      }
     },
     onPreview() {
       this.preview_height["min-height"] = (this.$refs.comment_input as any).textarea.style.height;
@@ -271,6 +281,14 @@ export default defineComponent({
     checkConfirmPasswd(rule: any, value: any, callback: any): void {
       if (value != this.register_form.user_passwd) {
         return callback(new Error("两次输入的密码不一致"));
+      }
+      else {
+        callback();
+      }
+    },
+    checkUserNameXSS(rule: any, value: any, callback: any): void {
+      if (checkXSSAttack(value)) {
+        return callback(new Error("用户名包含XSS攻击"));
       }
       else {
         callback();

@@ -6,7 +6,7 @@ import { Avatar, genConfig } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
 import { CommentItemInfo, SubCommentItemInfo } from '../common/types';
-import { getLocalFormattedTimeFromTimestamp, genAvatarConfigByUserId } from '../common/utils';
+import { getLocalFormattedTimeFromTimestamp, genAvatarConfigByUserId, filterXSSAttack } from '../common/utils';
 import { useCommentCUDStore, useUserStore, useReplyMutexStore, CommentCUDType } from '../stores';
 
 import {
@@ -23,7 +23,7 @@ export default defineComponent({
       return getLocalFormattedTimeFromTimestamp(this.comment.comment_timestamp);
     },
     md_comment(): string {
-      return marked.parse(this.comment.comment_content);
+      return marked.parse(filterXSSAttack(this.comment.comment_content));
     },
     // For css
     quote_angle_top(): number {
@@ -51,6 +51,12 @@ export default defineComponent({
     },
     is_show_load_more_button(): Boolean {
       return this.is_primary && this.comment.is_more;
+    },
+    user_name(): string {
+      return filterXSSAttack(this.comment.user_name);
+    },
+    to_user_name(): string {
+      return filterXSSAttack(this.comment.to_user_name);
     }
   },
   props: {
@@ -206,8 +212,8 @@ export default defineComponent({
       </div>
       <div class="comment_title">
         <div class="comment_metainfo_box">
-          <span class="comment_user_name">{{ comment.user_name }}</span>
-          <span v-if="comment.to_user_name" class="comment_time">回复 {{ comment.to_user_name }} 于 {{ local_time }} </span>
+          <span class="comment_user_name">{{ user_name }}</span>
+          <span v-if="comment.to_user_name" class="comment_time">回复 {{ to_user_name }} 于 {{ local_time }} </span>
           <span v-else-if="is_primary" class="comment_time">评论于 {{ local_time }} </span>
           <span v-else class="comment_time">回复于 {{ local_time }} </span>
         </div>
