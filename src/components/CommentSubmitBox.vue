@@ -457,7 +457,7 @@ export default defineComponent({
 }
 
 .comment_preview {
-  width: 100%;
+  /* width: 100%; */
   /* min-height: 10rem; */
   /* background-color: white; */
   border: 1px solid rgb(167, 167, 167);
