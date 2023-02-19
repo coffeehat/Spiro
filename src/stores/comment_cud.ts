@@ -52,6 +52,7 @@ export const useCommentCUDStore = defineStore(
         parent_comment_id : number,
         to_user_id: number,
         to_user_name: string,
+        url: string,
         success_cb?: (comment: CommentItemInfo) => void,
         list_obj?: any
       ) {
@@ -61,6 +62,7 @@ export const useCommentCUDStore = defineStore(
           parent_comment_id,
           to_user_id,
           to_user_name,
+          url,
           (comment) => {
             if (success_cb) {
               this.comment = comment;
@@ -80,6 +82,7 @@ export const useCommentCUDStore = defineStore(
         parent_comment_id : number,
         to_user_id: number,
         to_user_name: string,
+        url: string,
         success_cb?: (comment: CommentItemInfo) => void,
         error_cb?: (response?: ErrorInfo) => void,
         list_obj?: any
@@ -92,6 +95,7 @@ export const useCommentCUDStore = defineStore(
           parent_comment_id,
           to_user_id,
           to_user_name,
+          url,
           (comment) => {
             if (success_cb) {
               this.comment = comment;

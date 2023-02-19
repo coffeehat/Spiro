@@ -107,6 +107,7 @@ export function submitCommentForVisitor(
   parent_comment_id : number,
   to_user_id: number,
   to_user_name: string,
+  url: string,
   success_cb?: (comment: CommentItemInfo) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
@@ -118,6 +119,7 @@ export function submitCommentForVisitor(
   form.append("parent_comment_id", parent_comment_id.toString());
   form.append("to_user_id", to_user_id.toString());
   form.append("to_user_name", to_user_name.toString());
+  form.append("url", url);
 
   axios({
     method: 'post',
@@ -156,6 +158,7 @@ export function submitCommentForUser(
   parent_comment_id : number,
   to_user_id: number,
   to_user_name: string,
+  url: string,
   success_cb?: (comment: CommentItemInfo) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
@@ -165,6 +168,7 @@ export function submitCommentForUser(
   form.append("parent_comment_id", parent_comment_id.toString());
   form.append("to_user_id", to_user_id.toString());
   form.append("to_user_name", to_user_name.toString());
+  form.append("url", url);
 
   let user_cookies = UserCookies.retrieve_from_cookies();
   if (!user_cookies) {

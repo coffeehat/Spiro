@@ -167,6 +167,7 @@ export default defineComponent({
               this.parent_comment_id,
               this.to_user_id,
               this.to_user_name,
+              window.location.href,
               this.submitSuccessCb, 
               this.submitErrorCb,
               this.comment_list_to_affect
@@ -187,6 +188,7 @@ export default defineComponent({
           this.parent_comment_id,
           this.to_user_id,
           this.to_user_name,
+          window.location.href,
           this.submitSuccessCb,
           this.comment_list_to_affect
         );
