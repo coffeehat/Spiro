@@ -48,6 +48,7 @@ export enum ServerErrorCode {
   EC_VISITOR_LOGIN_UNMATCHED_EMIAL_WITH_NAME = 373,
   EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION = 374,
 
+  EC_USER_EMAIL_NOT_VERIFED = 398,
   EC_USER_UNAUTHORIZED_ERROR = 399,
 
   EC_COMMENT_ERROR = 400,
@@ -149,6 +150,8 @@ const error_code_parser_collections = {
     (error_hint?: any) => { return "游客名称被其他游客占用，你必须填写与该名称匹配的邮箱才可评论"; },
   [ServerErrorCode.EC_VISITOR_LOGIN_NEED_PASSWD_AUTHENTICATION]:
     (error_hint?: any) => { return "该游客为正式用户，需要密码认证，请登录"; },
+    [ServerErrorCode.EC_USER_EMAIL_NOT_VERIFED]:
+    (error_hint?: any) => { return "此用户已注册，但其邮箱尚未验证，现在系统重发了一份验证邮件到您的邮箱"; },
   [ServerErrorCode.EC_USER_UNAUTHORIZED_ERROR]:
     (error_hint?: any) => { return "未授权"; },
   [ServerErrorCode.EC_COMMENT_ERROR]:

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, ErrorCodes, PropType } from 'vue';
 
 import { useUserStore, useCommentCUDStore, useReplyMutexStore, ReplyMutexScope } from '../stores';
 
@@ -14,7 +14,7 @@ import {
   UserRegisterResponse
 } from '../common/types';
 import { ServerErrorCode } from '../common/errors';
-import { isEmail, checkXSSAttack, showErrorMessage } from '../common/utils'
+import { isEmail, checkXSSAttack, showErrorMessage, showInfoMessage } from '../common/utils'
 
 import MarkdownView from './MarkdownView.vue';
 
@@ -99,6 +99,8 @@ export default defineComponent({
           { validator: this.checkConfirmPasswd, trigger: "blur" }
         ]
       },
+      register_button_text: "注册",
+      is_lock_register_input: false,
       // Other css
       preview_height: {
         "min-height": "10rem"
@@ -222,9 +224,16 @@ export default defineComponent({
     onRegister() {
       (this.$refs.register_form as any).validate((valid: boolean) => {
         if (valid) {
-          registerUser(this.register_form.user_name, this.register_form.user_email, this.register_form.user_passwd, (response: UserRegisterResponse) => {
-            this.onCloseLoginPanel();
-          });
+          registerUser(this.register_form.user_name, this.register_form.user_email, this.register_form.user_passwd, 
+            (response: UserRegisterResponse) => {
+              if (response.error_hint == "email_veri") {
+                showInfoMessage("系统已经向您的邮箱发送了验证信息，请前往邮箱查收邮件，并点击链接进行验证");
+                this.onTurnRegisterPanelToResend();
+              } else {
+                this.onCloseLoginPanel();
+              }
+            }
+          );
         }
       });
     },
@@ -238,7 +247,19 @@ export default defineComponent({
     },
     onCloseLoginPanel() {
       this.isShowLoginTab = false;
+      this.is_lock_register_input = false;
+      this.clearRegisterForm();
       // this.updateUserInfoToVisitorFromLoginPage();
+    },
+    onTurnRegisterPanelToResend() {
+      this.register_button_text = "重发验证邮件";
+      this.is_lock_register_input = true;
+    },
+    clearRegisterForm() {
+      this.register_form.user_email = "";
+      this.register_form.user_name = "";
+      this.register_form.user_passwd = "";
+      this.register_form.user_passwd_confirm = "";
     },
     updateUserInfoToLoginPageFromVisitor() {
       if (this.comment_form.user_email) {
@@ -391,7 +412,7 @@ export default defineComponent({
   </div>
 
   <!-- Login Or Register Dialog -->
-  <el-dialog v-model="isShowLoginTab" :title="login_register_title" width="400px" :before-close="onCloseLoginPanel">
+  <el-dialog v-model="isShowLoginTab" :title="login_register_title" width="400px" @close="onCloseLoginPanel">
     <el-form label-width="120px" label-position="right" :rules="login_rules" :model="login_form" ref="login_form"
       v-show="isLoginPanel" class="login-register-form">
       <el-form-item label="用户名或邮箱" prop="user_name_or_email">
@@ -406,21 +427,21 @@ export default defineComponent({
     <el-form label-width="120px" label-position="right" :rules="register_rules" :model="register_form"
       ref="register_form" v-show="!isLoginPanel" class="login-register-form">
       <el-form-item label="用户名" prop="user_name">
-        <el-input class="user_input" v-model="register_form.user_name" :maxlength="user_name_max_len" show-word-limit />
+        <el-input class="user_input" :disabled="is_lock_register_input" v-model="register_form.user_name" :maxlength="user_name_max_len" show-word-limit />
       </el-form-item>
 
       <el-form-item label="邮箱" prop="user_email">
-        <el-input class="user_input" v-model="register_form.user_email" :maxlength="user_email_max_len"
+        <el-input class="user_input" :disabled="is_lock_register_input" v-model="register_form.user_email" :maxlength="user_email_max_len"
           show-word-limit />
       </el-form-item>
 
       <el-form-item label="密码" prop="user_passwd">
-        <el-input class="user_input" v-model="register_form.user_passwd" :maxlength="user_passwd_max_len"
+        <el-input class="user_input" :disabled="is_lock_register_input" v-model="register_form.user_passwd" :maxlength="user_passwd_max_len"
           type="password" show-password />
       </el-form-item>
 
       <el-form-item label="确认密码" prop="user_passwd_confirm">
-        <el-input class="user_input" v-model="register_form.user_passwd_confirm" :maxlength="user_passwd_max_len"
+        <el-input class="user_input" :disabled="is_lock_register_input" v-model="register_form.user_passwd_confirm" :maxlength="user_passwd_max_len"
           type="password" show-password />
       </el-form-item>
     </el-form>
@@ -441,7 +462,7 @@ export default defineComponent({
         <span class="dialog-footer-button-group">
           <el-button @click=onCloseLoginPanel>取消</el-button>
           <el-button @click=onRegister type="primary">
-            注册
+            {{ register_button_text }}
           </el-button>
         </span>
       </span>

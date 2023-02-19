@@ -268,7 +268,7 @@ export function registerUser(
   }).then(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
-        showSuccessMessage("注册成功！");
+        // showSuccessMessage("注册成功！");
         if (success_cb) {
           success_cb(response.data);
         }
