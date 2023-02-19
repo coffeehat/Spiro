@@ -249,10 +249,11 @@ export default defineComponent({
       this.isShowLoginTab = false;
       this.is_lock_register_input = false;
       this.clearRegisterForm();
+      this.register_button_text = "注册"
       // this.updateUserInfoToVisitorFromLoginPage();
     },
     onTurnRegisterPanelToResend() {
-      this.register_button_text = "重发验证邮件";
+      this.register_button_text = "重发验证邮件？";
       this.is_lock_register_input = true;
     },
     clearRegisterForm() {
