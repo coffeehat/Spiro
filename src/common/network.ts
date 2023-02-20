@@ -20,7 +20,7 @@ export function updateServerAddress(addr: string) {
 }
 
 export function getCommentList(
-  article_id: number,
+  article_uuid: string,
   primary_comment_offset: number,
   primary_comment_count: number,
   sub_comment_count: number,
@@ -31,7 +31,7 @@ export function getCommentList(
     method: 'get',
     url: server_addr + "/v1.0/comment_list",
     params: {
-      "article_id": article_id,
+      "article_uuid": article_uuid,
       "primary_comment_offset": primary_comment_offset,
       "primary_comment_count": primary_comment_count,
       "sub_comment_count": sub_comment_count
@@ -60,7 +60,7 @@ export function getCommentList(
 }
 
 export function getSubCommentList(
-  article_id: number,
+  article_uuid: string,
   parent_comment_id: number,
   sub_comment_offset: number,
   sub_comment_count: number,
@@ -71,7 +71,7 @@ export function getSubCommentList(
     method: 'get',
     url: server_addr + "/v1.0/sub_comment_list",
     params: {
-      "article_id": article_id,
+      "article_uuid": article_uuid,
       "parent_comment_id": parent_comment_id,
       "sub_comment_offset": sub_comment_offset,
       "sub_comment_count": sub_comment_count
@@ -100,7 +100,7 @@ export function getSubCommentList(
 }
 
 export function submitCommentForVisitor(
-  article_id: number,
+  article_uuid: string,
   user_name: string,
   user_email: string,
   comment: string,
@@ -112,7 +112,7 @@ export function submitCommentForVisitor(
   error_cb?: (response?: ErrorInfo) => void
 ) {
   let form = new FormData();
-  form.append("article_id", article_id.toString());
+  form.append("article_uuid", article_uuid);
   form.append("user_name", user_name);
   form.append("user_email", user_email);
   form.append("comment_content", comment);
@@ -153,7 +153,7 @@ export function submitCommentForVisitor(
 }
 
 export function submitCommentForUser(
-  article_id: number,
+  article_uuid: string,
   comment: string,
   parent_comment_id : number,
   to_user_id: number,
@@ -163,7 +163,7 @@ export function submitCommentForUser(
   error_cb?: (response?: ErrorInfo) => void
 ) {
   let form = new FormData();
-  form.append("article_id", article_id.toString());
+  form.append("article_uuid", article_uuid);
   form.append("comment_content", comment);
   form.append("parent_comment_id", parent_comment_id.toString());
   form.append("to_user_id", to_user_id.toString());
@@ -331,7 +331,7 @@ export function checkToken(
 }
 
 export function getCommentCount(
-  article_id: number,
+  article_uuid: string,
   success_cb?: (comment_list: number) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
@@ -339,7 +339,7 @@ export function getCommentCount(
     method: 'get',
     url: server_addr + "/v1.0/comment_count",
     params: {
-      "article_id": article_id
+      "article_uuid": article_uuid
     }
   }).then(
     (response) => {

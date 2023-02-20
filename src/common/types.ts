@@ -5,7 +5,7 @@ export type ErrorInfo = {
 }
 
 export type CommentItemInfo = {
-  article_id: number,
+  article_uuid: string,
   user_id: number,
   user_name: string,
   comment_id: number,

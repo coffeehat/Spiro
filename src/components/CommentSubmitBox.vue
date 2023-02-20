@@ -118,9 +118,9 @@ export default defineComponent({
     }
   },
   props: {
-    article_id: {
-      type: Number,
-      default: 0
+    article_uuid: {
+      type: String,
+      default: "0"
     },
     parent_comment_id: {
       type: Number,
@@ -160,7 +160,7 @@ export default defineComponent({
           (this.$refs.comment_form as any).validate((valid: boolean) => {
           if (valid) {
             this.commentCudStore.submitCommentForVisitor(
-              this.article_id, 
+              this.article_uuid, 
               this.comment_form.user_name, 
               this.comment_form.user_email, 
               this.comment_content,
@@ -183,7 +183,7 @@ export default defineComponent({
         showErrorMessage("在用户输入中检测到XSS攻击");
       } else {
         this.commentCudStore.submitCommentForUser(
-          this.article_id,
+          this.article_uuid,
           this.comment_content,
           this.parent_comment_id,
           this.to_user_id,

@@ -47,7 +47,7 @@ export const useCommentCUDStore = defineStore(
         );
       },
       submitCommentForUser(
-        article_id: number, 
+        article_uuid: string, 
         comment_content: string,
         parent_comment_id : number,
         to_user_id: number,
@@ -57,7 +57,7 @@ export const useCommentCUDStore = defineStore(
         list_obj?: any
       ) {
         submitCommentForUser(
-          article_id,
+          article_uuid,
           comment_content,
           parent_comment_id,
           to_user_id,
@@ -75,7 +75,7 @@ export const useCommentCUDStore = defineStore(
         );
       },
       submitCommentForVisitor(
-        article_id: number,
+        article_uuid: string,
         user_name: string,
         user_email: string,
         comment_content: string,
@@ -88,7 +88,7 @@ export const useCommentCUDStore = defineStore(
         list_obj?: any
       ) {
         submitCommentForVisitor(
-          article_id, 
+          article_uuid, 
           user_name, 
           user_email,
           comment_content,

@@ -11,9 +11,9 @@ import Spiro from './Spiro.vue';
 // Others
 import { updateServerAddress, updateArticleReadCount } from './common/network';
 
-export function mountSpiro(el_id: string, article_id: number, server_addr: string) {
+export function mountSpiro(el_id: string, article_uuid: string, server_addr: string) {
   updateServerAddress(server_addr);
-  createApp(Spiro, {"article_id": article_id})
+  createApp(Spiro, {"article_uuid": article_uuid})
     // .use(ElementPlus)
     .use(createPinia())
     .mount(el_id);

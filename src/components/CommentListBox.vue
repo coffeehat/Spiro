@@ -36,10 +36,10 @@ export default defineComponent({
   },
   props:
   {
-    article_id:
+    article_uuid:
     {
-      type: Number,
-      default: 0
+      type: String,
+      default: "0"
     },
     comments_per_page:
     {
@@ -68,7 +68,7 @@ export default defineComponent({
       let offset = this.comments_per_page * (index - 1);
       let length = this.comments_per_page;
       getCommentList(
-        this.article_id,
+        this.article_uuid,
         offset,
         length,
         this.sub_comments_per_primary_comments,
@@ -81,7 +81,7 @@ export default defineComponent({
     },
     refreshCount(): void {
       getCommentCount(
-        this.article_id,
+        this.article_uuid,
         (count: number) => {
           this.comment_count = count;
           if (count > 0) {
@@ -95,7 +95,7 @@ export default defineComponent({
       let offset = this.comments_per_page * (this.current_page - 1);
       let length = this.comments_per_page;
       getCommentList(
-        this.article_id,
+        this.article_uuid,
         offset,
         length,
         this.sub_comments_per_primary_comments,
@@ -108,7 +108,7 @@ export default defineComponent({
     },
     onClickLoadMoreSubComment() {
       getCommentList(
-        this.article_id,
+        this.article_uuid,
         this.comment_list.length,
         this.comments_per_page,
         this.sub_comments_per_primary_comments,
@@ -164,7 +164,7 @@ export default defineComponent({
   <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
     <div class="comment_list">
-      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_id="article_id" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
+      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_uuid="article_uuid" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
     </div>
     <div class="pagination" v-if="use_pagination">
       <el-pagination layout="prev, pager, next" :page-size="comments_per_page" :page-count="comment_pages"

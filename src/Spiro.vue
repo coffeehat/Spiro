@@ -17,15 +17,15 @@ onBeforeMount(() => {
 });
 
 defineProps<{
-  article_id: number
+  article_uuid: string
 }>();
 
 </script>
 
 <template>
   <div class="container">
-    <CommentSubmitBox class="submitbox" :article_id="article_id" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
-    <CommentListBox class="listbox" :article_id="article_id"/>
+    <CommentSubmitBox class="submitbox" :article_uuid="article_uuid" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
+    <CommentListBox class="listbox" :article_uuid="article_uuid"/>
   </div>
 </template>
 
