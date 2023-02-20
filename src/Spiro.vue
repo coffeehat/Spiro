@@ -30,13 +30,13 @@ defineProps<{
 </template>
 
 <style scoped>
-  @media screen and (min-width: 718px) {
+  /* @media screen and (min-width: 718px) {
     .container {
       max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
     }
-  }
+  } */
 
   .container >>> .submitbox,
   .container >>> .listbox {

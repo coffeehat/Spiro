@@ -402,3 +402,42 @@ export function deleteComment(
     }
   );
 }
+
+export function updateArticleReadCount(
+  article_uuid: string,
+  article_link: string,
+  article_name: string,
+  success_cb?: (count: number) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  let form = new FormData();
+  form.append("article_uuid", article_uuid);
+  form.append("article_link", article_link);
+  form.append("article_name", article_name);
+
+  axios({
+    method: 'post',
+    url: server_addr + "/v1.0/article_read_count",
+    data: form
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data.count);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}
