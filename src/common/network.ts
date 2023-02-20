@@ -441,3 +441,41 @@ export function updateArticleReadCount(
     }
   );
 }
+
+export function getArticleReadCount(
+  article_uuid: string,
+  article_link: string,
+  article_name: string,
+  success_cb?: (comment_list: number) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  axios({
+    method: 'get',
+    url: server_addr + "/v1.0/article_read_count",
+    params: {
+      "article_uuid": article_uuid,
+      "article_link": article_link,
+      "article_name": article_name
+    }
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data.count);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}
