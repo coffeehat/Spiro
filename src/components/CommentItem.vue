@@ -50,7 +50,7 @@ export default defineComponent({
       return genConfig(genAvatarConfigByUserId(this.comment.user_id) as any);
     },
     is_show_load_more_button(): Boolean {
-      return this.is_primary && this.comment.is_more;
+      return this.is_primary && this.comment.is_more_old;
     },
     user_name(): string {
       return filterXSSAttack(this.comment.user_name);
@@ -120,8 +120,8 @@ export default defineComponent({
           this.parent_comment_id,
           this.comment.sub_comment_list.length,
           this.number_of_new_load_sub_comments,
-          (comment_list, is_more) => {
-            this.comment.is_more = is_more;
+          (comment_list, is_more_old) => {
+            this.comment.is_more_old = is_more_old;
             this.comment.sub_comment_list.push.apply(this.comment.sub_comment_list, comment_list);
           }
         )

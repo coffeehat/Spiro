@@ -21,10 +21,10 @@ export function updateServerAddress(addr: string) {
 
 export function getCommentList(
   article_uuid: string,
-  primary_comment_offset: number,
+  primary_start_comment_offset: number,
   primary_comment_count: number,
   sub_comment_count: number,
-  success_cb?: (comment_list: CommentItemInfoList, is_more: boolean) => void,
+  success_cb?: (comment_list: CommentItemInfoList, is_more_old: boolean) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
@@ -32,15 +32,16 @@ export function getCommentList(
     url: server_addr + "/v1.0/comment_list",
     params: {
       "article_uuid": article_uuid,
-      "primary_comment_offset": primary_comment_offset,
+      "primary_start_comment_offset": primary_start_comment_offset,
       "primary_comment_count": primary_comment_count,
-      "sub_comment_count": sub_comment_count
+      "sub_comment_count": sub_comment_count,
+      "method": 0,
     }
   }).then(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
-          success_cb(response.data.comment_list, response.data.is_more);
+          success_cb(response.data.comment_list, response.data.is_more_old);
         }
       } else {
         parseAndShowErrorInfo(response.data);
@@ -64,7 +65,7 @@ export function getSubCommentList(
   parent_comment_id: number,
   sub_comment_offset: number,
   sub_comment_count: number,
-  success_cb?: (comment_list: SubCommentItemInfoList, is_more: boolean) => void,
+  success_cb?: (comment_list: SubCommentItemInfoList, is_more_old: boolean) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
@@ -80,7 +81,7 @@ export function getSubCommentList(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
-          success_cb(response.data.sub_comment_list, response.data.is_more);
+          success_cb(response.data.sub_comment_list, response.data.is_more_old);
         }
       } else {
         parseAndShowErrorInfo(response.data);

@@ -22,7 +22,7 @@ export default defineComponent({
     return {
       newCommentStore: useCommentCUDStore(),
       comment_list: [] as CommentItemInfoList,
-      is_more: false,
+      is_more_old: false,
       comment_count: 0,
       current_page: 1,
       is_show_list: false,
@@ -72,8 +72,8 @@ export default defineComponent({
         offset,
         length,
         this.sub_comments_per_primary_comments,
-        (comment_list, is_more) => {
-          this.is_more = is_more;
+        (comment_list, is_more_old) => {
+          this.is_more_old = is_more_old;
           this.comment_list = comment_list;
           sortCommentList(this.comment_list);
         }
@@ -99,9 +99,9 @@ export default defineComponent({
         offset,
         length,
         this.sub_comments_per_primary_comments,
-        (comment_list, is_more) => {
+        (comment_list, is_more_old) => {
           this.comment_list = comment_list;
-          this.is_more = is_more;
+          this.is_more_old = is_more_old;
           sortCommentList(this.comment_list);
         }
       );
@@ -112,8 +112,8 @@ export default defineComponent({
         this.comment_list.length,
         this.comments_per_page,
         this.sub_comments_per_primary_comments,
-        (comment_list, is_more) => {
-          this.is_more = is_more;
+        (comment_list, is_more_old) => {
+          this.is_more_old = is_more_old;
           this.comment_list.push.apply(this.comment_list, comment_list);
           sortCommentList(this.comment_list);
         }
@@ -172,7 +172,7 @@ export default defineComponent({
         :hide-on-single-page="true">
       </el-pagination>
     </div>
-    <div class="load_more_interactive" v-if="!use_pagination && is_more">
+    <div class="load_more_interactive" v-if="!use_pagination && is_more_old">
       <a href="" @click.prevent="onClickLoadMoreSubComment">加载更多评论</a>
     </div>
   </div>
