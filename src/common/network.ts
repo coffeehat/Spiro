@@ -63,7 +63,7 @@ export function getCommentList(
 export function getSubCommentList(
   article_uuid: string,
   parent_comment_id: number,
-  sub_comment_offset: number,
+  sub_start_comment_offset: number,
   sub_comment_count: number,
   success_cb?: (comment_list: SubCommentItemInfoList, is_more_old: boolean) => void,
   error_cb?: (response?: ErrorInfo) => void
@@ -74,7 +74,8 @@ export function getSubCommentList(
     params: {
       "article_uuid": article_uuid,
       "parent_comment_id": parent_comment_id,
-      "sub_comment_offset": sub_comment_offset,
+      "method": 0,
+      "sub_start_comment_offset": sub_start_comment_offset,
       "sub_comment_count": sub_comment_count
     }
   }).then(
