@@ -115,6 +115,48 @@ export function getSubCommentList(
   );
 }
 
+export function getAnchorCommentList(
+  article_uuid: string,
+  anchor: string,
+  primary_single_side_comment_count: number,
+  sub_comment_count: number,
+  sub_single_side_comment_count: number,
+  success_cb?: (comment_list: SubCommentItemInfoList, is_more_old: boolean, is_more_new: boolean) => void,
+  error_cb?: (response?: ErrorInfo) => void
+) {
+  axios({
+    method: 'get',
+    url: server_addr + "/v1.0/anchor_comment_list",
+    params: {
+      "article_uuid": article_uuid,
+      "anchor": anchor,
+      "primary_single_side_comment_count": primary_single_side_comment_count,
+      "sub_comment_count": sub_comment_count,
+      "sub_single_side_comment_count": sub_single_side_comment_count
+    }
+  }).then(
+    (response) => {
+      if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
+        if (success_cb) {
+          success_cb(response.data.comment_list, response.data.is_more_old, response.data.is_more_new);
+        }
+      } else {
+        parseAndShowErrorInfo(response.data);
+        if (error_cb) {
+          error_cb(response.data);
+        }
+      }
+    }
+  ).catch(
+    (error) => {
+      parseAndShowErrorInfo(error.response.data);
+      if (error_cb) {
+        error_cb(error.response.data);
+      }
+    }
+  );
+}
+
 export function submitCommentForVisitor(
   article_uuid: string,
   user_name: string,

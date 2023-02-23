@@ -277,6 +277,7 @@ export default defineComponent({
 .load_more_interactive {
   text-align: center;
   margin-bottom: 20px;
+  margin-left: -67px;
 }
 
 .load_more_interactive a:visited,
@@ -347,6 +348,10 @@ export default defineComponent({
 }
 
 @media screen and (max-width: 874px) {
+  .load_more_interactive {
+    margin-left: 0px;
+  }
+
 
   /* TODO: need to evaluate whether its good to manipulate the element-ui internal */
   .comment_box::before,

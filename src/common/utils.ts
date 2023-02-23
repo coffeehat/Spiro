@@ -82,6 +82,15 @@ export function showInfoMessage(message: string) {
   });
 }
 
+export function getCommentAnchor() {
+  let anchor = window.location.hash.substring(1)
+  if (anchor.match(/spirorips_([ps])_([0-9]+)/)) {
+    return anchor;
+  } else {
+    return "";
+  }
+}
+
 // Config Set for Avatar
 const bgColors = [
   '#9287ff',

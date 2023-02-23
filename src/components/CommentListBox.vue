@@ -4,10 +4,11 @@ import { defineComponent, isShallow } from 'vue';
 // libs
 import {
   getCommentList,
+  getAnchorCommentList,
   CommentListGetMethod
 } from '../common/network'
 import { CommentItemInfoList } from '../common/types';
-import { sortCommentList } from '../common/utils';
+import { getCommentAnchor } from '../common/utils';
 import { useCommentCUDStore, CommentCUDType } from '../stores';
 
 // Vue components
@@ -25,6 +26,7 @@ export default defineComponent({
       is_more_old: false,
       is_more_new: false,
       is_show_list: false,
+      anchor: "",
       self: this
     }
   },
@@ -56,25 +58,53 @@ export default defineComponent({
       default: 5
     }
   },
+  computed: {
+    primary_single_side_comment_count() : number {
+      return Math.floor(this.number_of_primary_comments_at_start / 2);
+    },
+    sub_single_side_comment_count() : number {
+      return Math.floor(this.number_of_sub_comments_per_primary_at_start / 2);
+    }
+  },
   methods: {
     loadCommentAtStart(): void {
-      getCommentList(
-        this.article_uuid,
-        this.number_of_primary_comments_at_start,
-        this.number_of_sub_comments_per_primary_at_start,
-        CommentListGetMethod.COUNT_FROM_OFFSET,
-        0,
-        0,
-        false,
-        (comment_list, is_more_old, is_more_new) => {
-          this.comment_list = comment_list;
-          this.is_more_old = is_more_old;
-          this.is_more_new = is_more_new;
-          if (comment_list.length > 0) {
-            this.is_show_list = true;
+      this.anchor = getCommentAnchor()
+      if (this.anchor) {
+        getAnchorCommentList(
+          this.article_uuid,
+          this.anchor,
+          this.primary_single_side_comment_count,
+          this.number_of_sub_comments_per_primary_at_start,
+          this.sub_single_side_comment_count,
+          (comment_list, is_more_old, is_more_new) => {
+            this.comment_list = comment_list;
+            this.is_more_old = is_more_old;
+            this.is_more_new = is_more_new;
+            if (comment_list.length > 0) {
+              this.is_show_list = true;
+            }
           }
-        }
-      );
+          // TODO: If fail, turn to use normal comment list get.
+        )
+      } else {
+        getCommentList(
+          this.article_uuid,
+          this.number_of_primary_comments_at_start,
+          this.number_of_sub_comments_per_primary_at_start,
+          CommentListGetMethod.COUNT_FROM_OFFSET,
+          0,
+          0,
+          false,
+          (comment_list, is_more_old, is_more_new) => {
+            this.comment_list = comment_list;
+            this.is_more_old = is_more_old;
+            this.is_more_new = is_more_new;
+            if (comment_list.length > 0) {
+              this.is_show_list = true;
+            }
+          }
+        );
+      }
     },
     onClickLoadMoreOldComment() {
       if (this.comment_list.length) {
@@ -115,7 +145,7 @@ export default defineComponent({
       return false;
     }
   },
-  mounted() {
+  beforeMount() {
     this.loadCommentAtStart();
     this.newCommentStore.$subscribe(
       (mutation, state) => {
