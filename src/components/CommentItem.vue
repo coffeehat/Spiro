@@ -61,6 +61,13 @@ export default defineComponent({
     },
     to_user_name(): string {
       return filterXSSAttack(this.comment.to_user_name);
+    },
+    anchor(): string {
+      if (this.is_primary) {
+        return `spirorips_p_${this.comment.comment_id}`;
+      } else {
+        return `spirorips_s_${this.comment.comment_id}`;
+      }
     }
   },
   props: {
@@ -222,7 +229,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="comment_item">
+  <div class="comment_item" :id="anchor">
     <div class="avatar_box">
       <!-- The Key attribute here is to force fresh the Avatar when user click page next in comment list -->
       <HldAvatar class="avatar" v-bind="{ ...avatar_config }" :key="comment.user_id"/>

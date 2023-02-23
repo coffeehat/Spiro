@@ -57,7 +57,7 @@ export default defineComponent({
     }
   },
   methods: {
-    refreshComment(): void {
+    loadCommentAtStart(): void {
       getCommentList(
         this.article_uuid,
         this.number_of_primary_comments_at_start,
@@ -116,7 +116,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.refreshComment();
+    this.loadCommentAtStart();
     this.newCommentStore.$subscribe(
       (mutation, state) => {
         // TODO: Ugly implementation..... Need refinement
