@@ -101,6 +101,7 @@ export function goToAnchorIfValid() {
           elem.scrollIntoView();
         }
       }, 300);
+      observer.disconnect();
     }
 
     let timer = createTimer()
