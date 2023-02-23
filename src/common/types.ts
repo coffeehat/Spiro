@@ -15,7 +15,8 @@ export type CommentItemInfo = {
   parent_comment_id: number,
   to_user_id: number,
   to_user_name: string,
-  is_more_old: boolean
+  is_more_old: boolean,
+  is_more_new: boolean
 }
 
 export type CommentItemInfoList = CommentItemInfo[];

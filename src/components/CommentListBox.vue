@@ -104,7 +104,7 @@ export default defineComponent({
           CommentListGetMethod.COUNT_FROM_COMMENT_ID,
           this.comment_list.length,
           this.comment_list.at(0)?.comment_id || 0,   // Actually it's not possible to pass into 0
-          false,
+          true,
           (comment_list, is_more_old, is_more_new) => {
             this.is_more_old = is_more_old;
             this.is_more_new = is_more_new;
@@ -151,13 +151,13 @@ export default defineComponent({
   <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
     <div class="load_more_interactive" v-if="is_more_new">
-      <a href="" @click.prevent="onClickLoadMoreNewComment">加载更多评论</a>
+      <a href="" @click.prevent="onClickLoadMoreNewComment">加载更多新评论</a>
     </div>
     <div class="comment_list">
       <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_uuid="article_uuid" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
     </div>
     <div class="load_more_interactive" v-if="is_more_old">
-      <a href="" @click.prevent="onClickLoadMoreOldComment">加载更多评论</a>
+      <a href="" @click.prevent="onClickLoadMoreOldComment">加载更多旧评论</a>
     </div>
   </div>
 </template>

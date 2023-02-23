@@ -50,8 +50,11 @@ export default defineComponent({
     avatar_config(): any {
       return genConfig(genAvatarConfigByUserId(this.comment.user_id) as any);
     },
-    is_show_load_more_button(): Boolean {
+    is_show_load_more_old_button(): Boolean {
       return this.is_primary && this.comment.is_more_old;
+    },
+    is_show_load_more_new_button(): Boolean {
+      return this.is_primary && this.comment.is_more_new;
     },
     user_name(): string {
       return filterXSSAttack(this.comment.user_name);
@@ -114,17 +117,39 @@ export default defineComponent({
       }
       this.is_show_comment_submit_box = !this.is_show_comment_submit_box;
     },
-    onClickLoadMoreSubComment() {
-      if (this.parent_comment_id) {
+    onClickLoadMoreOldSubComment() {
+      if (this.is_primary && this.comment.sub_comment_list.length) {
         getSubCommentList(
-          CommentListGetMethod.COUNT_FROM_OFFSET,
           this.article_uuid,
           this.parent_comment_id,
-          this.comment.sub_comment_list.length,
           this.number_of_new_load_sub_comments,
-          (comment_list, is_more_old) => {
+          CommentListGetMethod.COUNT_FROM_COMMENT_ID,
+          0,
+          this.comment.sub_comment_list.at(-1)?.comment_id || 0,
+          false,
+          (comment_list, is_more_old, is_more_new) => {
             this.comment.is_more_old = is_more_old;
+            // this.comment.is_more_new = is_more_new;
             this.comment.sub_comment_list.push.apply(this.comment.sub_comment_list, comment_list);
+          }
+        )
+      }
+      return false;
+    },
+    onClickLoadMoreNewSubComment() {
+      if (this.is_primary && this.comment.sub_comment_list.length) {
+        getSubCommentList(
+          this.article_uuid,
+          this.parent_comment_id,
+          this.number_of_new_load_sub_comments,
+          CommentListGetMethod.COUNT_FROM_COMMENT_ID,
+          0,
+          this.comment.sub_comment_list.at(0)?.comment_id || 0,
+          true,
+          (comment_list, is_more_old, is_more_new) => {
+            // this.comment.is_more_old = is_more_old;
+            this.comment.is_more_new = is_more_new;
+            this.comment.sub_comment_list.unshift.apply(this.comment.sub_comment_list, comment_list);
           }
         )
       }
@@ -228,13 +253,16 @@ export default defineComponent({
       <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
         <CommentSubmitBox :article_uuid="'0'" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name" :is_primary_submit_box="false" :comment_list_to_affect="submit_box_responible_list"/>
       </div>
+      <div class="load_more_interactive" v-if="is_show_load_more_new_button">
+        <a href="" @click.prevent="onClickLoadMoreNewSubComment">加载更多新回复</a>
+      </div>
       <div class="sub_comment_box" v-if="is_primary">
         <CommentItem v-for="(item, index) in comment.sub_comment_list" :key="index" :comment="item" :is_primary="false" :parent_comment_id="comment.comment_id" :belonging="self"/>
       </div>
+      <div class="load_more_interactive" v-if="is_show_load_more_old_button">
+        <a href="" @click.prevent="onClickLoadMoreOldSubComment">加载更多旧回复</a>
+      </div>
     </div>
-  </div>
-  <div class="load_more_interactive" v-if="is_show_load_more_button">
-    <a href="" @click.prevent="onClickLoadMoreSubComment">加载更多回复</a>
   </div>
 </template>
 

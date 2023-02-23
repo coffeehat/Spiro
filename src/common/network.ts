@@ -70,12 +70,14 @@ export function getCommentList(
 }
 
 export function getSubCommentList(
-  method: CommentListGetMethod,
   article_uuid: string,
   parent_comment_id: number,
-  sub_start_comment_offset: number,
   sub_comment_count: number,
-  success_cb?: (comment_list: SubCommentItemInfoList, is_more_old: boolean) => void,
+  method: CommentListGetMethod,
+  sub_start_comment_offset: number,
+  sub_start_comment_id: number,
+  is_newer: boolean,
+  success_cb?: (comment_list: SubCommentItemInfoList, is_more_old: boolean, is_more_new: boolean) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
@@ -86,13 +88,15 @@ export function getSubCommentList(
       "parent_comment_id": parent_comment_id,
       "method": method,
       "sub_start_comment_offset": sub_start_comment_offset,
-      "sub_comment_count": sub_comment_count
+      "sub_comment_count": sub_comment_count,
+      "sub_start_comment_id": sub_start_comment_id,
+      "is_newer": is_newer
     }
   }).then(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
-          success_cb(response.data.sub_comment_list, response.data.is_more_old);
+          success_cb(response.data.sub_comment_list, response.data.is_more_old, response.data.is_more_new);
         }
       } else {
         parseAndShowErrorInfo(response.data);
