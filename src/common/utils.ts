@@ -91,6 +91,27 @@ export function getCommentAnchor() {
   }
 }
 
+export function goToAnchorIfValid() {
+  let anchor = getCommentAnchor()
+  if (anchor) {
+    const createTimer = () => {
+      return setTimeout(() => {
+        let elem = document.getElementById(anchor)
+        if (elem) {
+          elem.scrollIntoView();
+        }
+      }, 300);
+    }
+
+    let timer = createTimer()
+    let observer = new ResizeObserver((entries) => {
+      clearTimeout(timer);
+      timer = createTimer();
+    })
+    observer.observe(document.body);
+  }
+}
+
 // Config Set for Avatar
 const bgColors = [
   '#9287ff',

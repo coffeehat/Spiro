@@ -10,6 +10,7 @@ import Spiro from './Spiro.vue';
 
 // Others
 import { updateServerAddress, updateArticleReadCount, getArticleReadCount } from './common/network';
+import { goToAnchorIfValid } from './common/utils';
 
 export function mountSpiro(el_id: string, article_uuid: string, server_addr: string) {
   updateServerAddress(server_addr);
@@ -17,6 +18,7 @@ export function mountSpiro(el_id: string, article_uuid: string, server_addr: str
     // .use(ElementPlus)
     .use(createPinia())
     .mount(el_id);
+  goToAnchorIfValid();
 }
 
 export function updateReadCount(el_id: string, article_uuid: string, article_link: string, article_name:string, update_delay:number = 20000) {
