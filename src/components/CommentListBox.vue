@@ -23,6 +23,7 @@ export default defineComponent({
       newCommentStore: useCommentCUDStore(),
       comment_list: [] as CommentItemInfoList,
       is_more_old: false,
+      is_more_new: false,
       is_show_list: false,
       self: this
     }
@@ -58,33 +59,59 @@ export default defineComponent({
   methods: {
     refreshComment(): void {
       getCommentList(
-        CommentListGetMethod.COUNT_FROM_OFFSET,
         this.article_uuid,
-        0,
         this.number_of_primary_comments_at_start,
         this.number_of_sub_comments_per_primary_at_start,
-        (comment_list, is_more_old) => {
+        CommentListGetMethod.COUNT_FROM_OFFSET,
+        0,
+        0,
+        false,
+        (comment_list, is_more_old, is_more_new) => {
           this.comment_list = comment_list;
           this.is_more_old = is_more_old;
+          this.is_more_new = is_more_new;
           if (comment_list.length > 0) {
             this.is_show_list = true;
           }
         }
       );
     },
-    onClickLoadMoreComment() {
-      getCommentList(
-        CommentListGetMethod.COUNT_FROM_OFFSET,
-        this.article_uuid,
-        this.comment_list.length,
-        this.number_of_new_load_primary_comment,
-        this.number_of_sub_comments_per_primary_at_start,
-        (comment_list, is_more_old) => {
-          this.is_more_old = is_more_old;
-          this.comment_list.push.apply(this.comment_list, comment_list);
-          // sortCommentList(this.comment_list);
-        }
-      );
+    onClickLoadMoreOldComment() {
+      if (this.comment_list.length) {
+        getCommentList(
+          this.article_uuid,
+          this.number_of_new_load_primary_comment,
+          this.number_of_sub_comments_per_primary_at_start,
+          CommentListGetMethod.COUNT_FROM_COMMENT_ID,
+          this.comment_list.length,
+          this.comment_list.at(-1)?.comment_id || 0,   // Actually it's not possible to pass into 0
+          false,
+          (comment_list, is_more_old, is_more_new) => {
+            this.is_more_old = is_more_old;
+            this.is_more_new = is_more_new;
+            this.comment_list.push.apply(this.comment_list, comment_list);
+          }
+        );
+      }
+      return false;
+    },
+    onClickLoadMoreNewComment() {
+      if (this.comment_list.length) {
+        getCommentList(
+          this.article_uuid,
+          this.number_of_new_load_primary_comment,
+          this.number_of_sub_comments_per_primary_at_start,
+          CommentListGetMethod.COUNT_FROM_COMMENT_ID,
+          this.comment_list.length,
+          this.comment_list.at(0)?.comment_id || 0,   // Actually it's not possible to pass into 0
+          false,
+          (comment_list, is_more_old, is_more_new) => {
+            this.is_more_old = is_more_old;
+            this.is_more_new = is_more_new;
+            this.comment_list.unshift.apply(this.comment_list, comment_list);
+          }
+        );
+      }
       return false;
     }
   },
@@ -123,11 +150,14 @@ export default defineComponent({
 <template>
   <div class="comment_list_container" v-show="is_show_list">
     <h2>所有评论</h2>
+    <div class="load_more_interactive" v-if="is_more_new">
+      <a href="" @click.prevent="onClickLoadMoreNewComment">加载更多评论</a>
+    </div>
     <div class="comment_list">
       <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_uuid="article_uuid" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
     </div>
     <div class="load_more_interactive" v-if="is_more_old">
-      <a href="" @click.prevent="onClickLoadMoreComment">加载更多评论</a>
+      <a href="" @click.prevent="onClickLoadMoreOldComment">加载更多评论</a>
     </div>
   </div>
 </template>

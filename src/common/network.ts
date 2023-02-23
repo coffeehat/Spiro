@@ -24,12 +24,14 @@ export enum CommentListGetMethod {
 }
 
 export function getCommentList(
-  method: CommentListGetMethod,
   article_uuid: string,
-  primary_start_comment_offset: number,
   primary_comment_count: number,
   sub_comment_count: number,
-  success_cb?: (comment_list: CommentItemInfoList, is_more_old: boolean) => void,
+  method: CommentListGetMethod,
+  primary_start_comment_offset: number,
+  primary_start_comment_id: number,
+  is_newer: boolean,
+  success_cb?: (comment_list: CommentItemInfoList, is_more_old: boolean, is_more_new: boolean) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   axios({
@@ -41,12 +43,14 @@ export function getCommentList(
       "primary_comment_count": primary_comment_count,
       "sub_comment_count": sub_comment_count,
       "method": method,
+      "primary_start_comment_id": primary_start_comment_id,
+      "is_newer": is_newer
     }
   }).then(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
-          success_cb(response.data.comment_list, response.data.is_more_old);
+          success_cb(response.data.comment_list, response.data.is_more_old, response.data.is_more_new);
         }
       } else {
         parseAndShowErrorInfo(response.data);
