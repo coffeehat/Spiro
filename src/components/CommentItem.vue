@@ -10,7 +10,8 @@ import { getLocalFormattedTimeFromTimestamp, genAvatarConfigByUserId, filterXSSA
 import { useCommentCUDStore, useUserStore, useReplyMutexStore, CommentCUDType } from '../stores';
 
 import {
-  getSubCommentList
+  getSubCommentList,
+  CommentListGetMethod
 } from '../common/network'
 import MarkdownView from './MarkdownView.vue';
 import CommentSubmitBox from './CommentSubmitBox.vue';
@@ -116,6 +117,7 @@ export default defineComponent({
     onClickLoadMoreSubComment() {
       if (this.parent_comment_id) {
         getSubCommentList(
+          CommentListGetMethod.COUNT_FROM_OFFSET,
           this.article_uuid,
           this.parent_comment_id,
           this.comment.sub_comment_list.length,

@@ -4,7 +4,7 @@ import { defineComponent, isShallow } from 'vue';
 // libs
 import {
   getCommentList,
-  getCommentCount
+  CommentListGetMethod
 } from '../common/network'
 import { CommentItemInfoList } from '../common/types';
 import { sortCommentList } from '../common/utils';
@@ -23,15 +23,8 @@ export default defineComponent({
       newCommentStore: useCommentCUDStore(),
       comment_list: [] as CommentItemInfoList,
       is_more_old: false,
-      comment_count: 0,
-      current_page: 1,
       is_show_list: false,
       self: this
-    }
-  },
-  computed: {
-    comment_pages() {
-      return Math.ceil(this.comment_count / this.comments_per_page);
     }
   },
   props:
@@ -41,81 +34,55 @@ export default defineComponent({
       type: String,
       default: "0"
     },
-    comments_per_page:
+    number_of_primary_comments_at_start:
     {
       type: Number,
       default: 10
     },
-    sub_comments_per_primary_comments:
+    number_of_sub_comments_per_primary_at_start:
     {
       type: Number,
       default: 3
+    },
+    number_of_new_load_primary_comment:
+    {
+      type: Number,
+      default: 10
     },
     number_of_new_load_sub_comments:
     {
       type: Number,
       default: 5
-    },
-    use_pagination:
-    {
-      type: Boolean,
-      default: false
-    },
+    }
   },
   methods: {
-    onPageChange(index: number) {
-      this.current_page = index;
-      let offset = this.comments_per_page * (index - 1);
-      let length = this.comments_per_page;
+    refreshComment(): void {
       getCommentList(
+        CommentListGetMethod.COUNT_FROM_OFFSET,
         this.article_uuid,
-        offset,
-        length,
-        this.sub_comments_per_primary_comments,
+        0,
+        this.number_of_primary_comments_at_start,
+        this.number_of_sub_comments_per_primary_at_start,
         (comment_list, is_more_old) => {
-          this.is_more_old = is_more_old;
           this.comment_list = comment_list;
-          sortCommentList(this.comment_list);
-        }
-      );
-    },
-    refreshCount(): void {
-      getCommentCount(
-        this.article_uuid,
-        (count: number) => {
-          this.comment_count = count;
-          if (count > 0) {
+          this.is_more_old = is_more_old;
+          if (comment_list.length > 0) {
             this.is_show_list = true;
           }
         }
       );
     },
-    refreshComment(): void {
-      this.refreshCount();
-      let offset = this.comments_per_page * (this.current_page - 1);
-      let length = this.comments_per_page;
+    onClickLoadMoreComment() {
       getCommentList(
-        this.article_uuid,
-        offset,
-        length,
-        this.sub_comments_per_primary_comments,
-        (comment_list, is_more_old) => {
-          this.comment_list = comment_list;
-          this.is_more_old = is_more_old;
-          sortCommentList(this.comment_list);
-        }
-      );
-    },
-    onClickLoadMoreSubComment() {
-      getCommentList(
+        CommentListGetMethod.COUNT_FROM_OFFSET,
         this.article_uuid,
         this.comment_list.length,
-        this.comments_per_page,
-        this.sub_comments_per_primary_comments,
+        this.number_of_new_load_primary_comment,
+        this.number_of_sub_comments_per_primary_at_start,
         (comment_list, is_more_old) => {
           this.is_more_old = is_more_old;
           this.comment_list.push.apply(this.comment_list, comment_list);
-          sortCommentList(this.comment_list);
+          // sortCommentList(this.comment_list);
         }
       );
       return false;
@@ -129,10 +96,7 @@ export default defineComponent({
         if (state.list_obj === 0) {
           switch (state.type) {
             case CommentCUDType.Comment_Create: {
-              if (this.current_page == 1) {
-                this.comment_list.unshift(state.comment);
-              }
-              this.refreshCount();
+              this.comment_list.unshift(state.comment);
               break;
             }
             case CommentCUDType.Comment_Update: {
@@ -146,16 +110,12 @@ export default defineComponent({
                   break;
                 }
               }
-              this.refreshCount();
               break;
             }
           }
         }
       }
     );
-  },
-  beforeMount() {
-    this.refreshCount();
   }
 });
 </script>
@@ -166,14 +126,8 @@ export default defineComponent({
     <div class="comment_list">
       <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_uuid="article_uuid" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
     </div>
-    <div class="pagination" v-if="use_pagination">
-      <el-pagination layout="prev, pager, next" :page-size="comments_per_page" :page-count="comment_pages"
-        @current-change="onPageChange" @prev-click="onPageChange" @next-click="onPageChange"
-        :hide-on-single-page="true">
-      </el-pagination>
-    </div>
-    <div class="load_more_interactive" v-if="!use_pagination && is_more_old">
-      <a href="" @click.prevent="onClickLoadMoreSubComment">加载更多评论</a>
+    <div class="load_more_interactive" v-if="is_more_old">
+      <a href="" @click.prevent="onClickLoadMoreComment">加载更多评论</a>
     </div>
   </div>
 </template>

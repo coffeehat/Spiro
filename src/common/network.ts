@@ -11,7 +11,6 @@ import {
   ErrorInfo,
   TokenCheckResponse
 } from './types';
-import { showSuccessMessage } from './utils';
 
 var server_addr = "http://127.0.0.1:5000";
 
@@ -19,7 +18,13 @@ export function updateServerAddress(addr: string) {
   server_addr = addr;
 }
 
+export enum CommentListGetMethod {
+  COUNT_FROM_OFFSET = 0,
+  COUNT_FROM_COMMENT_ID = 1
+}
+
 export function getCommentList(
+  method: CommentListGetMethod,
   article_uuid: string,
   primary_start_comment_offset: number,
   primary_comment_count: number,
@@ -35,7 +40,7 @@ export function getCommentList(
       "primary_start_comment_offset": primary_start_comment_offset,
       "primary_comment_count": primary_comment_count,
       "sub_comment_count": sub_comment_count,
-      "method": 0,
+      "method": method,
     }
   }).then(
     (response) => {
@@ -61,6 +66,7 @@ export function getCommentList(
 }
 
 export function getSubCommentList(
+  method: CommentListGetMethod,
   article_uuid: string,
   parent_comment_id: number,
   sub_start_comment_offset: number,
@@ -74,7 +80,7 @@ export function getSubCommentList(
     params: {
       "article_uuid": article_uuid,
       "parent_comment_id": parent_comment_id,
-      "method": 0,
+      "method": method,
       "sub_start_comment_offset": sub_start_comment_offset,
       "sub_comment_count": sub_comment_count
     }
