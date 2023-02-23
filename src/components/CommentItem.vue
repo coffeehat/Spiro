@@ -196,7 +196,7 @@ export default defineComponent({
         if (state.list_obj === this) {
           switch (state.type) {
             case CommentCUDType.Comment_Create: {
-              this.comment.sub_comment_list.push(state.comment);
+              this.comment.sub_comment_list.unshift(state.comment);
               break;
             }
             case CommentCUDType.Comment_Update: {
