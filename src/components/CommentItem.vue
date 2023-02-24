@@ -41,9 +41,6 @@ export default defineComponent({
       return this.userStore.is_valid
         && this.userStore.user_id == this.comment.user_id;
     },
-    avatar_string(): string {
-      return "";
-    },
     submit_box_responible_list(): any {
       if (this.is_primary) {
         return this;

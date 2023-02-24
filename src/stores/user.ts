@@ -1,7 +1,9 @@
 import { defineStore } from "pinia";
+import { genConfig } from "holiday-avatar";
 import { UserCookies } from "../common/cookies";
 import { checkToken, loginUser, logoutUser } from "../common/network";
 import { ErrorInfo, TokenCheckResponse, UserLoginResponse } from "../common/types";
+import { genAvatarConfigByUserId } from '../common/utils';
 
 export const useUserStore = defineStore(
   'user',
@@ -10,8 +12,15 @@ export const useUserStore = defineStore(
       return {
         user_name: "",
         user_id: 0,
-        is_valid: false
+        is_valid: false,
       };
+    },
+    getters: {
+      avatar_config: (state) => {
+        if (state.is_valid) {
+          return genConfig(genAvatarConfigByUserId(state.user_id) as any)
+        }
+      }
     },
     actions: {
       restoreFromCookies() {

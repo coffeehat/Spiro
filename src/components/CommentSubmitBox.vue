@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, ErrorCodes, PropType } from 'vue';
+import { Avatar } from "holiday-avatar";
 
 import { useUserStore, useCommentCUDStore, useReplyMutexStore, ReplyMutexScope } from '../stores';
 
@@ -339,7 +340,10 @@ export default defineComponent({
       )
     }
   },
-  components: { MarkdownView }
+  components: {
+    MarkdownView,
+    HldAvatar: Avatar,
+  }
 });
 </script>
 
@@ -397,7 +401,10 @@ export default defineComponent({
     <el-form v-show="userStore.is_valid">
       <div class="user_form">
         <div class="user_info_box" v-show="is_show_logined_user">
-          <span>用户{{ userStore.user_name }}已登录</span>
+          <div class="avatar_box">
+            <HldAvatar class="avatar" v-bind="{ ...userStore.avatar_config }" :key="userStore.user_id"/>
+          </div>
+          <!-- <p class="user_name">{{ userStore.user_name }}</p> -->
         </div>
 
         <div class="user_submit_box">
@@ -550,6 +557,27 @@ export default defineComponent({
 }
 
 .user_submit_box {
+  /* margin-left: auto; */
+}
+
+.user_info_box {
+  display: flex;
+  align-items: right;
   margin-left: auto;
 }
+
+.avatar_box {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+}
+
+.user_name {
+  margin: 0;
+}
+
 </style>
