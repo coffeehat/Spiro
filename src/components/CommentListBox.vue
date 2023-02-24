@@ -1,5 +1,6 @@
 <script lang="ts">
-import { defineComponent, isShallow } from 'vue';
+import { defineComponent, ErrorCodes, isShallow } from 'vue';
+import { ServerErrorCode } from '../common/errors';
 
 // libs
 import {
@@ -8,7 +9,7 @@ import {
   CommentListGetMethod
 } from '../common/network'
 import { CommentItemInfoList } from '../common/types';
-import { getCommentAnchor } from '../common/utils';
+import { getCommentAnchor, showInfoMessage } from '../common/utils';
 import { useCommentCUDStore, CommentCUDType } from '../stores';
 
 // Vue components
@@ -83,8 +84,34 @@ export default defineComponent({
             if (comment_list.length > 0) {
               this.is_show_list = true;
             }
+          },
+          (response) => {
+            try {
+              if (response?.error_code == ServerErrorCode.EC_DB_ANCHOR_NOT_FOUND_ERROR
+                || response?.error_code == ServerErrorCode.EC_ARG_INVALID_ANCHOR) {
+                  showInfoMessage("因为查询不到锚点评论，我们转而为您显示最新评论")
+                  getCommentList(
+                  this.article_uuid,
+                  this.number_of_primary_comments_at_start,
+                  this.number_of_sub_comments_per_primary_at_start,
+                  CommentListGetMethod.COUNT_FROM_OFFSET,
+                  0,
+                  0,
+                  false,
+                  (comment_list, is_more_old, is_more_new) => {
+                    this.comment_list = comment_list;
+                    this.is_more_old = is_more_old;
+                    this.is_more_new = is_more_new;
+                    if (comment_list.length > 0) {
+                      this.is_show_list = true;
+                    }
+                  }
+                );
+              }
+            } catch (error) {
+              // pass
+            }
           }
-          // TODO: If fail, turn to use normal comment list get.
         )
       } else {
         getCommentList(

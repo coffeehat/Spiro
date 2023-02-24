@@ -16,10 +16,12 @@ export enum ServerErrorCode {
   EC_ARG_NOUSERNAME_ERROR = 102,
   EC_ARG_NOEMAIL_BUT_HASPASSWD_ERROR = 103,
   EC_ARG_EMPTY_COMMENT = 104,
+  EC_ARG_INVALID_ANCHOR = 105,
 
   // Database Error
   EC_DB_GENERIC_ERROR = 200,
   EC_DB_NOT_FOUND_ERROR = 201,
+  EC_DB_ANCHOR_NOT_FOUND_ERROR = 202,
 
   // User Error
   EC_USER_GENERIC_ERROR = 300,
@@ -88,10 +90,14 @@ const error_code_parser_collections = {
     (error_hint?: any) => { return "注册必须提供邮箱"; },
   [ServerErrorCode.EC_ARG_EMPTY_COMMENT]:
     (error_hint?: any) => { return "评论不可为空"; },
+  [ServerErrorCode.EC_ARG_INVALID_ANCHOR]:
+    (error_hint?: any) => { return "无效的评论锚点" },
   [ServerErrorCode.EC_DB_GENERIC_ERROR]:
     (error_hint?: any) => { return "数据库一般错误"; },
   [ServerErrorCode.EC_DB_NOT_FOUND_ERROR]:
     (error_hint?: any) => { return "未在数据库中检索到用户提交的信息"; },
+  [ServerErrorCode.EC_DB_ANCHOR_NOT_FOUND_ERROR]:
+    (error_hint?: any) => { return "查询不到锚点对应的评论，或该评论已删除"; },
   [ServerErrorCode.EC_USER_GENERIC_ERROR]:
     (error_hint?: any) => { return "用户一般错误"; },
   [ServerErrorCode.EC_USER_REG_ERROR]:
