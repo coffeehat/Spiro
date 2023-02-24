@@ -5,8 +5,15 @@ import { ElMessageBox } from 'element-plus';
 import { Avatar, genConfig } from "holiday-avatar";
 
 import { marked } from '../common/markdown';
-import { CommentItemInfo, SubCommentItemInfo } from '../common/types';
-import { getLocalFormattedTimeFromTimestamp, genAvatarConfigByUserId, filterXSSAttack } from '../common/utils';
+import { 
+  CommentItemInfo
+} from '../common/types';
+import { 
+  getLocalFormattedTimeFromTimestamp, 
+  genAvatarConfigByUserId, 
+  filterXSSAttack, 
+  parseCurrentAnchor 
+} from '../common/utils';
 import { useCommentCUDStore, useUserStore, useReplyMutexStore, CommentCUDType } from '../stores';
 
 import {
@@ -67,6 +74,15 @@ export default defineComponent({
         return `spirorips_p_${this.comment.comment_id}`;
       } else {
         return `spirorips_s_${this.comment.comment_id}`;
+      }
+    },
+    comment_box_anno_offset(): number {
+      if (this.comment_box_border_weight == 1) {
+        return -15;
+      } else if (this.comment_box_border_weight == 2) {
+        return -13;
+      } else {
+        return (this.comment_box_border_weight - 1) * 2 - 15;
       }
     }
   },
@@ -176,10 +192,28 @@ export default defineComponent({
       /* Some css need calculation */
       comment_quote_triangle_size: 8,
       avatar_size: 50,
+      comment_box_border_color: "rgb(167, 167, 167)",
+      comment_box_border_weight: 1,
 
       /* My self */
       self: this
     };
+  },
+  beforeMount() {
+    let current_anchor_commit_id = parseCurrentAnchor()
+    if (parseInt(current_anchor_commit_id) == this.comment.comment_id) {
+      this.comment_box_border_color = "#409eff";
+      this.comment_box_border_weight = 2;
+      // TODO: Add Animation
+    }
+  },
+  beforeUpdate() {
+    let current_anchor_commit_id = parseCurrentAnchor()
+    if (this.comment_box_border_weight == 2
+      && parseInt(current_anchor_commit_id) != this.comment.comment_id) {
+      this.comment_box_border_color = "rgb(167, 167, 167)";
+      this.comment_box_border_weight = 1;
+    }
   },
   mounted() {
     this.replyMutex.$subscribe(
@@ -241,22 +275,26 @@ export default defineComponent({
       <div class="guide_block_lower_right"></div>
     </div>
     <div class="comment_box">
-      <div class="comment_content">
-        <MarkdownView :rendered_markdown="md_comment" />
-      </div>
-      <div class="comment_title">
-        <div class="comment_metainfo_box">
-          <span class="comment_user_name">{{ user_name }}</span>
-          <span v-if="comment.to_user_name" class="comment_time">回复 {{ to_user_name }} 于 {{ local_time }} </span>
-          <span v-else-if="is_primary" class="comment_time">评论于 {{ local_time }} </span>
-          <span v-else class="comment_time">回复于 {{ local_time }} </span>
+      <transition name = "fade">
+        <div class="comment_content">
+          <MarkdownView :rendered_markdown="md_comment" />
         </div>
-        <div class="comment_control_box">
-          <el-button type="danger" size="small" @click="onDeleteComment" plain round
-            v-show="is_show_delete_button">删除</el-button>
-          <el-button type="primary" size="small" @click="onReply" plain round>回复</el-button>
+      </transition>
+      <transition name = "fade">
+        <div class="comment_title">
+          <div class="comment_metainfo_box">
+            <span class="comment_user_name">{{ user_name }}</span>
+            <span v-if="comment.to_user_name" class="comment_time">回复 {{ to_user_name }} 于 {{ local_time }} </span>
+            <span v-else-if="is_primary" class="comment_time">评论于 {{ local_time }} </span>
+            <span v-else class="comment_time">回复于 {{ local_time }} </span>
+          </div>
+          <div class="comment_control_box">
+            <el-button type="danger" size="small" @click="onDeleteComment" plain round
+              v-show="is_show_delete_button">删除</el-button>
+            <el-button type="primary" size="small" @click="onReply" plain round>回复</el-button>
+          </div>
         </div>
-      </div>
+      </transition>
       <div class="reply_submit_box" ref="reply_submit_box" v-if="is_show_comment_submit_box">
         <CommentSubmitBox :article_uuid="'0'" :parent_comment_id="parent_comment_id" :to_user_id="comment.user_id" :to_user_name="comment.user_name" :is_primary_submit_box="false" :comment_list_to_affect="submit_box_responible_list"/>
       </div>
@@ -298,7 +336,7 @@ export default defineComponent({
 
 .comment_title {
   padding: 0px 8px;
-  border: 1px solid rgb(167, 167, 167);
+  border: v-bind(comment_box_border_weight + "px") solid v-bind(comment_box_border_color);
   border-top: 0px;
   border-radius: 0px 0px 5px 5px;
   /* background-color: #ececec; */
@@ -332,14 +370,14 @@ export default defineComponent({
   content: '';
   width: 0;
   height: 0;
-  border-right: v-bind(comment_quote_triangle_size + "px") solid rgb(167, 167, 167);
+  border-right: v-bind(comment_quote_triangle_size + "px") solid v-bind(comment_box_border_color);
   border-bottom: v-bind(comment_quote_triangle_size + "px") solid transparent;
   border-left: v-bind(comment_quote_triangle_size + "px") solid transparent;
   border-top: v-bind(comment_quote_triangle_size + "px") solid transparent;
 }
 
 .comment_box::after {
-  left: -15px;
+  left: v-bind(comment_box_anno_offset + "px");
   border-right: 9px solid #ffffff;
 }
 
@@ -425,7 +463,7 @@ export default defineComponent({
 
 .comment_content {
   padding: 18px 20px;
-  border: 1px solid rgb(167, 167, 167);
+  border: v-bind(comment_box_border_weight + "px") solid v-bind(comment_box_border_color);
   border-bottom: 0px;
   border-radius: 5px 5px 0px 0px;
 }

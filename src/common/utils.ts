@@ -91,6 +91,16 @@ export function getCommentAnchor() {
   }
 }
 
+export function parseCurrentAnchor() {
+  let anchor = window.location.hash.substring(1)
+  let output = anchor.match(/spirorips_[ps]_([0-9]+)/)
+  if (output) {
+    return output[1];
+  } else {
+    return "";
+  }
+}
+
 export function goToAnchorIfValid() {
   let anchor = getCommentAnchor()
   if (anchor) {
@@ -100,8 +110,8 @@ export function goToAnchorIfValid() {
         if (elem) {
           elem.scrollIntoView();
         }
+        observer.disconnect();
       }, 300);
-      observer.disconnect();
     }
 
     let timer = createTimer()
