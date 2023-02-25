@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spiro</title>
@@ -20,23 +20,36 @@
       }
       .head h1 {
         display: inline;
-        margin-right: 10px;
+        margin: 0px;
         color: rgb(22, 22, 22);
       }
       .head .read_count_box {
         color:rgb(104, 104, 104);
         font-size: 12px;
         margin-top: 8px;
-        padding-bottom: 3px;
+        padding-bottom: 8px;
         border-bottom: 1px rgb(161, 161, 161) solid;
         width: 250px;
+      }
+      .head .logo {
+        height: 36px;
+        margin-right: 10px;
+      }
+      .head .title {
+        display: flex;
+        align-items: center;
+        margin-top: 23px;
+        margin-bottom: 20px;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="head">
-        <h1>Spiro Demo</h1>
+        <div class="title">
+          <img class="logo" src="./logo.svg" />
+          <h1>Spiro Demo</h1>
+        </div>
         <div class="read_count_box">Read Count: <span id="read_count"></span></div>
       </div>
       <div id="app"></div>
