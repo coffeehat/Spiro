@@ -9,6 +9,7 @@ A Comment System With [Backend](https://github.com/coffeehat/Spiro_Backend)
 * Two levels of comment
 * Email notification when receive reply
 * Support both visitor and registered memeber
+* Support article read count
 
 ## Install
 
@@ -22,6 +23,7 @@ Spiro is packed in `spiro.js` and `style.css`, you need to import those two file
 
 <!-- 2. Create placeholder for Spiro -->
 <div id="app"></div>
+<div class="read_count_box">Read Count: <span id="read_count"></span></div>
 
 <!-- 3. Mount Spiro -->
 <script type="module">
@@ -30,6 +32,7 @@ Spiro is packed in `spiro.js` and `style.css`, you need to import those two file
   SpiroConfig.server_addr = "http://127.0.0.1:5000";
   SpiroConfig.article_uuid = "0";
   mountSpiro('app');
+  updateReadCount("read_count"); // Optional
 </script>
 ```
 
