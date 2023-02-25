@@ -351,8 +351,8 @@ export default defineComponent({
     <div class="comment_preview" :style="preview_height" v-show="isShowPreview" @click="onFocusInputBox">
       <MarkdownView :rendered_markdown="md_preview" />
     </div>
-    <el-button class="preview_button" type="primary" @click="onPreview()" v-show="isShowUserInteractive" size="small"
-      round plain>{{ preview_button_content }}</el-button>
+    <!-- <el-button class="preview_button" type="primary" @click="onPreview()" v-show="isShowUserInteractive" size="small"
+      round plain>{{ preview_button_content }}</el-button> -->
   </div>
 
   <div class="user_submit_control_container" v-show="isShowUserInteractive">
