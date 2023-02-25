@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spiro</title>
+    <style>
+      @media screen and (min-width: 718px) {
+        .container {
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+      .head {
+        margin-bottom: 25px;
+        margin-top: 15px;
+      }
+      .head h1 {
+        display: inline;
+        margin: 0px;
+        color: rgb(22, 22, 22);
+      }
+      .head .read_count_box {
+        color:rgb(104, 104, 104);
+        font-size: 12px;
+        margin-top: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px rgb(161, 161, 161) solid;
+        width: 250px;
+      }
+      .head .logo {
+        height: 36px;
+        margin-right: 10px;
+      }
+      .head .title {
+        display: flex;
+        align-items: center;
+        margin-top: 23px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="head">
+        <div class="title">
+          <img class="logo" src="./logo.svg" />
+          <h1>Spiro Demo</h1>
+        </div>
+        <div class="read_count_box">Read Count: <span id="read_count"></span></div>
+      </div>
+      <div id="app"></div>
+    </div>
+  </body>
+  <script type="module">
+    import { SpiroConfig, mountSpiro, updateReadCount } from "./src/spiro.ts";
+    SpiroConfig.server_addr = "http://127.0.0.1:5000";
+    SpiroConfig.article_uuid = "0";
+    SpiroConfig.readcountinfo.article_name = "Spiro Demo";
+    SpiroConfig.readcountinfo.article_link = window.location.href;
+    mountSpiro('app');
+    updateReadCount("read_count");
+  </script>
+</html>
