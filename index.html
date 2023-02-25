@@ -54,16 +54,16 @@
       </div>
       <div id="app"></div>
     </div>
-    <script type="module">
-      import { SpiroConfig, mountSpiro, updateReadCount } from "./src/spiro.ts";
-      SpiroConfig.server_addr = "http://127.0.0.1:5000";
-      SpiroConfig.article_uuid = "0";
-      SpiroConfig.readcountinfo.article_name = "Spiro Demo";
-      SpiroConfig.readcountinfo.article_link = window.location.href;
-      mountSpiro('app');
-      updateReadCount("read_count");
-    </script>
   </body>
+  <script type="module">
+    import { SpiroConfig, mountSpiro, updateReadCount } from "./src/spiro.ts";
+    SpiroConfig.server_addr = "http://127.0.0.1:5000";
+    SpiroConfig.article_uuid = "0";
+    SpiroConfig.readcountinfo.article_name = "Spiro Demo";
+    SpiroConfig.readcountinfo.article_link = window.location.href;
+    mountSpiro('app');
+    updateReadCount("read_count");
+  </script>
 </html>
 
 <!--
