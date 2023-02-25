@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <link rel="stylesheet" href="style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spiro</title>
     <style>
@@ -55,7 +57,7 @@
     </div>
   </body>
   <script type="module">
-    import { SpiroConfig, mountSpiro, updateReadCount } from "./src/spiro.ts";
+    import { SpiroConfig, mountSpiro, updateReadCount } from "./spiro.js";
     SpiroConfig.server_addr = "http://127.0.0.1:5000";
     SpiroConfig.article_uuid = "0";
     SpiroConfig.readcountinfo.article_name = "Spiro Demo";
@@ -64,3 +66,4 @@
     updateReadCount("read_count");
   </script>
 </html>
+
