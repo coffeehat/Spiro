@@ -69,17 +69,36 @@ Below script is used for test.
     <style>
       @media screen and (min-width: 718px) {
         .container {
-          max-width: 1000px;
+          max-width: 800px;
           margin-left: auto;
           margin-right: auto;
         }
+      }
+      .head {
+        margin-bottom: 25px;
+        margin-top: 15px;
+      }
+      .head h1 {
+        display: inline;
+        margin-right: 10px;
+        color: rgb(22, 22, 22);
+      }
+      .head .read_count_box {
+        color:rgb(104, 104, 104);
+        font-size: 12px;
+        margin-top: 8px;
+        padding-bottom: 3px;
+        border-bottom: 1px rgb(161, 161, 161) solid;
+        width: 250px;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>Spiro Demo</h1>
-      <p>阅读：<span id="read_count"></span></p>
+      <div class="head">
+        <h1>Spiro Demo</h1>
+        <div class="read_count_box">Read Count: <span id="read_count"></span></div>
+      </div>
       <div id="app"></div>
     </div>
     <script type="module">
