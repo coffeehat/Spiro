@@ -191,7 +191,7 @@ export default defineComponent({
       /* Some css need calculation */
       comment_quote_triangle_size: 8,
       avatar_size: 50,
-      comment_box_border_color: "rgb(167, 167, 167)",
+      comment_box_border_color: SpiroConfig.appearance.comment_box_border_color,
       comment_box_border_weight: 1,
 
       /* My self */
@@ -212,7 +212,7 @@ export default defineComponent({
       this.comment_box_border_color = "#409eff";
       this.comment_box_border_weight = 2;
     } else {
-      this.comment_box_border_color = "rgb(167, 167, 167)";
+      this.comment_box_border_color = SpiroConfig.appearance.comment_box_border_color;
       this.comment_box_border_weight = 1;
     }
   },

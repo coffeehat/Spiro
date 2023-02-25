@@ -1,5 +1,6 @@
 class Appearance {
   static is_hide_user_ctrl_box_at_first = true;
+  static comment_box_border_color = "rgb(190, 190, 190)"
 }
 
 class CommentLoad {
