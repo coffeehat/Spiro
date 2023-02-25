@@ -422,13 +422,22 @@ export function getCommentCount(
   );
 }
 
+export enum CommentDeleteType {
+  DELETE_UNDEFINED = 0,
+  DELETE_DIRECTLY = 1,
+  DELETE_BY_MARK = 2,
+  DELETE_DIRECTLY_WITH_PARENT = 3
+}
+
 export function deleteComment(
   comment_id: number,
-  success_cb?: (comment_id: number) => void,
+  is_primary: boolean,
+  success_cb?: (comment_id: number, deleteType: CommentDeleteType) => void,
   error_cb?: (response?: ErrorInfo) => void
 ) {
   let form = new FormData();
   form.append("comment_id", comment_id.toString())
+  form.append("is_primary", is_primary.toString())
 
   let user_cookies = UserCookies.retrieve_from_cookies();
   axios({
@@ -442,7 +451,7 @@ export function deleteComment(
     (response) => {
       if (response.data.error_code == ServerErrorCode.EC_SUCCESS) {
         if (success_cb) {
-          success_cb(comment_id);
+          success_cb(comment_id, response.data.delete_type);
         }
       } else {
         parseAndShowErrorInfo(response.data);

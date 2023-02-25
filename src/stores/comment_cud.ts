@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ServerErrorCode } from "../common/errors";
-import { deleteComment, submitCommentForUser, submitCommentForVisitor } from "../common/network";
+import { deleteComment, submitCommentForUser, submitCommentForVisitor, CommentDeleteType } from "../common/network";
 import { CommentItemInfo, ErrorInfo } from "../common/types";
 import { useUserStore } from "./user";
 
@@ -28,20 +28,26 @@ export const useCommentCUDStore = defineStore(
       return {
         comment: {} as CommentItemInfo,
         type: CommentCUDType.Comment_Undef,
-        list_obj: {} as any
+        list_obj: {} as any,
+        delete_type: CommentDeleteType.DELETE_UNDEFINED,
+        delete_primary: true
       }
     },
     actions: {
       delete(
         comment_id: number,
+        is_primary: boolean,
         list_obj?: any
       ) {
         deleteComment(
           comment_id,
-          (comment_id) => {
+          is_primary,
+          (comment_id, delete_type) => {
             this.comment.comment_id = comment_id;
             this.type = CommentCUDType.Comment_Delete;
             this.list_obj = list_obj;
+            this.delete_type = delete_type;
+            this.delete_primary = is_primary;
           },
           check_and_handle_token_invalid_error
         );

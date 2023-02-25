@@ -39,7 +39,11 @@ export default defineComponent({
     },
     is_show_delete_button(): boolean {
       return this.userStore.is_valid
-        && this.userStore.user_id == this.comment.user_id;
+        && this.userStore.user_id == this.comment.user_id
+        && !!this.comment.comment_content;
+    },
+    is_show_reply_button(): boolean {
+      return !!this.comment.comment_content;
     },
     submit_box_responible_list(): any {
       if (this.is_primary) {
@@ -124,6 +128,7 @@ export default defineComponent({
       ).then(() => {
         this.commentCudStore.delete(
           this.comment.comment_id,
+          this.is_primary,
           this.belonging
         );
       }).catch(() => {
@@ -236,11 +241,13 @@ export default defineComponent({
               break;
             }
             case CommentCUDType.Comment_Delete: {
-              for (let i = 0; i != this.comment.sub_comment_list.length; ++i) {
-                if (this.comment.sub_comment_list[i]
-                  && this.comment.sub_comment_list[i].comment_id == state.comment.comment_id) {
+              if (!state.delete_primary) {
+                for (let i = 0; i != this.comment.sub_comment_list.length; ++i) {
+                  if (this.comment.sub_comment_list[i]
+                    && this.comment.sub_comment_list[i].comment_id == state.comment.comment_id) {
                     this.comment.sub_comment_list.splice(i,1);
-                  break;
+                    break;
+                  }
                 }
               }
               break;
@@ -276,7 +283,10 @@ export default defineComponent({
     <div class="comment_box">
       <transition name = "fade">
         <div class="comment_content">
-          <MarkdownView :rendered_markdown="md_comment" />
+          <MarkdownView v-if="comment.comment_content" :rendered_markdown="md_comment" />
+          <div class="deleted_comment" v-else>
+            <p>此评论已删除</p>
+          </div>
         </div>
       </transition>
       <transition name = "fade">
@@ -290,7 +300,8 @@ export default defineComponent({
           <div class="comment_control_box">
             <el-button type="danger" size="small" @click="onDeleteComment" plain round
               v-show="is_show_delete_button">删除</el-button>
-            <el-button type="primary" size="small" @click="onReply" plain round>回复</el-button>
+            <el-button type="primary" size="small" @click="onReply" plain round
+              v-show="is_show_reply_button">回复</el-button>
           </div>
         </div>
       </transition>
@@ -497,6 +508,12 @@ export default defineComponent({
 .reply_submit_box {
   margin-top: 10px;
   margin-bottom: 30px;
+}
+
+.deleted_comment {
+  color: rgb(129, 128, 128);
+  font-style: italic;
+  text-decoration: line-through;
 }
 
 </style>  

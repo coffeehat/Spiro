@@ -1,12 +1,13 @@
 <script lang="ts">
-import { defineComponent, ErrorCodes, isShallow } from 'vue';
+import { defineComponent } from 'vue';
 import { ServerErrorCode } from '../common/errors';
 
 // libs
 import {
   getCommentList,
   getAnchorCommentList,
-  CommentListGetMethod
+  CommentListGetMethod,
+  CommentDeleteType
 } from '../common/network'
 import { CommentItemInfoList } from '../common/types';
 import { getCommentAnchor, showInfoMessage } from '../common/utils';
@@ -187,11 +188,17 @@ export default defineComponent({
               break;
             }
             case CommentCUDType.Comment_Delete: {
-              for (let i = 0; i != this.comment_list.length; ++i) {
-                if (this.comment_list[i]
-                  && this.comment_list[i].comment_id == state.comment.comment_id) {
-                  this.comment_list.splice(i,1);
-                  break;
+              if (state.delete_primary) {
+                for (let i = 0; i != this.comment_list.length; ++i) {
+                  if (this.comment_list[i]
+                    && this.comment_list[i].comment_id == state.comment.comment_id) {
+                    if (state.delete_type == CommentDeleteType.DELETE_BY_MARK) {
+                      this.comment_list[i].comment_content = "";
+                    } else {
+                      this.comment_list.splice(i,1);
+                    }
+                    break;
+                  }
                 }
               }
               break;
