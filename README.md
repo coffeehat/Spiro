@@ -2,8 +2,7 @@
 
 A Comment System With [Backend](https://github.com/coffeehat/Spiro_Backend)
 
-<img src="./public/demo.png" width="600px"/>
-
+![Spiro Demo](./public/demo.png)
 ## Features
 
 * You manage your own comment data
