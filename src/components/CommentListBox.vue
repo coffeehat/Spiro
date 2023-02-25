@@ -145,7 +145,7 @@ export default defineComponent({
           false,
           (comment_list, is_more_old, is_more_new) => {
             this.is_more_old = is_more_old;
-            this.is_more_new = is_more_new;
+            // this.is_more_new = is_more_new;
             this.comment_list.push.apply(this.comment_list, comment_list);
           }
         );
@@ -163,7 +163,7 @@ export default defineComponent({
           this.comment_list.at(0)?.comment_id || 0,   // Actually it's not possible to pass into 0
           true,
           (comment_list, is_more_old, is_more_new) => {
-            this.is_more_old = is_more_old;
+            // this.is_more_old = is_more_old;
             this.is_more_new = is_more_new;
             this.comment_list.unshift.apply(this.comment_list, comment_list);
           }
