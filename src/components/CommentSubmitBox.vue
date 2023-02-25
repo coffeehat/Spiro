@@ -139,10 +139,6 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
-    is_show_logined_user: {
-      type: Boolean,
-      default: true
-    },
     is_primary_submit_box: {
       type: Boolean,
       default: true
@@ -400,7 +396,7 @@ export default defineComponent({
 
     <el-form v-show="userStore.is_valid">
       <div class="user_form">
-        <div class="user_info_box" v-show="is_show_logined_user">
+        <div class="user_info_box">
           <div class="avatar_box">
             <HldAvatar class="avatar" v-bind="{ ...userStore.avatar_config }" :key="userStore.user_id"/>
           </div>

@@ -12,11 +12,7 @@ import {
   TokenCheckResponse
 } from './types';
 
-var server_addr = "http://127.0.0.1:5000";
-
-export function updateServerAddress(addr: string) {
-  server_addr = addr;
-}
+import { SpiroConfig } from '../config';
 
 export enum CommentListGetMethod {
   COUNT_FROM_OFFSET = 0,
@@ -36,7 +32,7 @@ export function getCommentList(
 ) {
   axios({
     method: 'get',
-    url: server_addr + "/v1.0/comment_list",
+    url: SpiroConfig.server_addr + "/v1.0/comment_list",
     params: {
       "article_uuid": article_uuid,
       "primary_start_comment_offset": primary_start_comment_offset,
@@ -82,7 +78,7 @@ export function getSubCommentList(
 ) {
   axios({
     method: 'get',
-    url: server_addr + "/v1.0/sub_comment_list",
+    url: SpiroConfig.server_addr + "/v1.0/sub_comment_list",
     params: {
       "article_uuid": article_uuid,
       "parent_comment_id": parent_comment_id,
@@ -126,7 +122,7 @@ export function getAnchorCommentList(
 ) {
   axios({
     method: 'get',
-    url: server_addr + "/v1.0/anchor_comment_list",
+    url: SpiroConfig.server_addr + "/v1.0/anchor_comment_list",
     params: {
       "article_uuid": article_uuid,
       "anchor": anchor,
@@ -181,7 +177,7 @@ export function submitCommentForVisitor(
 
   axios({
     method: 'post',
-    url: server_addr + "/v1.0/comment",
+    url: SpiroConfig.server_addr + "/v1.0/comment",
     data: form,
     auth: {
       username: "",
@@ -237,7 +233,7 @@ export function submitCommentForUser(
 
   axios({
     method: 'post',
-    url: server_addr + "/v1.0/comment",
+    url: SpiroConfig.server_addr + "/v1.0/comment",
     data: form,
     headers: {
       Authorization: `Bearer ${user_cookies?.get_token()}`
@@ -283,7 +279,7 @@ export function loginUser(
 
   axios({
     method: 'post',
-    url: server_addr + "/v1.0/user",
+    url: SpiroConfig.server_addr + "/v1.0/user",
     data: form
   }).then(
     (response) => {
@@ -325,7 +321,7 @@ export function registerUser(
 
   axios({
     method: 'post',
-    url: server_addr + "/v1.0/user",
+    url: SpiroConfig.server_addr + "/v1.0/user",
     data: form
   }).then(
     (response) => {
@@ -361,7 +357,7 @@ export function checkToken(
 
   axios({
     method: 'post',
-    url: server_addr + "/v1.0/token_check",
+    url: SpiroConfig.server_addr + "/v1.0/token_check",
     data: form
   }).then(
     (response) => {
@@ -395,7 +391,7 @@ export function getCommentCount(
 ) {
   axios({
     method: 'get',
-    url: server_addr + "/v1.0/comment_count",
+    url: SpiroConfig.server_addr + "/v1.0/comment_count",
     params: {
       "article_uuid": article_uuid
     }
@@ -442,7 +438,7 @@ export function deleteComment(
   let user_cookies = UserCookies.retrieve_from_cookies();
   axios({
     method: 'delete',
-    url: server_addr + "/v1.0/comment",
+    url: SpiroConfig.server_addr + "/v1.0/comment",
     data: form,
     headers: {
       Authorization: `Bearer ${user_cookies?.get_token()}`
@@ -484,7 +480,7 @@ export function updateArticleReadCount(
 
   axios({
     method: 'post',
-    url: server_addr + "/v1.0/article_read_count",
+    url: SpiroConfig.server_addr + "/v1.0/article_read_count",
     data: form
   }).then(
     (response) => {
@@ -518,7 +514,7 @@ export function getArticleReadCount(
 ) {
   axios({
     method: 'get',
-    url: server_addr + "/v1.0/article_read_count",
+    url: SpiroConfig.server_addr + "/v1.0/article_read_count",
     params: {
       "article_uuid": article_uuid,
       "article_link": article_link,

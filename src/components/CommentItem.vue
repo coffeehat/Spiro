@@ -23,6 +23,7 @@ import {
 import MarkdownView from './MarkdownView.vue';
 import CommentSubmitBox from './CommentSubmitBox.vue';
 import { ReplyMutexScope } from '../stores/reply_mutex';
+import { SpiroConfig } from '../config';
 
 export default defineComponent({
   name: "Comment Item",
@@ -108,10 +109,6 @@ export default defineComponent({
       type: String,
       required: true
     },
-    number_of_new_load_sub_comments: {
-      type: Number,
-      default: 5
-    },
     /* Belonging list*/
     belonging: null
   },
@@ -147,7 +144,7 @@ export default defineComponent({
         getSubCommentList(
           this.article_uuid,
           this.parent_comment_id,
-          this.number_of_new_load_sub_comments,
+          SpiroConfig.commentload.number_of_new_load_sub_comments,
           CommentListGetMethod.COUNT_FROM_COMMENT_ID,
           0,
           this.comment.sub_comment_list.at(-1)?.comment_id || 0,
@@ -166,7 +163,7 @@ export default defineComponent({
         getSubCommentList(
           this.article_uuid,
           this.parent_comment_id,
-          this.number_of_new_load_sub_comments,
+          SpiroConfig.commentload.number_of_new_load_sub_comments,
           CommentListGetMethod.COUNT_FROM_COMMENT_ID,
           0,
           this.comment.sub_comment_list.at(0)?.comment_id || 0,

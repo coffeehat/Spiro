@@ -8,24 +8,19 @@ import CommentListBox from './components/CommentListBox.vue';
 import { onBeforeMount } from 'vue';
 
 import { useUserStore } from './stores';
-import { stringifyExpression } from '@vue/compiler-core';
+import { SpiroConfig } from './config';
 
 const userStore = useUserStore();
 
 onBeforeMount(() => {
   userStore.restoreFromCookies();
 });
-
-defineProps<{
-  article_uuid: string
-}>();
-
 </script>
 
 <template>
   <div class="container">
-    <CommentSubmitBox class="submitbox" :article_uuid="article_uuid" :is_hide_user_ctrl_box_at_first="true" :comment_list_to_affect="0"/>
-    <CommentListBox class="listbox" :article_uuid="article_uuid"/>
+    <CommentSubmitBox class="submitbox" :article_uuid="SpiroConfig.article_uuid" :is_hide_user_ctrl_box_at_first="SpiroConfig.appearance.is_hide_user_ctrl_box_at_first" :comment_list_to_affect="0"/>
+    <CommentListBox class="listbox" :article_uuid="SpiroConfig.article_uuid"/>
   </div>
 </template>
 

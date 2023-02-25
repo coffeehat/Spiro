@@ -23,13 +23,13 @@
       <div id="app"></div>
     </div>
     <script type="module">
-      import { mountSpiro, updateReadCount } from "./src/spiro.ts";
-      mountSpiro(
-        '#app',
-        "0",
-        "http://127.0.0.1:5000"
-      );
-      updateReadCount("read_count", "0", window.location.href, "Spiro Demo");
+      import { SpiroConfig, mountSpiro, updateReadCount } from "./src/spiro.ts";
+      SpiroConfig.server_addr = "http://127.0.0.1:5000";
+      SpiroConfig.article_uuid = "0";
+      SpiroConfig.readcountinfo.article_name = "Spiro Demo";
+      SpiroConfig.readcountinfo.article_link = window.location.href;
+      mountSpiro('#app');
+      updateReadCount("read_count");
     </script>
   </body>
 </html>
@@ -47,16 +47,30 @@ Below script is used for test.
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css">
     <title>Spiro</title>
+    <style>
+      @media screen and (min-width: 718px) {
+        .container {
+          max-width: 1000px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="container" id="app"></div>
+    <div class="container">
+      <h1>Spiro Demo</h1>
+      <p>阅读：<span id="read_count"></span></p>
+      <div id="app"></div>
+    </div>
     <script type="module">
-      import { mountSpiro } from "./spiro.js";
-      mountSpiro(
-        '#app',
-        0,
-        "http://127.0.0.1:5000"
-      );
+      import { SpiroConfig, mountSpiro, updateReadCount } from "./spiro.js";
+      SpiroConfig.server_addr = "http://192.168.1.12:5000";
+      SpiroConfig.article_uuid = "0";
+      SpiroConfig.readcountinfo.article_name = "Spiro Demo";
+      SpiroConfig.readcountinfo.article_link = window.location.href;
+      mountSpiro('#app');
+      updateReadCount("read_count");
     </script>
   </body>
 </html>

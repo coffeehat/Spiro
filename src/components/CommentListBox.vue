@@ -11,6 +11,7 @@ import {
 } from '../common/network'
 import { CommentItemInfoList } from '../common/types';
 import { getCommentAnchor, showInfoMessage } from '../common/utils';
+import { SpiroConfig } from '../config';
 import { useCommentCUDStore, CommentCUDType } from '../stores';
 
 // Vue components
@@ -38,34 +39,14 @@ export default defineComponent({
     {
       type: String,
       default: "0"
-    },
-    number_of_primary_comments_at_start:
-    {
-      type: Number,
-      default: 10
-    },
-    number_of_sub_comments_per_primary_at_start:
-    {
-      type: Number,
-      default: 3
-    },
-    number_of_new_load_primary_comment:
-    {
-      type: Number,
-      default: 10
-    },
-    number_of_new_load_sub_comments:
-    {
-      type: Number,
-      default: 5
     }
   },
   computed: {
     primary_single_side_comment_count() : number {
-      return Math.floor(this.number_of_primary_comments_at_start / 2);
+      return Math.floor(SpiroConfig.commentload.number_of_primary_comments_at_start / 2);
     },
     sub_single_side_comment_count() : number {
-      return Math.floor(this.number_of_sub_comments_per_primary_at_start / 2);
+      return Math.floor(SpiroConfig.commentload.number_of_sub_comments_per_primary_at_start / 2);
     }
   },
   methods: {
@@ -76,7 +57,7 @@ export default defineComponent({
           this.article_uuid,
           this.anchor,
           this.primary_single_side_comment_count,
-          this.number_of_sub_comments_per_primary_at_start,
+          SpiroConfig.commentload.number_of_sub_comments_per_primary_at_start,
           this.sub_single_side_comment_count,
           (comment_list, is_more_old, is_more_new) => {
             this.comment_list = comment_list;
@@ -93,8 +74,8 @@ export default defineComponent({
                   showInfoMessage("因为查询不到锚点评论，我们转而为您显示最新评论")
                   getCommentList(
                   this.article_uuid,
-                  this.number_of_primary_comments_at_start,
-                  this.number_of_sub_comments_per_primary_at_start,
+                  SpiroConfig.commentload.number_of_primary_comments_at_start,
+                  SpiroConfig.commentload.number_of_sub_comments_per_primary_at_start,
                   CommentListGetMethod.COUNT_FROM_OFFSET,
                   0,
                   0,
@@ -117,8 +98,8 @@ export default defineComponent({
       } else {
         getCommentList(
           this.article_uuid,
-          this.number_of_primary_comments_at_start,
-          this.number_of_sub_comments_per_primary_at_start,
+          SpiroConfig.commentload.number_of_primary_comments_at_start,
+          SpiroConfig.commentload.number_of_sub_comments_per_primary_at_start,
           CommentListGetMethod.COUNT_FROM_OFFSET,
           0,
           0,
@@ -138,8 +119,8 @@ export default defineComponent({
       if (this.comment_list.length) {
         getCommentList(
           this.article_uuid,
-          this.number_of_new_load_primary_comment,
-          this.number_of_sub_comments_per_primary_at_start,
+          SpiroConfig.commentload.number_of_new_load_primary_comment,
+          SpiroConfig.commentload.number_of_sub_comments_per_primary_at_start,
           CommentListGetMethod.COUNT_FROM_COMMENT_ID,
           this.comment_list.length,
           this.comment_list.at(-1)?.comment_id || 0,   // Actually it's not possible to pass into 0
@@ -157,8 +138,8 @@ export default defineComponent({
       if (this.comment_list.length) {
         getCommentList(
           this.article_uuid,
-          this.number_of_new_load_primary_comment,
-          this.number_of_sub_comments_per_primary_at_start,
+          SpiroConfig.commentload.number_of_new_load_primary_comment,
+          SpiroConfig.commentload.number_of_sub_comments_per_primary_at_start,
           CommentListGetMethod.COUNT_FROM_COMMENT_ID,
           this.comment_list.length,
           this.comment_list.at(0)?.comment_id || 0,   // Actually it's not possible to pass into 0
@@ -218,7 +199,7 @@ export default defineComponent({
       <a href="" @click.prevent="onClickLoadMoreNewComment">加载更多新评论</a>
     </div>
     <div class="comment_list">
-      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_uuid="article_uuid" :number_of_new_load_sub_comments="number_of_new_load_sub_comments"/>
+      <CommentItem v-for="(item, index) in comment_list" :key="index" :comment="item" :is_primary="true" :parent_comment_id="item.comment_id" :comment_list_to_affect="0" :belonging="0" :article_uuid="article_uuid"/>
     </div>
     <div class="load_more_interactive" v-if="is_more_old">
       <a href="" @click.prevent="onClickLoadMoreOldComment">加载更多旧评论</a>

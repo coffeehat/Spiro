@@ -18,7 +18,6 @@ declare module '@vue/runtime-core' {
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElInput: typeof import('element-plus/es')['ElInput']
-    ElPagination: typeof import('element-plus/es')['ElPagination']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     MarkdownView: typeof import('./src/components/MarkdownView.vue')['default']
   }
