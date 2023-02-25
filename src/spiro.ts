@@ -18,7 +18,7 @@ export function mountSpiro(el_id: string) {
   createApp(Spiro)
     // .use(ElementPlus)
     .use(createPinia())
-    .mount(el_id);
+    .mount("#" + el_id);
   goToAnchorIfValid();
 }
 
