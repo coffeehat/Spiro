@@ -204,10 +204,12 @@ export default defineComponent({
       // TODO: Add Animation
     }
   },
-  beforeUpdate() {
+  updated() {
     let current_anchor_commit_id = parseCurrentAnchor()
-    if (this.comment_box_border_weight == 2
-      && parseInt(current_anchor_commit_id) != this.comment.comment_id) {
+    if (parseInt(current_anchor_commit_id) == this.comment.comment_id) {
+      this.comment_box_border_color = "#409eff";
+      this.comment_box_border_weight = 2;
+    } else {
       this.comment_box_border_color = "rgb(167, 167, 167)";
       this.comment_box_border_weight = 1;
     }
