@@ -8,6 +8,7 @@ A Comment System With [Backend](https://github.com/coffeehat/Spiro_Backend)
 * You manage your own comment data
 * Two levels of comment
 * Email notification when receive reply
+* Responsive UI
 * Support both visitor and registered memeber
 * Support article read count
 
